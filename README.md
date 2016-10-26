@@ -1,2 +1,2 @@
 # glass
-Original Game Project - Glass - Gloria - Huixin
+CTIN483 Fall 2016 - Original Game Project - Glass - Gloria - Huixin
