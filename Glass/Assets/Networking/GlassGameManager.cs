@@ -7,9 +7,15 @@ public class GlassGameManager : Photon.PunBehaviour {
 
   // Use this for initialization
   void Start () {
-    print("attempting to create capsule object ...");
-    PhotonNetwork.Instantiate(capsule_test_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0);
     
+    if (PlayerManager.local_player_instance == null) {
+      print("attempting to create capsule object ...");
+      PhotonNetwork.Instantiate(capsule_test_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0);
+    } else {
+      print("ignoring scene load");
+    }
+    
+    if (PhotonNetwork.isMasterClient) { InvertCamera(); }
 	}
 	
 	// Update is called once per frame
@@ -31,18 +37,16 @@ public class GlassGameManager : Photon.PunBehaviour {
     }
     Debug.Log("Loading level...");
     PhotonNetwork.LoadLevel("Room For 2");
-    InvertCamera();
   }
 
   void InvertCamera() {
     Debug.Log("Inverting camera for master client");
     Camera.main.transform.Rotate(0, 0, 180);
-    Camera.main.transform.position = new Vector3(0, 0, 10);
     print(Camera.main.transform.rotation);
   }
 
   public override void OnPhotonPlayerConnected(PhotonPlayer other_player) {
-    Debug.Log("Player connected: " + other_player);
+    Debug.Log("Player connected: " + other_player + " with id " + other_player.ID);
 
     if (PhotonNetwork.isMasterClient) {
       Debug.Log("Upon connection: I am master client");
@@ -52,7 +56,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   }
 
   public override void OnPhotonPlayerDisconnected(PhotonPlayer other_player) {
-    Debug.Log("Player left room: " + other_player);
+    Debug.Log("Player left room: " + other_player + " (" + other_player.ID + ")");
 
     if (PhotonNetwork.isMasterClient) {
       Debug.Log("Upon disconnection: I am master client");
