@@ -12,7 +12,6 @@ public class GlassGameManager : Photon.PunBehaviour {
 
   // Use this for initialization
   void Start () {
-    CleanUpObjects();
     if (PlayerManager.local_player_instance == null) {
       print("attempting to create capsule object ...");
       PhotonNetwork.Instantiate(capsule_test_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0);
@@ -56,9 +55,9 @@ public class GlassGameManager : Photon.PunBehaviour {
   public override void OnPhotonPlayerConnected(PhotonPlayer other_player) {
     Debug.Log("Player connected: " + other_player + " with id " + other_player.ID);
     PhotonNetwork.DestroyPlayerObjects(PhotonNetwork.player.ID);
-    CleanUpActorIDsExceptThis(PhotonNetwork.player.ID);
-    actor_ids.Add(other_player.ID);
-    CleanUpObjects();
+    //CleanUpActorIDsExceptThis(PhotonNetwork.player.ID);
+    //actor_ids.Add(other_player.ID);
+    //CleanUpObjects();
 
     if (PhotonNetwork.isMasterClient) {
       Debug.Log("Upon connection: I am master client");
@@ -78,10 +77,10 @@ public class GlassGameManager : Photon.PunBehaviour {
     }
   }
 
-  void CleanUpActorIDsExceptThis(int id) {
-    actor_ids = new List<int>();
-    actor_ids.Add(id);
-  }
+  //void CleanUpActorIDsExceptThis(int id) {
+  //  actor_ids = new List<int>();
+  //  actor_ids.Add(id);
+  //}
 
   string DebugPrintList(List<int> ls) {
     string s = "In-game players: ";
@@ -93,29 +92,29 @@ public class GlassGameManager : Photon.PunBehaviour {
     return s;
   }
 
-  void CleanUpObjects() {
-    print("cleaning up...");
-    actor_ids = new List<int>();
-    foreach (PhotonPlayer p in PhotonNetwork.playerList) {
-      actor_ids.Add(p.ID);
-    }
+  //void CleanUpObjects() {
+  //  print("cleaning up...");
+  //  actor_ids = new List<int>();
+  //  foreach (PhotonPlayer p in PhotonNetwork.playerList) {
+  //    actor_ids.Add(p.ID);
+  //  }
 
-    print(DebugPrintList(actor_ids));
-    PhotonView[] photons = GameObject.FindObjectsOfType<PhotonView>();
-    foreach (PhotonView photon in photons) {
-      if (!IsInActorIDs(photon.owner.ID)) {
-        Destroy(photon.gameObject);
-      }
-    }
-  }
+  //  print(DebugPrintList(actor_ids));
+  //  PhotonView[] photons = GameObject.FindObjectsOfType<PhotonView>();
+  //  foreach (PhotonView photon in photons) {
+  //    if (!IsInActorIDs(photon.owner.ID)) {
+  //      Destroy(photon.gameObject);
+  //    }
+  //  }
+  //}
 
-  bool IsInActorIDs(int id) {
-    foreach (int i in actor_ids) {
-      if (i == id) {
-        return true;
-      }
-    }
+  //bool IsInActorIDs(int id) {
+  //  foreach (int i in actor_ids) {
+  //    if (i == id) {
+  //      return true;
+  //    }
+  //  }
 
-    return false;
-  }
+  //  return false;
+  //}
 }
