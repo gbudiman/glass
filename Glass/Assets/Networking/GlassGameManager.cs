@@ -3,10 +3,13 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class GlassGameManager : Photon.PunBehaviour {
+  public GameObject capsule_test_prefab;
 
-	// Use this for initialization
-	void Start () {
-	
+  // Use this for initialization
+  void Start () {
+    print("attempting to create capsule object ...");
+    PhotonNetwork.Instantiate(capsule_test_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0);
+    
 	}
 	
 	// Update is called once per frame

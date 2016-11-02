@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class KeyboardController : MonoBehaviour {
+public class KeyboardController : Photon.PunBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -10,6 +10,7 @@ public class KeyboardController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+    if (photonView.isMine == false && PhotonNetwork.connected == true) { return; }
     HandleInput();
 	}
   
