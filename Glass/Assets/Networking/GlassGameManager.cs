@@ -29,15 +29,16 @@ public class GlassGameManager : Photon.PunBehaviour {
       PhotonNetwork.Instantiate(walls_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0);
       InvertCamera();
     }
-    
   }
 
-  public override void OnLeftRoom() {
-    SceneManager.LoadScene(0);
+  void Update() {
+    HandleKeyboardInput();
   }
 
-  public void LeaveRoom() {
-    PhotonNetwork.LeaveRoom();
+  void HandleKeyboardInput() {
+    if (Input.GetKeyDown(KeyCode.Escape)) {
+      LeaveRoom();
+    }
   }
 
   void LoadArena() {
@@ -48,6 +49,15 @@ public class GlassGameManager : Photon.PunBehaviour {
     PhotonNetwork.LoadLevel("Room For 2");
   }
 
+  public override void OnLeftRoom() {
+    SceneManager.LoadScene(0);
+  }
+
+  public void LeaveRoom() {
+    PhotonNetwork.LeaveRoom();
+  }
+
+  
   /// <summary>
   /// Invert camera so that nobody is playing upside-down
   /// </summary>
