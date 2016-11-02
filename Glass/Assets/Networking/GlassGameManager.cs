@@ -15,6 +15,8 @@ public class GlassGameManager : Photon.PunBehaviour {
   void Start () {
     if (PlayerManager.local_player_instance == null) {
       print("attempting to create capsule object ...");
+
+      // Controls must be inverted as well, not just camera
       GameObject capsule = PhotonNetwork.Instantiate(capsule_test_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0) as GameObject;
       if (PhotonNetwork.isMasterClient) {
         capsule.GetComponent<KeyboardController>().is_inverted = true;
@@ -24,11 +26,10 @@ public class GlassGameManager : Photon.PunBehaviour {
     }
 
     if (PhotonNetwork.isMasterClient) {
+      PhotonNetwork.Instantiate(walls_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0);
       InvertCamera();
-      
     }
-
-    PhotonNetwork.Instantiate(walls_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0);
+    
   }
 
   public override void OnLeftRoom() {
