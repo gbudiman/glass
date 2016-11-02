@@ -8,27 +8,30 @@ public class GlassGameManager : Photon.PunBehaviour {
   public GameObject capsule_test_prefab;
   public GameObject walls_prefab;
 
-  Text debugt;
-  List<int> actor_ids = new List<int>();
-
   // Use this for initialization
   void Start () {
-    if (PlayerManager.local_player_instance == null) {
-      print("attempting to create capsule object ...");
+		if (PhotonNetwork.connected) {
+			if (PlayerManager.local_player_instance == null) {
+				print ("attempting to create capsule object ...");
 
-      // Controls must be inverted as well, not just camera
-      GameObject capsule = PhotonNetwork.Instantiate(capsule_test_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0) as GameObject;
-      if (PhotonNetwork.isMasterClient) {
-        capsule.GetComponent<KeyboardController>().is_inverted = true;
-      }
-    } else {
-      print("ignoring scene load");
-    }
+				// Controls must be inverted as well, not just camera
+				GameObject capsule = PhotonNetwork.Instantiate (capsule_test_prefab.name, new Vector3 (0, 0, 0), Quaternion.identity, 0) as GameObject;
+				if (PhotonNetwork.isMasterClient) {
+					capsule.GetComponent<KeyboardController> ().is_inverted = true;
+				}
+			} else {
+				print ("ignoring scene load");
+			}
 
-    if (PhotonNetwork.isMasterClient) {
-      PhotonNetwork.Instantiate(walls_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0);
-      InvertCamera();
-    }
+			if (PhotonNetwork.isMasterClient) {
+				PhotonNetwork.Instantiate (walls_prefab.name, new Vector3 (0, 0, 0), Quaternion.identity, 0);
+				InvertCamera ();
+			}
+		} else {
+			// For single-player testing
+			Instantiate(walls_prefab, new Vector3(0,0,0), Quaternion.identity);
+			Instantiate (capsule_test_prefab, new Vector3 (0, 0, 0), Quaternion.identity);
+		}
   }
 
   void Update() {
