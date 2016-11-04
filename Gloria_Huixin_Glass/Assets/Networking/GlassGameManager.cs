@@ -7,6 +7,10 @@ using System.Collections.Generic;
 public class GlassGameManager : Photon.PunBehaviour {
   public GameObject capsule_test_prefab;
   public GameObject walls_prefab;
+  public GameObject score_tracker_prefab;
+
+  ScoreTracker this_team_score_tracker;
+  ScoreTracker opposing_team_score_tracker;
 
   // Use this for initialization
   void Start () {
@@ -23,15 +27,60 @@ public class GlassGameManager : Photon.PunBehaviour {
 				print ("ignoring scene load");
 			}
 
-			if (PhotonNetwork.isMasterClient) {
-				PhotonNetwork.Instantiate (walls_prefab.name, new Vector3 (0, 0, 0), Quaternion.identity, 0);
-				InvertCamera ();
-			}
 		} else {
 			// For single-player testing
-			Instantiate(walls_prefab, new Vector3(0,0,0), Quaternion.identity);
-			Instantiate (capsule_test_prefab, new Vector3 (0, 0, 0), Quaternion.identity);
+			
+			Instantiate(capsule_test_prefab, new Vector3 (0, 0, 0), Quaternion.identity);
 		}
+
+    InitializeCamera();
+
+    // ScoreTrackers must be instantiated BEFORE Walls
+    InitializeScoreTrackers();
+    InitializeWalls();
+  }
+
+  void UnInvertObject(GameObject target) {
+    target.transform.Rotate(0, 0, 180);
+    target.transform.position = new Vector3(-target.transform.position.x,
+      -target.transform.position.y,
+      target.transform.position.z);
+  }
+
+  void InitializeCamera() {
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      InvertCamera();
+    }
+  }
+
+  void InitializeWalls() {
+    foreach (WallController wcp in GameObject.FindObjectsOfType<WallController>()) {
+      Destroy(wcp);
+    }
+
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      GameObject g = PhotonNetwork.Instantiate(walls_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0) as GameObject;
+      g.GetComponent<WallController>().ConnectWallPhysicsWithScoreTracker(this_team_score_tracker, opposing_team_score_tracker);
+    } else if (!PhotonNetwork.connected) {
+      GameObject g = Instantiate(walls_prefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+      g.GetComponent<WallController>().ConnectWallPhysicsWithScoreTracker(this_team_score_tracker, opposing_team_score_tracker);
+    }
+  }
+
+  void InitializeScoreTrackers() {
+    GameObject this_gost = Instantiate(score_tracker_prefab, new Vector3(-5.0f, -0.5f, 0), Quaternion.identity) as GameObject;
+    GameObject other_gost = Instantiate(score_tracker_prefab, new Vector3(-5.0f, 0.5f, 0), Quaternion.identity) as GameObject;
+
+    this_team_score_tracker = this_gost.GetComponent<ScoreTracker>();
+    opposing_team_score_tracker = other_gost.GetComponent<ScoreTracker>();
+
+    this_team_score_tracker.SetOwner(ScoreTracker.Owner.this_team);
+    opposing_team_score_tracker.SetOwner(ScoreTracker.Owner.opposing_team);
+
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      UnInvertObject(this_gost);
+      UnInvertObject(other_gost);
+    }
   }
 
   void Update() {

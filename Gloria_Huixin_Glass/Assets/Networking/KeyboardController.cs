@@ -4,14 +4,10 @@ using System.Collections;
 public class KeyboardController : Photon.PunBehaviour {
   public bool is_inverted = false;
 
-	public const float DELAY_THRESHOLD = 0.5f;
-	float existing_delay;
-
 	public GameObject glass_ball_prefab;
 
 	// Use this for initialization
 	void Start () {
-		existing_delay = DELAY_THRESHOLD;
 	}
 	
 	// Update is called once per frame
@@ -29,13 +25,10 @@ public class KeyboardController : Photon.PunBehaviour {
   }
 
 	void DetectMousePosition() {
-		existing_delay -= Time.deltaTime;
-
-		if (existing_delay < 0) {
+		if (Input.GetMouseButtonDown(0)) {
 			Vector3 mouse_position = Input.mousePosition;
 			mouse_position.z = Camera.main.transform.position.z;
 			mouse_position = Camera.main.ScreenToWorldPoint (mouse_position);
-			existing_delay = DELAY_THRESHOLD;
 
       GameObject ball_object;
       if (PhotonNetwork.connected) {
