@@ -21,12 +21,21 @@ public class WallPhysics : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other) {
 		bool is_glass_ball = other.GetComponents<CircleCollider2D> ().Length > 0;
 		if (is_glass_ball) {
-			Destroy (other.gameObject);
+      if (PhotonNetwork.connected) {
+        PhotonNetwork.Destroy(other.gameObject);
+        
+      } else {
+        Destroy(other.gameObject);
+      }
 
       // For simplicity, score counting is only implemented on host side
       // This may open door for cheating, which must be addressed later when
       // there are conflicting numbers between host and client
+
+      // CONVENTION: balls get shredded on top - opposing team gains point
+      // This is because the host camera is inverted, not the client's
       if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+        
         switch (wall_type) {
           case WallType.shredder_top: other_team_st.AddScore(); break;
           case WallType.shredder_bottom: this_team_st.AddScore(); break;

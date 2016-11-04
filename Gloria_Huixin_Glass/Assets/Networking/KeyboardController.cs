@@ -33,7 +33,6 @@ public class KeyboardController : Photon.PunBehaviour {
       GameObject ball_object;
       if (PhotonNetwork.connected) {
         ball_object = PhotonNetwork.Instantiate(glass_ball_prefab.name, transform.position, Quaternion.identity, 0) as GameObject;
-        print(ball_object);
       } else {
         ball_object = Instantiate(glass_ball_prefab, transform.position, Quaternion.identity) as GameObject;
       }
