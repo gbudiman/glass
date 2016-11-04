@@ -36,7 +36,14 @@ public class KeyboardController : Photon.PunBehaviour {
 			mouse_position.z = Camera.main.transform.position.z;
 			mouse_position = Camera.main.ScreenToWorldPoint (mouse_position);
 			existing_delay = DELAY_THRESHOLD;
-			GameObject ball_object = Instantiate (glass_ball_prefab, transform.position, Quaternion.identity) as GameObject;
+
+      GameObject ball_object;
+      if (PhotonNetwork.connected) {
+        ball_object = PhotonNetwork.Instantiate(glass_ball_prefab.name, transform.position, Quaternion.identity, 0) as GameObject;
+        print(ball_object);
+      } else {
+        ball_object = Instantiate(glass_ball_prefab, transform.position, Quaternion.identity) as GameObject;
+      }
 			GlassBall glass_ball = ball_object.GetComponent<GlassBall> ();
 			glass_ball.SetNormalForce(transform.position, mouse_position);
 		}

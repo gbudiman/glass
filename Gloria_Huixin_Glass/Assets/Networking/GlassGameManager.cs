@@ -67,7 +67,6 @@ public class GlassGameManager : Photon.PunBehaviour {
   void InvertCamera() {
     Debug.Log("Inverting camera for master client");
     Camera.main.transform.Rotate(0, 0, 180);
-    print(Camera.main.transform.rotation);
   }
 
   public override void OnPhotonPlayerConnected(PhotonPlayer other_player) {
