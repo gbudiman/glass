@@ -8,14 +8,17 @@ public class GlassGameManager : Photon.PunBehaviour {
   public GameObject capsule_test_prefab;
   public GameObject walls_prefab;
   public GameObject score_tracker_prefab;
+  public GameObject connection_logger_prefab;
 
   PhotonView photon_view;
 
   ScoreTracker this_team_score_tracker;
   ScoreTracker opposing_team_score_tracker;
+  ConnectionLogger connection_logger;
 
   // Use this for initialization
   void Start () {
+    
     photon_view = GetComponent<PhotonView>();
 
 		if (PhotonNetwork.connected) {
@@ -32,8 +35,7 @@ public class GlassGameManager : Photon.PunBehaviour {
 			}
 
 		} else {
-			// For single-player testing
-			
+      // For single-player testing
 			Instantiate(capsule_test_prefab, new Vector3 (0, 0, 0), Quaternion.identity);
 		}
 
@@ -42,6 +44,27 @@ public class GlassGameManager : Photon.PunBehaviour {
     // ScoreTrackers must be instantiated BEFORE Walls
     InitializeScoreTrackers();
     InitializeWalls();
+
+    InitializeConnectionLogger();
+    if (PhotonNetwork.connected) {
+      connection_logger.DisplayHosting();
+
+      if (PhotonNetwork.isMasterClient && PhotonNetwork.playerList.Length > 1) {
+        connection_logger.DisplayGuestConnected(PhotonNetwork.playerList[1].name);
+      } else if (!PhotonNetwork.isMasterClient && PhotonNetwork.playerList.Length > 1) {
+        connection_logger.DisplayGuesting(PhotonNetwork.playerList[0].name);
+      }
+    }
+  }
+
+  void InitializeConnectionLogger() {
+    Instantiate(connection_logger_prefab, new Vector3(5.35f, -9.85f, 0), Quaternion.identity);
+    connection_logger = GameObject.FindObjectOfType<ConnectionLogger>();
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      UnInvertObject(connection_logger.gameObject);
+    }
+    //connection_logger = g.GetComponent<ConnectionLogger>();
+    connection_logger.SetTextMesh(connection_logger.GetComponent<TextMesh>());
   }
 
   /// <summary>
