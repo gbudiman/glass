@@ -29,7 +29,7 @@ public class ScoreTracker : MonoBehaviour {
   /// This function should ONLY be called by host
   /// </summary>
   public void InitializeScore() {
-    print("Initializing score...");
+    Debug.Log("Initializing score...");
     score = 0;
     UpdateScoreDisplay();
   }
@@ -53,20 +53,5 @@ public class ScoreTracker : MonoBehaviour {
     }
 
     text_mesh.text = prefix + score.ToString();
-    // SendScoreUpdateOverNetwork();
-
-    //if (broadcast) {
-    //  Owner other_owner = owner == Owner.this_team ? Owner.opposing_team : Owner.this_team;
-    //  photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.OthersBuffered, other_owner, score);
-    //}
   }
-
-  //[PunRPC]
-  //void SendScoreUpdateOverNetwork(Owner _owner, int _score) {
-  //  print("Rpc raised to set " + _owner + " to have score of " + _score.ToString());
-  //  if (owner == _owner) {
-  //    score = _score;
-  //    UpdateScoreDisplay();
-  //  }
-  //}
 }

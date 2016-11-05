@@ -21,32 +21,23 @@ public class WallController : MonoBehaviour {
     other_team_st = other_team;
   }
 
-  public void ShredDetection(WallPhysics.WallType wall_type) {
-    // For simplicity, score counting is only implemented on host side
-    // This may open door for cheating, which must be addressed later when
-    // there are conflicting numbers between host and client
-
-    // CONVENTION: balls get shredded on top - opposing team gains point
-    // This is because the host camera is inverted, not the client's
-    switch (wall_type) {
-      case WallPhysics.WallType.shredder_top:
+  public void ShredDetection(float y_pos) {
+    if (PhotonNetwork.isMasterClient) {
+      if (y_pos > 0) {
         other_team_st.AddScore();
         photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.Others, 0, other_team_st.Score);
-        break;
-      case WallPhysics.WallType.shredder_bottom:
+      } else {
         this_team_st.AddScore();
         photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.Others, 1, this_team_st.Score);
-        break;
+      }
     }
   }
 
   [PunRPC]
   void SendScoreUpdateOverNetwork(int _team_id, int _score) {
-    if (this_team_st == null) {
-      LateBindScoreTrackers();
-    }
+    if (this_team_st == null) { LateBindScoreTrackers(); }
 
-    print("Received RPC update for " + _team_id.ToString() + " with score " + _score.ToString());
+    Debug.Log("Received RPC update for " + _team_id.ToString() + " with score " + _score.ToString());
     switch (_team_id) {
       case 0: this_team_st.SetScore(_score); break;
       case 1: other_team_st.SetScore(_score); break;
@@ -54,7 +45,7 @@ public class WallController : MonoBehaviour {
   }
 
   void LateBindScoreTrackers() {
-    print("Lazy initialization of ScoreTracker");
+    Debug.Log("Lazy initialization of ScoreTracker");
     ScoreTracker[] sts = GameObject.FindObjectsOfType<ScoreTracker>();
     foreach (ScoreTracker st in sts) {
       switch (st.ScoreOwner) {

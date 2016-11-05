@@ -4,7 +4,7 @@ using System.Collections;
 public class Launcher : Photon.PunBehaviour {
   const string game_version = "0.1";
 
-  public PhotonLogLevel log_level = PhotonLogLevel.Informational;
+  public PhotonLogLevel log_level = PhotonLogLevel.ErrorsOnly;
   public GameObject progress_label;
 
   bool is_connecting;

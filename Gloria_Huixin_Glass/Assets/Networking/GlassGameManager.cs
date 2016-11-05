@@ -44,6 +44,10 @@ public class GlassGameManager : Photon.PunBehaviour {
     InitializeWalls();
   }
 
+  /// <summary>
+  /// Used to explicitly un-invert object (for host)
+  /// </summary>
+  /// <param name="target">GameObject to invert</param>
   void UnInvertObject(GameObject target) {
     target.transform.Rotate(0, 0, 180);
     target.transform.position = new Vector3(-target.transform.position.x,
@@ -51,22 +55,14 @@ public class GlassGameManager : Photon.PunBehaviour {
       target.transform.position.z);
   }
 
-  void InitializeCamera() {
-    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      InvertCamera();
-    }
-  }
-
   void InitializeWalls() {
     foreach (WallController wcp in GameObject.FindObjectsOfType<WallController>()) {
       Destroy(wcp);
     }
 
-    if (PhotonNetwork.connected) {
-      if (PhotonNetwork.isMasterClient) {
-        GameObject g = PhotonNetwork.Instantiate(walls_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0) as GameObject;
-        g.GetComponent<WallController>().ConnectWallPhysicsWithScoreTracker(this_team_score_tracker, opposing_team_score_tracker);
-      }
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      GameObject g = PhotonNetwork.Instantiate(walls_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0) as GameObject;
+      g.GetComponent<WallController>().ConnectWallPhysicsWithScoreTracker(this_team_score_tracker, opposing_team_score_tracker);
     } else if (!PhotonNetwork.connected) {
       GameObject g = Instantiate(walls_prefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
       g.GetComponent<WallController>().ConnectWallPhysicsWithScoreTracker(this_team_score_tracker, opposing_team_score_tracker);
@@ -100,7 +96,7 @@ public class GlassGameManager : Photon.PunBehaviour {
 
   void HandleKeyboardInput() {
     if (Input.GetKeyDown(KeyCode.Escape)) {
-      print("Leaving room...");
+      Debug.Log("Leaving room...");
       LeaveRoom();
     }
   }
@@ -121,13 +117,14 @@ public class GlassGameManager : Photon.PunBehaviour {
     PhotonNetwork.LeaveRoom();
   }
 
-  
   /// <summary>
   /// Invert camera so that nobody is playing upside-down
   /// </summary>
-  void InvertCamera() {
-    Debug.Log("Inverting camera for master client");
-    Camera.main.transform.Rotate(0, 0, 180);
+  void InitializeCamera() {
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      Debug.Log("Inverting camera for master client");
+      Camera.main.transform.Rotate(0, 0, 180);
+    }
   }
 
   public override void OnPhotonPlayerConnected(PhotonPlayer other_player) {
@@ -142,9 +139,6 @@ public class GlassGameManager : Photon.PunBehaviour {
       Debug.Log("Upon connection: I am master client");
       LoadArena();
     }
-
-    
-    //base.OnPhotonPlayerConnected(newPlayer);
   }
 
   public override void OnPhotonPlayerDisconnected(PhotonPlayer other_player) {
@@ -154,14 +148,5 @@ public class GlassGameManager : Photon.PunBehaviour {
       Debug.Log("Upon disconnection: I am master client");
       LoadArena();
     }
-  }
-
-  string DebugPrintList(List<int> ls) {
-    string s = "In-game players: ";
-    foreach (int l in ls) {
-      s += l + ", ";
-    }
-
-    return s;
   }
 }

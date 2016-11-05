@@ -24,15 +24,21 @@ public class WallPhysics : MonoBehaviour {
       if (!PhotonNetwork.connected) {
         Destroy(other.gameObject);
       } else {
+        // This is not a reliable way to detect score increment
+        // Possible timing issue?
+        //if (PhotonNetwork.isMasterClient) { 
+        //  wall_controller.ShredDetection(wall_type);
+        //}
+
+        // OnDestroy callback on GlassBall is more reliable
+        // However, it adds overhead because it needs to find
+        // WallController reference
         if (other.GetComponent<PhotonView>().isMine) {
           PhotonNetwork.Destroy(other.gameObject);
         }
       }
 
-      if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-        print("Shred registered...");
-        wall_controller.ShredDetection(wall_type);
-      }
+      
 		}
 	}
 
