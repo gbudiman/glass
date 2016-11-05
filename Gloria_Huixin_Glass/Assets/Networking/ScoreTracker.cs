@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System;
 
 public class ScoreTracker : MonoBehaviour {
-  const bool BROADCAST_OVER_NETWORK = true;
-
   public enum Owner { this_team, opposing_team };
   PhotonView photon_view;
   TextMesh text_mesh;
@@ -31,12 +29,14 @@ public class ScoreTracker : MonoBehaviour {
   /// This function should ONLY be called by host
   /// </summary>
   public void InitializeScore() {
-    UpdateScoreDisplay(BROADCAST_OVER_NETWORK);
+    print("Initializing score...");
+    score = 0;
+    UpdateScoreDisplay();
   }
 
   public void AddScore() {
     score++;
-    UpdateScoreDisplay(BROADCAST_OVER_NETWORK);
+    UpdateScoreDisplay();
   }
 
   public void SetScore(int s) {
@@ -44,7 +44,7 @@ public class ScoreTracker : MonoBehaviour {
     UpdateScoreDisplay();
   }
 
-  public void UpdateScoreDisplay(bool broadcast = false) {
+  public void UpdateScoreDisplay() {
     string prefix = "";
 
     switch (owner) {

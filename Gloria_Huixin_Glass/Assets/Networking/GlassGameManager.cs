@@ -66,19 +66,11 @@ public class GlassGameManager : Photon.PunBehaviour {
       if (PhotonNetwork.isMasterClient) {
         GameObject g = PhotonNetwork.Instantiate(walls_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0) as GameObject;
         g.GetComponent<WallController>().ConnectWallPhysicsWithScoreTracker(this_team_score_tracker, opposing_team_score_tracker);
-        //photon_view.RPC("InitializeWallsForClient", PhotonTargets.All);
       }
     } else if (!PhotonNetwork.connected) {
       GameObject g = Instantiate(walls_prefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
       g.GetComponent<WallController>().ConnectWallPhysicsWithScoreTracker(this_team_score_tracker, opposing_team_score_tracker);
     }
-  }
-
-  [PunRPC]
-  void InitializeWallsForClient() {
-    WallController wcl = GameObject.FindObjectOfType<WallController>();
-    wcl.ConnectWallPhysicsWithScoreTracker(this_team_score_tracker, opposing_team_score_tracker);
-    print("Client wall initialized " + wcl);
   }
 
   void InitializeScoreTrackers() {
@@ -108,6 +100,7 @@ public class GlassGameManager : Photon.PunBehaviour {
 
   void HandleKeyboardInput() {
     if (Input.GetKeyDown(KeyCode.Escape)) {
+      print("Leaving room...");
       LeaveRoom();
     }
   }

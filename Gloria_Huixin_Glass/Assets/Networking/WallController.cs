@@ -22,15 +22,20 @@ public class WallController : MonoBehaviour {
   }
 
   public void ShredDetection(WallPhysics.WallType wall_type) {
-    //PhotonTargets photon_target = PhotonNetwork.isMasterClient
+    // For simplicity, score counting is only implemented on host side
+    // This may open door for cheating, which must be addressed later when
+    // there are conflicting numbers between host and client
+
+    // CONVENTION: balls get shredded on top - opposing team gains point
+    // This is because the host camera is inverted, not the client's
     switch (wall_type) {
       case WallPhysics.WallType.shredder_top:
         other_team_st.AddScore();
-        photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.OthersBuffered, 0, other_team_st.Score);
+        photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.Others, 0, other_team_st.Score);
         break;
       case WallPhysics.WallType.shredder_bottom:
         this_team_st.AddScore();
-        photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.OthersBuffered, 1, this_team_st.Score);
+        photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.Others, 1, this_team_st.Score);
         break;
     }
   }
