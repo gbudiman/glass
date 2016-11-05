@@ -5,12 +5,14 @@ public class KeyboardController : Photon.PunBehaviour {
   public bool is_inverted = false;
 	public GameObject glass_ball_prefab;
   PowerUpUI powerup_ui;
+  PowerupMeter powerup_meter;
 
   bool next_is_triple_shot;
 
 	// Use this for initialization
 	void Start () {
     powerup_ui = GameObject.FindObjectOfType<PowerUpUI>();
+    powerup_meter = GameObject.FindObjectOfType<PowerupMeter>();
     next_is_triple_shot = false;
 	}
 	
@@ -29,7 +31,9 @@ public class KeyboardController : Photon.PunBehaviour {
   }
 
   public void SetTripleShot() {
-    next_is_triple_shot = true;
+    if (powerup_meter.TestSubtract(3)) {
+      next_is_triple_shot = true;
+    }
   }
 
 	void DetectMousePosition() {
@@ -50,7 +54,8 @@ public class KeyboardController : Photon.PunBehaviour {
 			glass_ball.SetNormalForce(transform.position, mouse_position);
 
       if (next_is_triple_shot) {
-      //if (true) { 
+        //if (true) { 
+        powerup_meter.ExecuteSubtract(3);
         glass_ball.SetTripleShot();
         next_is_triple_shot = false;
       }
