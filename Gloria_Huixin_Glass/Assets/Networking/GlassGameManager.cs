@@ -9,6 +9,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   public GameObject walls_prefab;
   public GameObject score_tracker_prefab;
   public GameObject connection_logger_prefab;
+  public GameObject powerup_block;
 
   PhotonView photon_view;
 
@@ -55,6 +56,11 @@ public class GlassGameManager : Photon.PunBehaviour {
         connection_logger.DisplayGuesting(PhotonNetwork.playerList[0].name);
       }
     }
+    InitializePowerUpBlock();
+  }
+
+  void InitializePowerUpBlock() {
+    Instantiate(powerup_block, new Vector3(0, 11, 0), Quaternion.identity);
   }
 
   void InitializeConnectionLogger() {
