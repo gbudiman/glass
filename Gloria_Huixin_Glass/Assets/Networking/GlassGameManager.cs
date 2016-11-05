@@ -66,6 +66,7 @@ public class GlassGameManager : Photon.PunBehaviour {
     if (!PhotonNetwork.connected) {
       Instantiate(powerup_spawner, new Vector3(0, 0, 0), Quaternion.identity);
     } else if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      print("instantiating...");
       PhotonNetwork.Instantiate(powerup_spawner.name, new Vector3(0, 0, 0), Quaternion.identity, 0);
     }
   }

@@ -7,6 +7,8 @@ public class PowerUpSpawner : MonoBehaviour {
   public float existence_jitter_timer= 2.5f;
   float existence_timer;
 
+  PowerupCalculator powerup_calculator;
+
 	// Use this for initialization
 	void Start () {
     existence_timer = 0;
@@ -25,15 +27,18 @@ public class PowerUpSpawner : MonoBehaviour {
     Vector3 rand_position = new Vector3(rand_x, rand_y, 0);
     Quaternion rand_quaternion = Quaternion.Euler(0, 0, rand_rotation);
 
+    GameObject g = null;
     if (PhotonNetwork.connected) {
       if (PhotonNetwork.isMasterClient) {
-        PhotonNetwork.Destroy(GameObject.FindGameObjectWithTag("wall_parent"));
-        PhotonNetwork.Instantiate(powerup_prefab.name, rand_position, rand_quaternion, 0);
+        PhotonNetwork.Destroy(GameObject.FindGameObjectWithTag("powerup_region"));
+        g = PhotonNetwork.Instantiate(powerup_prefab.name, rand_position, rand_quaternion, 0) as GameObject;
       }
     } else {
-      Destroy(GameObject.FindGameObjectWithTag("wall_parent"));
-      Instantiate(powerup_prefab, rand_position, rand_quaternion);
+      Destroy(GameObject.FindGameObjectWithTag("powerup_region"));
+      g = Instantiate(powerup_prefab, rand_position, rand_quaternion) as GameObject;
     }
+
+    powerup_calculator = g.GetComponent<PowerupCalculator>();
   }
 
   void ReRollTimer() {
@@ -46,8 +51,10 @@ public class PowerUpSpawner : MonoBehaviour {
     existence_timer -= Time.deltaTime;
 
     if (existence_timer < 0) {
-      InstantiatePowerup();
-      ReRollTimer();
+      if (powerup_calculator == null || (powerup_calculator && !powerup_calculator.IsBeingPickedUp)) {
+        InstantiatePowerup();
+        ReRollTimer();
+      }
     }
   }
 }

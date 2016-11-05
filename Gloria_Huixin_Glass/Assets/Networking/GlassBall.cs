@@ -22,6 +22,8 @@ public class GlassBall : Photon.PunBehaviour {
 
   Vector3 latched_position;
 
+  bool is_picking_powerup = false;
+
   void Start() {
     movement_vector_scaler = INITIAL_MAGNITUDE_SCALER;
     wcl = GameObject.FindObjectOfType<WallController>();
@@ -30,6 +32,7 @@ public class GlassBall : Photon.PunBehaviour {
   void Update() {
     TickTripleShotTimer();
     TickColliderDisabler();
+    TickPowerupAmount();
   }
 
   public void SetNormalForce(Vector3 origin, Vector3 target) {
@@ -119,5 +122,38 @@ public class GlassBall : Photon.PunBehaviour {
     y = Mathf.Sin(angle_rad) * v.x + Mathf.Cos(angle_rad) * v.y;
 
     return new Vector2(x, y);
+  }
+
+  public void EnablePowerPickup(bool enabled) {
+    is_picking_powerup = enabled;
+
+    if (!enabled) {
+      print("cleared");
+    } else {
+      rb = GetComponent<Rigidbody2D>();
+      print("started");
+    }
+  }
+
+  void TickPowerupAmount() {
+    if (is_picking_powerup) {
+      bool inverted = PhotonNetwork.connected && PhotonNetwork.isMasterClient;
+
+      if (!PhotonNetwork.connected || (PhotonNetwork.connected && PhotonNetwork.isMasterClient)) {
+        if (rb.velocity.y > 0) {
+          if (inverted) {
+            print("pickup for other");
+          } else {
+            print("pickup for me!");
+          }
+        } else {
+          if (inverted) {
+            print("pickup for me");
+          } else {
+            print("pickup for other");
+          }
+        }
+      }
+    }
   }
 }
