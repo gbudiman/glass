@@ -11,6 +11,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   public GameObject connection_logger_prefab;
   public GameObject powerup_block;
   public GameObject powerup_block_inverted;
+  public GameObject powerup_spawner;
 
   PhotonView photon_view;
 
@@ -58,6 +59,15 @@ public class GlassGameManager : Photon.PunBehaviour {
       }
     }
     InitializePowerUpBlock();
+    InitializePowerUpSpawner();
+  }
+
+  void InitializePowerUpSpawner() {
+    if (!PhotonNetwork.connected) {
+      Instantiate(powerup_spawner, new Vector3(0, 0, 0), Quaternion.identity);
+    } else if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      PhotonNetwork.Instantiate(powerup_spawner.name, new Vector3(0, 0, 0), Quaternion.identity, 0);
+    }
   }
 
   void InitializePowerUpBlock() {
