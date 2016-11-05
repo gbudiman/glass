@@ -4,13 +4,13 @@ using System.Collections;
 public class WallPhysics : MonoBehaviour {
   public enum WallType { shredder_top, shredder_bottom, wall_left, wall_right };
   public WallType wall_type;
+  WallController wall_controller;
 	ObjectIdentifier obj_id;
-  ScoreTracker this_team_st;
-  ScoreTracker other_team_st;
-
+  
 	// Use this for initialization
 	void Start () {
 		obj_id = GetComponent<ObjectIdentifier> ();
+    wall_controller = GetComponentInParent<WallController>();
 	}
 	
 	// Update is called once per frame
@@ -21,11 +21,12 @@ public class WallPhysics : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other) {
 		bool is_glass_ball = other.GetComponents<CircleCollider2D> ().Length > 0;
 		if (is_glass_ball) {
-      if (PhotonNetwork.connected) {
-        PhotonNetwork.Destroy(other.gameObject);
-        
-      } else {
+      if (!PhotonNetwork.connected) {
         Destroy(other.gameObject);
+      } else {
+        if (other.GetComponent<PhotonView>().isMine) {
+          PhotonNetwork.Destroy(other.gameObject);
+        }
       }
 
       // For simplicity, score counting is only implemented on host side
@@ -35,14 +36,13 @@ public class WallPhysics : MonoBehaviour {
       // CONVENTION: balls get shredded on top - opposing team gains point
       // This is because the host camera is inverted, not the client's
       if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-        
-        switch (wall_type) {
-          case WallType.shredder_top: other_team_st.AddScore(); break;
-          case WallType.shredder_bottom: this_team_st.AddScore(); break;
-        }
+        print("Shred registered...");
+        wall_controller.ShredDetection(wall_type);
       }
 		}
 	}
+
+
 
 	void OnCollisionEnter2D(Collision2D other) {
 		bool is_glass_ball = other.gameObject.GetComponents<CircleCollider2D> ().Length > 0;
@@ -50,9 +50,4 @@ public class WallPhysics : MonoBehaviour {
 			//other.rigidbody.velocity;
 		}
 	}
-
-  public void RegisterScoreTracker(ScoreTracker this_team, ScoreTracker other_team) {
-    this_team_st = this_team;
-    other_team_st = other_team;
-  }
 }

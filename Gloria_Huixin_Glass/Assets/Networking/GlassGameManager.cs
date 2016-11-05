@@ -9,11 +9,15 @@ public class GlassGameManager : Photon.PunBehaviour {
   public GameObject walls_prefab;
   public GameObject score_tracker_prefab;
 
+  PhotonView photon_view;
+
   ScoreTracker this_team_score_tracker;
   ScoreTracker opposing_team_score_tracker;
 
   // Use this for initialization
   void Start () {
+    photon_view = GetComponent<PhotonView>();
+
 		if (PhotonNetwork.connected) {
 			if (PlayerManager.local_player_instance == null) {
 				print ("attempting to create capsule object ...");
@@ -58,13 +62,23 @@ public class GlassGameManager : Photon.PunBehaviour {
       Destroy(wcp);
     }
 
-    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      GameObject g = PhotonNetwork.Instantiate(walls_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0) as GameObject;
-      g.GetComponent<WallController>().ConnectWallPhysicsWithScoreTracker(this_team_score_tracker, opposing_team_score_tracker);
+    if (PhotonNetwork.connected) {
+      if (PhotonNetwork.isMasterClient) {
+        GameObject g = PhotonNetwork.Instantiate(walls_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0) as GameObject;
+        g.GetComponent<WallController>().ConnectWallPhysicsWithScoreTracker(this_team_score_tracker, opposing_team_score_tracker);
+        //photon_view.RPC("InitializeWallsForClient", PhotonTargets.All);
+      }
     } else if (!PhotonNetwork.connected) {
       GameObject g = Instantiate(walls_prefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
       g.GetComponent<WallController>().ConnectWallPhysicsWithScoreTracker(this_team_score_tracker, opposing_team_score_tracker);
     }
+  }
+
+  [PunRPC]
+  void InitializeWallsForClient() {
+    WallController wcl = GameObject.FindObjectOfType<WallController>();
+    wcl.ConnectWallPhysicsWithScoreTracker(this_team_score_tracker, opposing_team_score_tracker);
+    print("Client wall initialized " + wcl);
   }
 
   void InitializeScoreTrackers() {
@@ -77,9 +91,14 @@ public class GlassGameManager : Photon.PunBehaviour {
     this_team_score_tracker.SetOwner(ScoreTracker.Owner.this_team);
     opposing_team_score_tracker.SetOwner(ScoreTracker.Owner.opposing_team);
 
-    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      UnInvertObject(this_gost);
-      UnInvertObject(other_gost);
+    if (PhotonNetwork.connected) {
+      this_team_score_tracker.InitializeScore();
+      opposing_team_score_tracker.InitializeScore();
+
+      if (PhotonNetwork.isMasterClient) {
+        UnInvertObject(this_gost);
+        UnInvertObject(other_gost);
+      }
     }
   }
 
