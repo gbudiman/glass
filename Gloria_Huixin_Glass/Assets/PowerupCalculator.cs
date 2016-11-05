@@ -9,7 +9,6 @@ public class PowerupCalculator : MonoBehaviour {
   }
 
 	void OnTriggerEnter2D(Collider2D other) {
-    print("collide");
     GlassBall glass_ball = other.GetComponent<GlassBall>();
     if (glass_ball != null) {
       glass_ball.EnablePowerPickup(true);

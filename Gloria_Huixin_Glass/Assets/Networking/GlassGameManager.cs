@@ -12,6 +12,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   public GameObject powerup_block;
   public GameObject powerup_block_inverted;
   public GameObject powerup_spawner;
+  public GameObject powerup_meter_prefab;
 
   PhotonView photon_view;
 
@@ -60,6 +61,15 @@ public class GlassGameManager : Photon.PunBehaviour {
     }
     InitializePowerUpBlock();
     InitializePowerUpSpawner();
+    InitializePowerUpMeter();
+  }
+
+  void InitializePowerUpMeter() {
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      Instantiate(powerup_meter_prefab, new Vector3(0, 9.8f, 0), Quaternion.Euler(0, 0, 180));
+    } else { 
+      Instantiate(powerup_meter_prefab, new Vector3(0, -9.8f, 0), Quaternion.identity);
+    }
   }
 
   void InitializePowerUpSpawner() {

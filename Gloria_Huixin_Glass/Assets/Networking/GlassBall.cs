@@ -24,9 +24,14 @@ public class GlassBall : Photon.PunBehaviour {
 
   bool is_picking_powerup = false;
 
+  PowerupMeter powerup_meter;
+  PhotonView photon_view;
+
   void Start() {
+    powerup_meter = GameObject.FindObjectOfType<PowerupMeter>();
     movement_vector_scaler = INITIAL_MAGNITUDE_SCALER;
     wcl = GameObject.FindObjectOfType<WallController>();
+    photon_view = GetComponent<PhotonView>();
   }
 
   void Update() {
@@ -143,17 +148,26 @@ public class GlassBall : Photon.PunBehaviour {
         if (rb.velocity.y > 0) {
           if (inverted) {
             print("pickup for other");
+            photon_view.RPC("UpdatePowerUpMeterOverNetwork", PhotonTargets.Others);
           } else {
             print("pickup for me!");
+            powerup_meter.Add();
           }
         } else {
           if (inverted) {
             print("pickup for me");
+            powerup_meter.Add();
           } else {
             print("pickup for other");
+            photon_view.RPC("UpdatePowerUpMeterOverNetwork", PhotonTargets.Others);
           }
         }
       }
     }
+  }
+
+  [PunRPC]
+  void UpdatePowerUpMeterOverNetwork() {
+    powerup_meter.Add();
   }
 }
