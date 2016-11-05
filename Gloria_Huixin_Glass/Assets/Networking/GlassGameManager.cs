@@ -10,6 +10,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   public GameObject score_tracker_prefab;
   public GameObject connection_logger_prefab;
   public GameObject powerup_block;
+  public GameObject powerup_block_inverted;
 
   PhotonView photon_view;
 
@@ -19,7 +20,7 @@ public class GlassGameManager : Photon.PunBehaviour {
 
   // Use this for initialization
   void Start () {
-    
+    Screen.SetResolution(450, 800, false);
     photon_view = GetComponent<PhotonView>();
 
 		if (PhotonNetwork.connected) {
@@ -60,7 +61,11 @@ public class GlassGameManager : Photon.PunBehaviour {
   }
 
   void InitializePowerUpBlock() {
-    Instantiate(powerup_block, new Vector3(0, 11, 0), Quaternion.identity);
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      Instantiate(powerup_block_inverted, new Vector3(0, -11, 0), Quaternion.Euler(0,0,180));
+    } else {
+      Instantiate(powerup_block, new Vector3(0, 11, 0), Quaternion.identity);
+    }
   }
 
   void InitializeConnectionLogger() {
@@ -82,6 +87,10 @@ public class GlassGameManager : Photon.PunBehaviour {
     target.transform.position = new Vector3(-target.transform.position.x,
       -target.transform.position.y,
       target.transform.position.z);
+  }
+
+  void UnFlip(GameObject target) {
+    target.transform.Rotate(0, 0, 180);
   }
 
   void InitializeWalls() {
