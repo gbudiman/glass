@@ -28,4 +28,12 @@ public class Breakshot : MonoBehaviour {
     g0.GetComponent<GlassBall>().SetInitialForce(new Vector3(+1/Mathf.Sqrt(2), -1/Mathf.Sqrt(2), 0));
     g1.GetComponent<GlassBall>().SetInitialForce(new Vector3(-1/Mathf.Sqrt(2), +1/Mathf.Sqrt(2), 0));
   }
+
+  public void CheckEmptyArena() {
+    if (!PhotonNetwork.connected || PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      if (GameObject.FindObjectsOfType<GlassBall>().Length == 0) {
+        Trigger();
+      }
+    }
+  }
 }
