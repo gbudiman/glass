@@ -39,8 +39,6 @@ public class PowerUpUI : MonoBehaviour {
     print("master update");
     foreach(PowerUpElement pel in transform.parent.GetComponentsInChildren<PowerUpElement>()) {
       
-
-      
       DisablerMask disabler_mask = pel.GetComponentInChildren<DisablerMask>();
       if (disabler_mask != null) {
         bool has_enough_power = pel.PowerRequirement < powerup_meter.AvailablePowerPool;
