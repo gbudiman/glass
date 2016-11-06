@@ -10,7 +10,6 @@ public class GlassGameManager : Photon.PunBehaviour {
   public GameObject score_tracker_prefab;
   public GameObject connection_logger_prefab;
   public GameObject powerup_block;
-  public GameObject powerup_block_inverted;
   public GameObject powerup_spawner;
   public GameObject powerup_meter_prefab;
   public GameObject breakshot_prefab;
@@ -129,7 +128,8 @@ public class GlassGameManager : Photon.PunBehaviour {
 
   void InitializePowerUpBlock() {
     if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      Instantiate(powerup_block_inverted, new Vector3(0, -11, 0), Quaternion.Euler(0,0,180));
+      //Instantiate(powerup_block_inverted, new Vector3(0, -11, 0), Quaternion.Euler(0,0,180));
+      Instantiate(powerup_block, new Vector3(0, -11, 0), Quaternion.Euler(0, 0, 180));
     } else {
       Instantiate(powerup_block, new Vector3(0, 11, 0), Quaternion.identity);
     }
