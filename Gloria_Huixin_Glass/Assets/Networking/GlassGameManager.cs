@@ -15,6 +15,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   public GameObject powerup_meter_prefab;
   public GameObject breakshot_prefab;
   public GameObject rsg_prefab;
+  public GameObject safety_net_prefab;
 
   PhotonView photon_view;
 
@@ -66,6 +67,20 @@ public class GlassGameManager : Photon.PunBehaviour {
     InitializePowerUpMeter();
     InitializeBreakshot();
     InitializeRSG();
+    InitializeSafetyNet();
+  }
+
+  void InitializeSafetyNet() {
+    foreach (SafetyNet sfn in GameObject.FindObjectsOfType<SafetyNet>()) {
+      Destroy(sfn);
+    }
+
+    if (PhotonNetwork.connected) {
+
+    } else {
+      Instantiate(safety_net_prefab, new Vector3(0, -2, 0), Quaternion.identity);
+    }
+
   }
 
   void InitializeRSG() {

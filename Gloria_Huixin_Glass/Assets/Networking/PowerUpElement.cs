@@ -3,7 +3,7 @@ using System.Collections;
 
 public class PowerUpElement : MonoBehaviour {
   Animator animator;
-  public enum PowerUpType { pu_triple_shot };
+  public enum PowerUpType { pu_triple_shot, pu_safety_net };
   public PowerUpType powerup_type;
   PowerUpUI powerup_ui;
   KeyboardController kbc;
@@ -12,6 +12,7 @@ public class PowerUpElement : MonoBehaviour {
     get {
       switch(powerup_type) {
         case PowerUpType.pu_triple_shot: return 0.75f;
+        case PowerUpType.pu_safety_net: return 0.25f;
         default: return 0f;
       }
     }
@@ -31,13 +32,31 @@ public class PowerUpElement : MonoBehaviour {
     switch(powerup_type) {
       case PowerUpType.pu_triple_shot:
         FindSubject();
-        if (!GetComponentInChildren<DisablerMask>().GetComponent<SpriteRenderer>().enabled) {
-          print("clicked");
-          animator.SetBool("is_clicked", true);
+        CheckPrerequisite();
+        kbc.SetTripleShot();
+        break;
+      case PowerUpType.pu_safety_net:
+        if (CheckPrerequisite()) {
+          FindSafetyNet();
         }
-        kbc.SetTripleShot(); break;
+        break;
     }
     powerup_ui.ToggleVisibility();
+  }
+
+  bool CheckPrerequisite() {
+    if (!GetComponentInChildren<DisablerMask>().GetComponent<SpriteRenderer>().enabled) {
+      animator.SetBool("is_clicked", true);
+      return true;
+    }
+
+    return false;
+  }
+
+  void FindSafetyNet() {
+    SafetyNet sfn = GameObject.FindObjectOfType<SafetyNet>();
+    sfn.SetEnable(true);
+
   }
 
   void FindSubject() {
