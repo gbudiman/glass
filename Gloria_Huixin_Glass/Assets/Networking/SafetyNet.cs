@@ -4,8 +4,9 @@ using System.Collections;
 public class SafetyNet : MonoBehaviour {
   BoxCollider2D bcl;
   SpriteRenderer sr;
+  PhotonView photon_view;
 
-  const float base_duration = 2.5f;
+  const float base_duration = 60f;
   float timer;
   bool is_enabled = false;
 
@@ -13,6 +14,7 @@ public class SafetyNet : MonoBehaviour {
 	void Start () {
     bcl = GetComponent<BoxCollider2D>();
     sr = GetComponentInChildren<SpriteRenderer>();
+    photon_view = GetComponent<PhotonView>();
 	}
 	
 	// Update is called once per frame
@@ -32,11 +34,33 @@ public class SafetyNet : MonoBehaviour {
     }
   }
 
+  [PunRPC]
+  void UpdateSafetyNetOverNetwork() {
+    if (!photon_view.isMine) {
+      SetEnable(true);
+    }
+  }
+
   void OnTriggerEnter2D(Collider2D other) {
     if (other.GetComponent<GlassBall>() != null) {
       Rigidbody2D other_rb = other.GetComponent<GlassBall>().GetComponent<Rigidbody2D>();
 
-      other_rb.velocity *= 0.5f;
+      if (PhotonNetwork.connected) {
+        if (PhotonNetwork.isMasterClient && photon_view.isMine ||
+            !PhotonNetwork.isMasterClient && !photon_view.isMine) {
+          if (other_rb.velocity.y > 0) {
+            other_rb.velocity *= 0.5f;
+          }
+        } else {
+          if (other_rb.velocity.y < 0) {
+            other_rb.velocity *= 0.5f;
+          }
+        }
+      } else {
+        if (other_rb.velocity.y < 0) {
+          other_rb.velocity *= 0.5f;
+        }
+      }
     }
   }
 
@@ -46,7 +70,7 @@ public class SafetyNet : MonoBehaviour {
     is_enabled = true;
     if (enable) {
       timer = base_duration;
-      
+      photon_view.RPC("UpdateSafetyNetOverNetwork", PhotonTargets.Others);
     }
   }
 }

@@ -36,13 +36,11 @@ public class PowerUpUI : MonoBehaviour {
   }
 
   public void UpdatePowerRequirement() {
-    print("master update");
     foreach(PowerUpElement pel in transform.parent.GetComponentsInChildren<PowerUpElement>()) {
       
       DisablerMask disabler_mask = pel.GetComponentInChildren<DisablerMask>();
       if (disabler_mask != null) {
         bool has_enough_power = pel.PowerRequirement < powerup_meter.AvailablePowerPool;
-        print(pel.PowerRequirement + " < " + powerup_meter.AvailablePowerPool);
         pel.GetComponentInChildren<DisablerMask>().GetComponent<SpriteRenderer>().enabled = !has_enough_power;
       }
     }

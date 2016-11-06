@@ -141,10 +141,10 @@ public class GlassBall : Photon.PunBehaviour {
     is_picking_powerup = enabled;
 
     if (!enabled) {
-      Debug.Log("Pickup cleared");
+      //Debug.Log("Pickup cleared");
     } else {
       rb = GetComponent<Rigidbody2D>();
-      Debug.Log("Pickup started");
+      //Debug.Log("Pickup started");
     }
   }
 
@@ -155,20 +155,20 @@ public class GlassBall : Photon.PunBehaviour {
       if (!PhotonNetwork.connected || (PhotonNetwork.connected && PhotonNetwork.isMasterClient)) {
         if (rb.velocity.y > 0) {
           if (inverted) {
-            Debug.Log("pickup for other");
+            //Debug.Log("pickup for other");
             if (PhotonNetwork.connected) {
               photon_view.RPC("UpdatePowerUpMeterOverNetwork", PhotonTargets.Others);
             }
           } else {
-            Debug.Log("pickup for me!");
+            //Debug.Log("pickup for me!");
             powerup_meter.Add();
           }
         } else {
           if (inverted) {
-            Debug.Log("pickup for me");
+            //Debug.Log("pickup for me");
             powerup_meter.Add();
           } else {
-            Debug.Log("pickup for other");
+            //Debug.Log("pickup for other");
             if (PhotonNetwork.connected) {
               photon_view.RPC("UpdatePowerUpMeterOverNetwork", PhotonTargets.Others);
             }

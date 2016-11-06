@@ -54,8 +54,13 @@ public class PowerUpElement : MonoBehaviour {
   }
 
   void FindSafetyNet() {
-    SafetyNet sfn = GameObject.FindObjectOfType<SafetyNet>();
-    sfn.SetEnable(true);
+    foreach (SafetyNet sfn in GameObject.FindObjectsOfType<SafetyNet>()) {
+      bool is_mine = sfn.GetComponent<PhotonView>().isMine;
+      if (!PhotonNetwork.connected || is_mine) {
+        sfn.SetEnable(true);
+        break;
+      }
+    }
 
   }
 
