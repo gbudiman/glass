@@ -28,9 +28,10 @@ public class PowerUpSpawner : MonoBehaviour {
     Quaternion rand_quaternion = Quaternion.Euler(0, 0, rand_rotation);
 
     GameObject g = null;
+    GameObject existing_powerup_region = GameObject.FindGameObjectWithTag("powerup_region");
     if (PhotonNetwork.connected) {
       if (PhotonNetwork.isMasterClient) {
-        PhotonNetwork.Destroy(GameObject.FindGameObjectWithTag("powerup_region"));
+        PhotonNetwork.Destroy(existing_powerup_region);
         g = PhotonNetwork.Instantiate(powerup_prefab.name, rand_position, rand_quaternion, 0) as GameObject;
       }
     } else {

@@ -6,7 +6,6 @@ public class Breakshot : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-    Trigger();
 	}
 	
 	// Update is called once per frame

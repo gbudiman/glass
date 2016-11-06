@@ -14,6 +14,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   public GameObject powerup_spawner;
   public GameObject powerup_meter_prefab;
   public GameObject breakshot_prefab;
+  public GameObject rsg_prefab;
 
   PhotonView photon_view;
 
@@ -64,6 +65,19 @@ public class GlassGameManager : Photon.PunBehaviour {
     InitializePowerUpSpawner();
     InitializePowerUpMeter();
     InitializeBreakshot();
+    InitializeRSG();
+  }
+
+  void InitializeRSG() {
+    RSGController existing_rsg = GameObject.FindObjectOfType<RSGController>();
+    if (existing_rsg) { Destroy(existing_rsg); }
+
+    if (PhotonNetwork.connected && PhotonNetwork.playerList.Length > 1) {
+      GameObject g = Instantiate(rsg_prefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+      if (PhotonNetwork.isMasterClient) {
+        UnInvertObject(g);
+      }
+    }
   }
 
   void InitializeBreakshot() {
@@ -121,10 +135,6 @@ public class GlassGameManager : Photon.PunBehaviour {
     target.transform.position = new Vector3(-target.transform.position.x,
       -target.transform.position.y,
       target.transform.position.z);
-  }
-
-  void UnFlip(GameObject target) {
-    target.transform.Rotate(0, 0, 180);
   }
 
   void InitializeWalls() {
