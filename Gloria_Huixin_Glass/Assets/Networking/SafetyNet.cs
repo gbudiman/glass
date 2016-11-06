@@ -6,7 +6,7 @@ public class SafetyNet : MonoBehaviour {
   SpriteRenderer sr;
   PhotonView photon_view;
 
-  const float base_duration = 60f;
+  const float base_duration = 5f;
   float timer;
   bool is_enabled = false;
 
