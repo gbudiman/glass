@@ -13,6 +13,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   public GameObject powerup_block_inverted;
   public GameObject powerup_spawner;
   public GameObject powerup_meter_prefab;
+  public GameObject breakshot_prefab;
 
   PhotonView photon_view;
 
@@ -62,6 +63,18 @@ public class GlassGameManager : Photon.PunBehaviour {
     InitializePowerUpBlock();
     InitializePowerUpSpawner();
     InitializePowerUpMeter();
+    InitializeBreakshot();
+  }
+
+  void InitializeBreakshot() {
+    Breakshot preexisting = GameObject.FindObjectOfType<Breakshot>();
+    if (preexisting) { Destroy(preexisting); }
+
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      PhotonNetwork.Instantiate(breakshot_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0);
+    } else {
+      Instantiate(breakshot_prefab, new Vector3(0, 0, 0), Quaternion.identity);
+    }
   }
 
   void InitializePowerUpMeter() {

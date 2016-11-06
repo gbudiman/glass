@@ -49,6 +49,11 @@ public class GlassBall : Photon.PunBehaviour {
     rb.AddForce(movement_vector_normal * INITIAL_MAGNITUDE_SCALER);
   }
 
+  public void SetInitialForce(Vector3 v) {
+    rb = GetComponent<Rigidbody2D>();
+    rb.AddForce(v * INITIAL_MAGNITUDE_SCALER);
+  }
+
   public void SetRigidBodyVelocity(Vector2 velocity) {
     rb = GetComponent<Rigidbody2D>();
     rb.velocity = velocity;
@@ -148,7 +153,9 @@ public class GlassBall : Photon.PunBehaviour {
         if (rb.velocity.y > 0) {
           if (inverted) {
             Debug.Log("pickup for other");
-            photon_view.RPC("UpdatePowerUpMeterOverNetwork", PhotonTargets.Others);
+            if (PhotonNetwork.connected) {
+              photon_view.RPC("UpdatePowerUpMeterOverNetwork", PhotonTargets.Others);
+            }
           } else {
             Debug.Log("pickup for me!");
             powerup_meter.Add();
@@ -159,7 +166,9 @@ public class GlassBall : Photon.PunBehaviour {
             powerup_meter.Add();
           } else {
             Debug.Log("pickup for other");
-            photon_view.RPC("UpdatePowerUpMeterOverNetwork", PhotonTargets.Others);
+            if (PhotonNetwork.connected) {
+              photon_view.RPC("UpdatePowerUpMeterOverNetwork", PhotonTargets.Others);
+            }
           }
         }
       }
