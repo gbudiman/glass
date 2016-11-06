@@ -3,6 +3,7 @@ using System.Collections;
 
 public class PowerUpUI : MonoBehaviour {
   Animator animator;
+  PowerupMeter powerup_meter;
   bool show_power_up;
 
   public bool UIIsVisible {
@@ -14,6 +15,7 @@ public class PowerUpUI : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
     animator = GetComponentInParent<Animator>();
+    powerup_meter = GameObject.FindObjectOfType<PowerupMeter>();
     show_power_up = false;
 	}
 	
@@ -23,11 +25,28 @@ public class PowerUpUI : MonoBehaviour {
 	}
 
   void OnMouseDown() {
+    UpdatePowerRequirement();
     ToggleVisibility();
+    
   }
 
   public void ToggleVisibility() {
     show_power_up = !show_power_up;
     animator.SetBool("show_power_up", show_power_up);
+  }
+
+  public void UpdatePowerRequirement() {
+    print("master update");
+    foreach(PowerUpElement pel in transform.parent.GetComponentsInChildren<PowerUpElement>()) {
+      
+
+      
+      DisablerMask disabler_mask = pel.GetComponentInChildren<DisablerMask>();
+      if (disabler_mask != null) {
+        bool has_enough_power = pel.PowerRequirement < powerup_meter.AvailablePowerPool;
+        print(pel.PowerRequirement + " < " + powerup_meter.AvailablePowerPool);
+        pel.GetComponentInChildren<DisablerMask>().GetComponent<SpriteRenderer>().enabled = !has_enough_power;
+      }
+    }
   }
 }

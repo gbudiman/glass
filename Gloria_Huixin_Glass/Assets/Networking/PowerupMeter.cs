@@ -13,9 +13,15 @@ public class PowerupMeter : MonoBehaviour {
   float t_epsilon;
   bool enable_lerp = false;
 
+  PowerUpUI powerup_ui;
+
+  public float AvailablePowerPool {
+    get { return current_amount / cardinal; }
+  }
 	// Use this for initialization
 	void Start () {
     current_amount = 0f;
+    powerup_ui = GameObject.FindObjectOfType<PowerUpUI>();
     UpdateDisplay();
 	}
 	
@@ -39,6 +45,7 @@ public class PowerupMeter : MonoBehaviour {
     current_amount += pickup_tick_unit;
     current_amount = Mathf.Clamp(current_amount, 0, cardinal);
     UpdateDisplay();
+    powerup_ui.UpdatePowerRequirement();
   }
 
   /// <summary>
@@ -55,6 +62,7 @@ public class PowerupMeter : MonoBehaviour {
   public void ExecuteSubtract(int _amount) {
     current_amount -= _amount * cardinal / 4;
     UpdateDisplay();
+    powerup_ui.UpdatePowerRequirement();
   }
 
   void UpdateDisplay() {

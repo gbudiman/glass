@@ -7,6 +7,15 @@ public class PowerUpElement : MonoBehaviour {
   PowerUpUI powerup_ui;
   KeyboardController kbc;
 
+  public float PowerRequirement {
+    get {
+      switch(powerup_type) {
+        case PowerUpType.pu_triple_shot: return 0.75f;
+        default: return 0f;
+      }
+    }
+  }
+
 	// Use this for initialization
 	void Start () {
     powerup_ui = transform.parent.GetComponentInChildren<PowerUpUI>();
