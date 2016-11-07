@@ -19,16 +19,27 @@ public class WallController : MonoBehaviour {
   public void ConnectWallPhysicsWithScoreTracker(ScoreTracker this_team, ScoreTracker other_team) {
     this_team_st = this_team;
     other_team_st = other_team;
+
+    //if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+    //  photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.Others, 0, 0);
+    //  photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.Others, 1, 0);
+    //}
   }
 
   public void ShredDetection(float y_pos) {
-    if (PhotonNetwork.isMasterClient) {
+    if (PhotonNetwork.connected) {
       if (y_pos > 0) {
-        other_team_st.AddScore();
-        photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.Others, 0, other_team_st.Score);
+        
+        if (PhotonNetwork.isMasterClient) {
+          other_team_st.AddScore();
+          photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.Others, 0, other_team_st.Score);
+        }
       } else {
-        this_team_st.AddScore();
-        photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.Others, 1, this_team_st.Score);
+        
+        if (PhotonNetwork.isMasterClient) {
+          this_team_st.AddScore();
+          photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.Others, 1, this_team_st.Score);
+        }
       }
     }
   }

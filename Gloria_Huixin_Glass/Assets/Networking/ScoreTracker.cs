@@ -13,11 +13,14 @@ public class ScoreTracker : MonoBehaviour {
   public int Score { get { return score; } }
   public Owner ScoreOwner { get { return owner; } }
 
+  bool game_has_started = false;
+
   public void SetOwner(Owner _owner) {
     photon_view = GetComponent<PhotonView>();
     text_mesh = GetComponent<TextMesh>();
     score = 0;
     owner = _owner;
+    game_has_started = false;
 
     switch (owner) {
       case Owner.this_team: text_mesh.text = "T0"; break;
@@ -35,13 +38,19 @@ public class ScoreTracker : MonoBehaviour {
   }
 
   public void AddScore() {
+    if (!game_has_started) { return; }
     score++;
     UpdateScoreDisplay();
   }
 
   public void SetScore(int s) {
+    if (!game_has_started) { return; }
     score = s;
     UpdateScoreDisplay();
+  }
+
+  public void SetGameHasStarted(bool val) {
+    game_has_started = val;
   }
 
   public void UpdateScoreDisplay() {

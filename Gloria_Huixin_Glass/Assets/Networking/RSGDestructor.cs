@@ -19,6 +19,9 @@ public class RSGDestructor : MonoBehaviour {
   }
 
   void Destroy() {
+    foreach (ScoreTracker st in GameObject.FindObjectsOfType<ScoreTracker>()) {
+      st.SetGameHasStarted(true);
+    }
     Destroy(gameObject);
   }
 }

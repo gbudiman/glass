@@ -133,14 +133,12 @@ public class GlassGameManager : Photon.PunBehaviour {
     if (!PhotonNetwork.connected) {
       Instantiate(powerup_spawner, new Vector3(0, 0, 0), Quaternion.identity);
     } else if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      print("instantiating...");
       PhotonNetwork.Instantiate(powerup_spawner.name, new Vector3(0, 0, 0), Quaternion.identity, 0);
     }
   }
 
   void InitializePowerUpBlock() {
     if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      //Instantiate(powerup_block_inverted, new Vector3(0, -11, 0), Quaternion.Euler(0,0,180));
       Instantiate(powerup_block, new Vector3(0, -11, 0), Quaternion.Euler(0, 0, 180));
     } else {
       Instantiate(powerup_block, new Vector3(0, 11, 0), Quaternion.identity);
@@ -153,7 +151,6 @@ public class GlassGameManager : Photon.PunBehaviour {
     if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
       UnInvertObject(connection_logger.gameObject);
     }
-    //connection_logger = g.GetComponent<ConnectionLogger>();
     connection_logger.SetTextMesh(connection_logger.GetComponent<TextMesh>());
   }
 
@@ -176,6 +173,7 @@ public class GlassGameManager : Photon.PunBehaviour {
     if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
       GameObject g = PhotonNetwork.Instantiate(walls_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0) as GameObject;
       g.GetComponent<WallController>().ConnectWallPhysicsWithScoreTracker(this_team_score_tracker, opposing_team_score_tracker);
+      //g.GetComponent<WallController>().InitializeScoresOvernetwork();
     } else if (!PhotonNetwork.connected) {
       GameObject g = Instantiate(walls_prefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
       g.GetComponent<WallController>().ConnectWallPhysicsWithScoreTracker(this_team_score_tracker, opposing_team_score_tracker);
