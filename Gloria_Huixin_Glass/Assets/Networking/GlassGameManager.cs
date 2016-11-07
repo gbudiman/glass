@@ -15,6 +15,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   public GameObject breakshot_prefab;
   public GameObject rsg_prefab;
   public GameObject safety_net_prefab;
+  public GameObject join_pack_prefab;
 
   PhotonView photon_view;
 
@@ -67,6 +68,17 @@ public class GlassGameManager : Photon.PunBehaviour {
     InitializeBreakshot();
     InitializeRSG();
     InitializeSafetyNet();
+    InitializeJoinPack();
+  }
+
+  void InitializeJoinPack() {
+    foreach (RoomNameInfo rmi in GameObject.FindObjectsOfType<RoomNameInfo>()) {
+      Destroy(rmi);
+    }
+
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient && PhotonNetwork.playerList.Length < 2) {
+      Instantiate(join_pack_prefab, new Vector3(-5, -8, 0), Quaternion.Euler(0, 0, 180));
+    }
   }
 
   void InitializeSafetyNet() {
