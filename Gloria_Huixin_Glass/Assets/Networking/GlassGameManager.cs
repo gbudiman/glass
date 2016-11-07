@@ -4,6 +4,10 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// Root object in multiplayer arena
+/// Spawns 
+/// </summary>
 public class GlassGameManager : Photon.PunBehaviour {
   public GameObject capsule_test_prefab;
   public GameObject walls_prefab;
@@ -53,15 +57,6 @@ public class GlassGameManager : Photon.PunBehaviour {
     InitializeWalls();
 
     InitializeConnectionLogger();
-    if (PhotonNetwork.connected) {
-      connection_logger.DisplayHosting();
-
-      if (PhotonNetwork.isMasterClient && PhotonNetwork.playerList.Length > 1) {
-        connection_logger.DisplayGuestConnected(PhotonNetwork.playerList[1].name);
-      } else if (!PhotonNetwork.isMasterClient && PhotonNetwork.playerList.Length > 1) {
-        connection_logger.DisplayGuesting(PhotonNetwork.playerList[0].name);
-      }
-    }
     InitializePowerUpBlock();
     InitializePowerUpSpawner();
     InitializePowerUpMeter();
@@ -152,6 +147,16 @@ public class GlassGameManager : Photon.PunBehaviour {
       UnInvertObject(connection_logger.gameObject);
     }
     connection_logger.SetTextMesh(connection_logger.GetComponent<TextMesh>());
+
+    if (PhotonNetwork.connected) {
+      connection_logger.DisplayHosting();
+
+      if (PhotonNetwork.isMasterClient && PhotonNetwork.playerList.Length > 1) {
+        connection_logger.DisplayGuestConnected(PhotonNetwork.playerList[1].name);
+      } else if (!PhotonNetwork.isMasterClient && PhotonNetwork.playerList.Length > 1) {
+        connection_logger.DisplayGuesting(PhotonNetwork.playerList[0].name);
+      }
+    }
   }
 
   /// <summary>
