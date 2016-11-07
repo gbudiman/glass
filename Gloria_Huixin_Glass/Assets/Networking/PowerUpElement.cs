@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class PowerUpElement : MonoBehaviour {
+  const float SUPERCHARGE_BASE_TIME = 5.0f;
   Animator animator;
   public enum PowerUpType { pu_triple_shot, pu_safety_net, pu_reinforced_glass, pu_supercharged_wall };
   public PowerUpType powerup_type;
@@ -95,9 +96,10 @@ public class PowerUpElement : MonoBehaviour {
     switch (swipe) {
       case GestureDetector.SwipeDirection.swipe_right:
         if (inversion) {
-          bouncer_left.IsSupercharged = true;
+          //bouncer_left.IsSupercharged = true;
+          bouncer_left.SetSupercharge(SUPERCHARGE_BASE_TIME);
         } else {
-          bouncer_right.IsSupercharged = true;
+          bouncer_right.SetSupercharge(SUPERCHARGE_BASE_TIME);
         }
 
         cdm.Activate();
@@ -105,9 +107,9 @@ public class PowerUpElement : MonoBehaviour {
         break;
       case GestureDetector.SwipeDirection.swipe_left:
         if (inversion) {
-          bouncer_right.IsSupercharged = true;
+          bouncer_right.SetSupercharge(SUPERCHARGE_BASE_TIME);
         } else {
-          bouncer_left.IsSupercharged = true;
+          bouncer_left.SetSupercharge(SUPERCHARGE_BASE_TIME);
         }
         powerup_meter.ExecuteSubtract(1);
         cdm.Activate();
