@@ -4,6 +4,9 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// GlassBall object
+/// </summary>
 public class GlassBall : Photon.PunBehaviour {
   WallController wcl;
   public const float INITIAL_MAGNITUDE_SCALER = 4000.0f;
@@ -29,6 +32,11 @@ public class GlassBall : Photon.PunBehaviour {
   Breakshot breakshot;
 
   bool normal_in_game_destruction = false;
+
+  /// <summary>
+  /// Informs that ball is destroyed normally by collision trigger
+  ///   or abnormally by unexpected disconnection/ragequit
+  /// </summary>
   public bool NormalInGameDestruction {
     set {
       normal_in_game_destruction = value;
@@ -49,6 +57,12 @@ public class GlassBall : Photon.PunBehaviour {
     TickPowerupAmount();
   }
 
+  /// <summary>
+  /// Set initial force on ball.
+  /// For testing purpose. Use SetInitialForce in production
+  /// </summary>
+  /// <param name="origin">Vector origin point</param>
+  /// <param name="target">Vector target point</param>
   public void SetNormalForce(Vector3 origin, Vector3 target) {
     rb = GetComponent<Rigidbody2D>();
     Vector3 movement_vector_normal;
@@ -58,16 +72,27 @@ public class GlassBall : Photon.PunBehaviour {
     rb.AddForce(movement_vector_normal * INITIAL_MAGNITUDE_SCALER);
   }
 
+  /// <summary>
+  /// Set initial force on ball.
+  /// </summary>
+  /// <param name="v">Supply normalized force. It will be scaled</param>
   public void SetInitialForce(Vector3 v) {
     rb = GetComponent<Rigidbody2D>();
     rb.AddForce(v * INITIAL_MAGNITUDE_SCALER);
   }
 
+  /// <summary>
+  /// Explicitly set velocity (NOT FORCE!) on ball
+  /// </summary>
+  /// <param name="velocity">Expected velocity</param>
   public void SetRigidBodyVelocity(Vector2 velocity) {
     rb = GetComponent<Rigidbody2D>();
     rb.velocity = velocity;
   }
 
+  /// <summary>
+  /// Set this ball to split into 3 balls
+  /// </summary>
   public void SetTripleShot() {
     Debug.Log("Triple Shot Armed");
     triple_shot = true;
@@ -81,9 +106,11 @@ public class GlassBall : Photon.PunBehaviour {
     if (normal_in_game_destruction) {
       breakshot.CheckEmptyArena();
     }
-    //print("Balls destroyed!!!");
   }
 
+  /// <summary>
+  /// Tick triple shot timer
+  /// </summary>
   void TickTripleShotTimer() {
     if (!triple_shot) { return; }
     triple_shot_countdown_timer -= Time.deltaTime;
@@ -102,6 +129,10 @@ public class GlassBall : Photon.PunBehaviour {
     }
   }
 
+  /// <summary>
+  /// Disable collision for a short period after 3-split
+  /// Use this function to tick down the timer
+  /// </summary>
   void TickColliderDisabler() {
     if (!box_collider_disabled) { return; }
 
@@ -112,6 +143,9 @@ public class GlassBall : Photon.PunBehaviour {
     }
   }
 
+  /// <summary>
+  /// Spawn ball with slight randomization in velocity
+  /// </summary>
   void CreateAnotherBall() {
     GameObject g;
     if (PhotonNetwork.connected) {
@@ -150,14 +184,14 @@ public class GlassBall : Photon.PunBehaviour {
   public void EnablePowerPickup(bool enabled) {
     is_picking_powerup = enabled;
 
-    if (!enabled) {
-      //Debug.Log("Pickup cleared");
-    } else {
+    if (enabled) { 
       rb = GetComponent<Rigidbody2D>();
-      //Debug.Log("Pickup started");
     }
   }
 
+  /// <summary>
+  /// Count the amount of time a ball is picking powerup
+  /// </summary>
   void TickPowerupAmount() {
     if (is_picking_powerup) {
       bool inverted = PhotonNetwork.connected && PhotonNetwork.isMasterClient;
@@ -165,20 +199,16 @@ public class GlassBall : Photon.PunBehaviour {
       if (!PhotonNetwork.connected || (PhotonNetwork.connected && PhotonNetwork.isMasterClient)) {
         if (rb.velocity.y > 0) {
           if (inverted) {
-            //Debug.Log("pickup for other");
             if (PhotonNetwork.connected) {
               photon_view.RPC("UpdatePowerUpMeterOverNetwork", PhotonTargets.Others);
             }
           } else {
-            //Debug.Log("pickup for me!");
             powerup_meter.Add();
           }
         } else {
           if (inverted) {
-            //Debug.Log("pickup for me");
             powerup_meter.Add();
           } else {
-            //Debug.Log("pickup for other");
             if (PhotonNetwork.connected) {
               photon_view.RPC("UpdatePowerUpMeterOverNetwork", PhotonTargets.Others);
             }

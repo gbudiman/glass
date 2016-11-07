@@ -6,26 +6,26 @@ public class WallController : MonoBehaviour {
   ScoreTracker other_team_st;
   PhotonView photon_view;
 
-  // Use this for initialization
   void Start () {
     photon_view = GetComponent<PhotonView>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
+  /// <summary>
+  /// Registers ScoreTracker to WallController
+  ///   so that WallController can detect when balls leave arena
+  /// </summary>
+  /// <param name="this_team"></param>
+  /// <param name="other_team"></param>
   public void ConnectWallPhysicsWithScoreTracker(ScoreTracker this_team, ScoreTracker other_team) {
     this_team_st = this_team;
     other_team_st = other_team;
-
-    //if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-    //  photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.Others, 0, 0);
-    //  photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.Others, 1, 0);
-    //}
   }
 
+  /// <summary>
+  /// Must be called by object being destroyed (e.g. GlassBall)
+  ///   to account score correctly
+  /// </summary>
+  /// <param name="y_pos">The position of the ball</param>
   public void ShredDetection(float y_pos) {
     if (PhotonNetwork.connected) {
       if (y_pos > 0) {
@@ -55,6 +55,10 @@ public class WallController : MonoBehaviour {
     }
   }
 
+  /// <summary>
+  /// For client, it may not be feasible to immediately bind ScoreTracker
+  ///   upon entering arena. This late binding resolves non-deterministic load order
+  /// </summary>
   void LateBindScoreTrackers() {
     Debug.Log("Lazy initialization of ScoreTracker");
     ScoreTracker[] sts = GameObject.FindObjectsOfType<ScoreTracker>();

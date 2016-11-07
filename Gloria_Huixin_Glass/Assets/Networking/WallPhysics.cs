@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Class that controls collision against walls
+/// </summary>
 public class WallPhysics : MonoBehaviour {
   public enum WallType { shredder_top, shredder_bottom, wall_left, wall_right };
   public WallType wall_type;
@@ -11,11 +14,6 @@ public class WallPhysics : MonoBehaviour {
 	void Start () {
 		obj_id = GetComponent<ObjectIdentifier> ();
     wall_controller = GetComponentInParent<WallController>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
@@ -39,17 +37,9 @@ public class WallPhysics : MonoBehaviour {
           PhotonNetwork.Destroy(other.gameObject);
         }
       }
-
-      
 		}
 	}
 
-
-
 	void OnCollisionEnter2D(Collision2D other) {
-		bool is_glass_ball = other.gameObject.GetComponents<CircleCollider2D> ().Length > 0;
-		if (is_glass_ball) {
-			//other.rigidbody.velocity;
-		}
 	}
 }
