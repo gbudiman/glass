@@ -3,7 +3,7 @@ using System.Collections;
 
 public class PowerUpElement : MonoBehaviour {
   Animator animator;
-  public enum PowerUpType { pu_triple_shot, pu_safety_net };
+  public enum PowerUpType { pu_triple_shot, pu_safety_net, pu_reinforced_glass, pu_supercharged_wall };
   public PowerUpType powerup_type;
   PowerUpUI powerup_ui;
   PowerupMeter powerup_meter;
@@ -15,6 +15,8 @@ public class PowerUpElement : MonoBehaviour {
       switch(powerup_type) {
         case PowerUpType.pu_triple_shot: return 0.75f;
         case PowerUpType.pu_safety_net: return 0.25f;
+        case PowerUpType.pu_supercharged_wall: return 0.25f;
+        case PowerUpType.pu_reinforced_glass: return 0.25f;
         default: return 0f;
       }
     }
@@ -35,6 +37,8 @@ public class PowerUpElement : MonoBehaviour {
     switch(powerup_type) {
       case PowerUpType.pu_triple_shot: cdm.BaseCooldown = 10.0f; break;
       case PowerUpType.pu_safety_net: cdm.BaseCooldown = 20.0f; break;
+      case PowerUpType.pu_supercharged_wall: cdm.BaseCooldown = 5.0f; break;
+      case PowerUpType.pu_reinforced_glass: cdm.BaseCooldown = 1.0f; break;
     }
   }
 	
