@@ -8,6 +8,7 @@ public class Launcher : Photon.PunBehaviour {
   public PhotonLogLevel log_level = PhotonLogLevel.ErrorsOnly;
   public GameObject progress_label;
   public GameObject input_field_object;
+  Text progress_text;
 
   bool is_connecting;
   bool is_hosting;
@@ -19,6 +20,7 @@ public class Launcher : Photon.PunBehaviour {
     PhotonNetwork.logLevel = log_level;
     PhotonNetwork.autoJoinLobby = false;
     PhotonNetwork.automaticallySyncScene = true;
+    progress_text = progress_label.GetComponent<Text>();
   }
 
   void Update() {
@@ -28,16 +30,16 @@ public class Launcher : Photon.PunBehaviour {
 	// Use this for initialization
 	void Start () {
     Screen.SetResolution(450, 800, false);
-    progress_label.SetActive(false);
 	}
 	
   public void Connect() {
     is_hosting = false;
     is_connecting = true;
-    progress_label.SetActive(true);
+
     if (PhotonNetwork.connected) {
       PhotonNetwork.JoinRandomRoom();
     } else {
+      progress_text.text = "Connecting to server...";
       PhotonNetwork.ConnectUsingSettings(game_version);
     }
   }
@@ -47,21 +49,39 @@ public class Launcher : Photon.PunBehaviour {
     is_connecting = true;
     progress_label.SetActive(true);
 
-    PhotonNetwork.ConnectUsingSettings(game_version);
+    if (PhotonNetwork.connected) {
+      CreateHostRoom();
+    } else {
+      NotifyIsConnecting();
+      PhotonNetwork.ConnectUsingSettings(game_version);
+    } 
+  }
+
+  void CreateHostRoom() {
+    string room_name = input_field_object.GetComponent<InputField>().text;
+    progress_text.text = "Creating host room " + room_name + "...";
+    PhotonNetwork.CreateRoom(room_name, new RoomOptions() { MaxPlayers = 2, IsVisible = true }, null);
+  }
+
+  void JoinRoom() {
+    progress_text.text = "Attempting to join room " + join_room_name + "...";
+    PhotonNetwork.JoinRoom(join_room_name);
+  }
+
+  void NotifyIsConnecting() {
+    progress_text.text = "Connecting to server...";
   }
 
   public override void OnConnectedToMaster() {
     //base.OnConnectedToMaster();
     if (is_connecting) {
       if (!is_hosting && !is_joining_by_name) {
+        progress_text.text = "Finding random room...";
         PhotonNetwork.JoinRandomRoom();
       } else if (!is_hosting && is_joining_by_name) {
-        print("Attempting to join room: " + join_room_name);
-        PhotonNetwork.JoinRoom(join_room_name);
+        JoinRoom();
       } else {
-        string room_name = input_field_object.GetComponent<InputField>().text;
-        Debug.Log("Room name: " + room_name);
-        PhotonNetwork.CreateRoom(room_name, new RoomOptions() { MaxPlayers = 2, IsVisible = true }, null);
+        CreateHostRoom();
       }
     }
   }
@@ -70,7 +90,7 @@ public class Launcher : Photon.PunBehaviour {
     //base.OnPhotonRandomJoinFailed(codeAndMsg);
 
     string room_name = input_field_object.GetComponent<InputField>().text;
-    print("No random room available, creating one...");
+    progress_text.text = "No random room available, creating one...";
     PhotonNetwork.CreateRoom(room_name, new RoomOptions() { MaxPlayers = 2, IsVisible = true }, null);
   }
 
@@ -91,9 +111,9 @@ public class Launcher : Photon.PunBehaviour {
 
   public override void OnPhotonJoinRoomFailed(object[] codeAndMsg) {
     if (is_joining_by_name) {
-      print("Failed to join room: " + join_room_name);
+      progress_text.text = "Failed to join room: " + join_room_name + "\n";
       foreach(object cmsg in codeAndMsg) {
-        print(cmsg.ToString());
+        progress_text.text += cmsg.ToString() + " ";
       }
     }
   }
@@ -102,7 +122,10 @@ public class Launcher : Photon.PunBehaviour {
     is_connecting = true;
     is_joining_by_name = true;
     join_room_name = g.GetComponent<InputField>().text;
-    if (!PhotonNetwork.connected) {
+    if (PhotonNetwork.connected) {
+      JoinRoom();
+    } else {
+      NotifyIsConnecting();
       PhotonNetwork.ConnectUsingSettings(game_version);
     }
   }
