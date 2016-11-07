@@ -9,12 +9,36 @@ public class WallPhysics : MonoBehaviour {
   public WallType wall_type;
   WallController wall_controller;
 	ObjectIdentifier obj_id;
+  bool is_supercharged = false;
+
+  const float SUPERCHARGE_BASE = 5.0f;
+  float supercharge_timer;
+
+  public bool IsSupercharged {
+    set {
+      is_supercharged = value;
+      supercharge_timer = SUPERCHARGE_BASE;
+    }
+  }
   
 	// Use this for initialization
 	void Start () {
 		obj_id = GetComponent<ObjectIdentifier> ();
     wall_controller = GetComponentInParent<WallController>();
 	}
+
+  void Update() {
+    TickSupercharge();
+  }
+
+  void TickSupercharge() {
+    if (!is_supercharged) { return; }
+    supercharge_timer -= Time.deltaTime;
+
+    if (supercharge_timer < 0) {
+      is_supercharged = false;
+    }
+  }
 
 	void OnTriggerEnter2D(Collider2D other) {
 		bool is_glass_ball = other.GetComponents<CircleCollider2D> ().Length > 0;
@@ -40,6 +64,11 @@ public class WallPhysics : MonoBehaviour {
 		}
 	}
 
-	void OnCollisionEnter2D(Collision2D other) {
-	}
+	void OnCollisionExit2D(Collision2D other) {
+    bool is_glass_ball = other.gameObject.GetComponents<CircleCollider2D>().Length > 0;
+    if (is_glass_ball && is_supercharged) {
+      Rigidbody2D rb = other.gameObject.GetComponent<Rigidbody2D>();
+      rb.velocity *= 2.5f;
+    }
+  }
 }

@@ -9,6 +9,10 @@ public class PowerUpElement : MonoBehaviour {
   PowerupMeter powerup_meter;
   KeyboardController kbc;
   CooldownMeter cdm;
+  GestureDetector gd;
+
+  WallPhysics bouncer_left;
+  WallPhysics bouncer_right;
 
   public float PowerRequirement {
     get {
@@ -27,8 +31,19 @@ public class PowerUpElement : MonoBehaviour {
     animator = GetComponentInChildren<Animator>();
     powerup_ui = transform.parent.GetComponentInChildren<PowerUpUI>();
     powerup_meter = GameObject.FindObjectOfType<PowerupMeter>();
+    gd = GameObject.FindObjectOfType<GestureDetector>();
     InitializeCooldownMeter();
+    InitializeBouncers();
 	}
+
+  void InitializeBouncers() {
+    foreach(WallPhysics wp in GameObject.FindObjectsOfType<WallPhysics>()) {
+      switch (wp.wall_type) {
+        case WallPhysics.WallType.wall_left: bouncer_left = wp; break;
+        case WallPhysics.WallType.wall_right: bouncer_right = wp; break;
+      }
+    }
+  }
 
   void InitializeCooldownMeter() {
     cdm = GetComponentInChildren<CooldownMeter>();
@@ -37,7 +52,7 @@ public class PowerUpElement : MonoBehaviour {
     switch(powerup_type) {
       case PowerUpType.pu_triple_shot: cdm.BaseCooldown = 10.0f; break;
       case PowerUpType.pu_safety_net: cdm.BaseCooldown = 20.0f; break;
-      case PowerUpType.pu_supercharged_wall: cdm.BaseCooldown = 5.0f; break;
+      case PowerUpType.pu_supercharged_wall: cdm.BaseCooldown = 10.0f; break;
       case PowerUpType.pu_reinforced_glass: cdm.BaseCooldown = 1.0f; break;
     }
   }
@@ -62,8 +77,44 @@ public class PowerUpElement : MonoBehaviour {
           cdm.Activate();
         }
         break;
+      case PowerUpType.pu_supercharged_wall:
+        if (CheckPrerequisite()) {
+          gd.WaitForSwipe(this);
+        }
+        break;
     }
     powerup_ui.ToggleVisibility();
+  }
+
+  public void OnSwipeDetected(GestureDetector.SwipeDirection swipe) {
+    if (bouncer_left == null) {
+      InitializeBouncers();
+    }
+
+    bool inversion = PhotonNetwork.connected && PhotonNetwork.isMasterClient;
+    switch (swipe) {
+      case GestureDetector.SwipeDirection.swipe_right:
+        if (inversion) {
+          bouncer_left.IsSupercharged = true;
+        } else {
+          bouncer_right.IsSupercharged = true;
+        }
+
+        cdm.Activate();
+        powerup_meter.ExecuteSubtract(1);
+        break;
+      case GestureDetector.SwipeDirection.swipe_left:
+        if (inversion) {
+          bouncer_right.IsSupercharged = true;
+        } else {
+          bouncer_left.IsSupercharged = true;
+        }
+        powerup_meter.ExecuteSubtract(1);
+        cdm.Activate();
+        break;
+      default:
+        break;
+    }
   }
 
   bool CheckPrerequisite() {
