@@ -37,6 +37,7 @@ public class Launcher : Photon.PunBehaviour {
     is_connecting = true;
 
     if (PhotonNetwork.connected) {
+      progress_text.text = "Finding random room...";
       PhotonNetwork.JoinRandomRoom();
     } else {
       progress_text.text = "Connecting to server...";
@@ -86,6 +87,8 @@ public class Launcher : Photon.PunBehaviour {
     }
   }
 
+  
+
   public override void OnPhotonRandomJoinFailed(object[] codeAndMsg) {
     //base.OnPhotonRandomJoinFailed(codeAndMsg);
 
@@ -115,6 +118,13 @@ public class Launcher : Photon.PunBehaviour {
       foreach(object cmsg in codeAndMsg) {
         progress_text.text += cmsg.ToString() + " ";
       }
+    }
+  }
+
+  public override void OnPhotonCreateRoomFailed(object[] codeAndMsg) {
+    progress_text.text = "Failed to create room: " + join_room_name + "\n";
+    foreach (object cmsg in codeAndMsg) {
+      progress_text.text += cmsg.ToString() + " ";
     }
   }
 
