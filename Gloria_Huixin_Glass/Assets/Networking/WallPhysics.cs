@@ -22,6 +22,7 @@ public class WallPhysics : MonoBehaviour {
 		bool is_glass_ball = other.GetComponents<CircleCollider2D> ().Length > 0;
 		if (is_glass_ball) {
       if (!PhotonNetwork.connected) {
+        other.GetComponent<GlassBall>().NormalInGameDestruction = true;
         Destroy(other.gameObject);
       } else {
         // This is not a reliable way to detect score increment
@@ -34,6 +35,7 @@ public class WallPhysics : MonoBehaviour {
         // However, it adds overhead because it needs to find
         // WallController reference
         if (other.GetComponent<PhotonView>().isMine) {
+          other.GetComponent<GlassBall>().NormalInGameDestruction = true;
           PhotonNetwork.Destroy(other.gameObject);
         }
       }

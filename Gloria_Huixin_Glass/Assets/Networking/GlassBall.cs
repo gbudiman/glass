@@ -28,6 +28,13 @@ public class GlassBall : Photon.PunBehaviour {
   PhotonView photon_view;
   Breakshot breakshot;
 
+  bool normal_in_game_destruction = false;
+  public bool NormalInGameDestruction {
+    set {
+      normal_in_game_destruction = value;
+    }
+  }
+
   void Start() {
     powerup_meter = GameObject.FindObjectOfType<PowerupMeter>();
     movement_vector_scaler = INITIAL_MAGNITUDE_SCALER;
@@ -70,7 +77,10 @@ public class GlassBall : Photon.PunBehaviour {
 
   void OnDestroy() {
     wcl.ShredDetection(transform.position.y);
-    breakshot.CheckEmptyArena();
+
+    if (normal_in_game_destruction) {
+      breakshot.CheckEmptyArena();
+    }
     //print("Balls destroyed!!!");
   }
 
