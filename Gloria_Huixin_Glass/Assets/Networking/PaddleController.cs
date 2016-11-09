@@ -8,14 +8,24 @@ public class PaddleController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
     photon_view = GetComponent<PhotonView>();
-    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      GetComponent<BoxCollider2D>().enabled = true;
-    }
+    //if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+    //  GetComponent<BoxCollider2D>().enabled = true;
+    //}
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	}
+
+  public void EnableCollider() {
+    GetComponent<BoxCollider2D>().enabled = true;
+    photon_view.RPC("EnableColliderOverNetwork", PhotonTargets.Others);
+  }
+
+  [PunRPC]
+  void EnableColliderOverNetwork() {
+    GetComponent<BoxCollider2D>().enabled = true;
+  }
 
   public void SetReflectivity(float value) {
     reflectivity = value;

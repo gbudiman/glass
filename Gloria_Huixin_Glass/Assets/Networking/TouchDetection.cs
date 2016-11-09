@@ -115,11 +115,8 @@ public class TouchDetection: MonoBehaviour {
 
       if (on_release) {
         //print("Distance = " + distance);
-        
         float reflectivity = ComputeReflectivity(distance);
-        //if (!PhotonNetwork.connected || PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-        //  mSquareSet[mSquareSet.Count - 1].GetComponent<BoxCollider2D>().enabled = true;
-        //}
+        mSquareSet[mSquareSet.Count - 1].GetComponent<PaddleController>().EnableCollider();
         mSquareSet[mSquareSet.Count - 1].GetComponent<PaddleController>().SetReflectivity(reflectivity);
       }
     }
