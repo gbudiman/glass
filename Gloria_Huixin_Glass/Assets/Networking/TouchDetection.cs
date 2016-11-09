@@ -16,16 +16,20 @@ public class TouchDetection: MonoBehaviour {
 	float topBoundaryY = -3.3f;
 	float bottomBoundaryY = -10.14f;
 
-
-
-
-
 	// Use this for initialization
 	void Start () {
 		
 		mSquareSet = new List<GameObject>();
-		
+    SetDrawingArea();
 	}
+
+  void SetDrawingArea() {
+    // invert for host
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      topBoundaryY = -bottomBoundaryY;
+      bottomBoundaryY = -topBoundaryY;
+    }
+  }
 	
 	// Update is called once per frame
 	void Update () {
