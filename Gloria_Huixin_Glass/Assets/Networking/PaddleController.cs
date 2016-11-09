@@ -2,8 +2,8 @@
 using System.Collections;
 
 public class PaddleController : MonoBehaviour {
-	int hitPoint = 0;
-	public int destroyPoint = 2;
+	
+
 
 
 	// Use this for initialization
@@ -24,11 +24,7 @@ public class PaddleController : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D coll) 
 	{
-		hitPoint++;
-		Debug.Log("Collide!" +hitPoint);
-		if(hitPoint == destroyPoint)
-		{
-			Destroy(this);
-		}
+		Destroy(gameObject);
+
 	}
 }

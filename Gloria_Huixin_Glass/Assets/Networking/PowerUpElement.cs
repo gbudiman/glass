@@ -98,8 +98,10 @@ public class PowerUpElement : MonoBehaviour {
         if (inversion) {
           //bouncer_left.IsSupercharged = true;
           bouncer_left.SetSupercharge(SUPERCHARGE_BASE_TIME);
+				bouncer_left.ChangeColor();
         } else {
           bouncer_right.SetSupercharge(SUPERCHARGE_BASE_TIME);
+				bouncer_right.ChangeColor();
         }
 
         cdm.Activate();
@@ -108,8 +110,10 @@ public class PowerUpElement : MonoBehaviour {
       case GestureDetector.SwipeDirection.swipe_left:
         if (inversion) {
           bouncer_right.SetSupercharge(SUPERCHARGE_BASE_TIME);
+				bouncer_right.ChangeColor();
         } else {
           bouncer_left.SetSupercharge(SUPERCHARGE_BASE_TIME);
+				bouncer_left.ChangeColor();
         }
         powerup_meter.ExecuteSubtract(1);
         cdm.Activate();
