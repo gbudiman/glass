@@ -155,9 +155,16 @@ public class GlassGameManager : Photon.PunBehaviour {
       connection_logger.DisplayHosting();
 
       if (PhotonNetwork.isMasterClient && PhotonNetwork.playerList.Length > 1) {
-        connection_logger.DisplayGuestConnected(PhotonNetwork.playerList[1].name);
+        PhotonPlayer[] other_players = PhotonNetwork.otherPlayers;
+        string player_lists_concatenation = "";
+        foreach (PhotonPlayer o_p in other_players) {
+          player_lists_concatenation += o_p.name + ", ";
+        }
+
+        player_lists_concatenation = player_lists_concatenation.Substring(0, player_lists_concatenation.Length - 2);
+        connection_logger.DisplayGuestConnected(player_lists_concatenation);
       } else if (!PhotonNetwork.isMasterClient && PhotonNetwork.playerList.Length > 1) {
-        connection_logger.DisplayGuesting(PhotonNetwork.playerList[0].name);
+        connection_logger.DisplayGuesting(PhotonNetwork.masterClient.name);
       }
     }
   }

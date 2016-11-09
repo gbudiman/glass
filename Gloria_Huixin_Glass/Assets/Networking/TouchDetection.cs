@@ -44,6 +44,7 @@ public class TouchDetection: MonoBehaviour {
 		{
 			firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			firstTouchPosition.z += 5f;
+      print(firstTouchPosition);
 			if(firstTouchPosition.x > leftBoundaryX && firstReleasePosition.x < rightBoundaryX && 
 				firstTouchPosition.y <topBoundaryY && firstTouchPosition.y > bottomBoundaryY)
 			{

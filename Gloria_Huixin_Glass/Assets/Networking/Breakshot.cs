@@ -63,8 +63,6 @@ public class Breakshot : MonoBehaviour {
     init_vector_0 = q * init_vector_0;
     init_vector_1 = q * init_vector_1;
 
-    print(init_vector_0);
-
     g0.GetComponent<GlassBall>().SetInitialForce(init_vector_0);
     g1.GetComponent<GlassBall>().SetInitialForce(init_vector_1);
   }
