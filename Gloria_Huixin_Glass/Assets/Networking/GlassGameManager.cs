@@ -50,6 +50,7 @@ public class GlassGameManager : Photon.PunBehaviour {
 		//	Instantiate(capsule_test_prefab, new Vector3 (0, 0, 0), Quaternion.identity);
 		//}
 
+		CleanUpBalls ();
     InitializeCamera();
 
     // ScoreTrackers must be instantiated BEFORE Walls
@@ -65,6 +66,12 @@ public class GlassGameManager : Photon.PunBehaviour {
     InitializeSafetyNet();
     InitializeJoinPack();
   }
+
+	void CleanUpBalls() {
+		foreach (GlassBall ball in GameObject.FindObjectsOfType<GlassBall>()) {
+			Destroy (ball);
+		}
+	}
 
   void InitializeJoinPack() {
     foreach (RoomNameInfo rmi in GameObject.FindObjectsOfType<RoomNameInfo>()) {
