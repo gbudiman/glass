@@ -3,6 +3,7 @@ using System.Collections;
 
 public class GestureDetector : MonoBehaviour {
   public enum SwipeDirection { swipe_left, swipe_right, swipe_up, swipe_down, no_swipe }
+  TouchDetection touch_detection;
   float last_click;
   float click_pos_x;
 
@@ -15,7 +16,7 @@ public class GestureDetector : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+    touch_detection = GameObject.FindObjectOfType<TouchDetection>();
 	}
 
   void OnMouseDown() {
@@ -47,6 +48,7 @@ public class GestureDetector : MonoBehaviour {
     if (swipe_queued && swipe != SwipeDirection.no_swipe) {
       //print("on callback");
       pel.OnSwipeDetected(swipe);
+      touch_detection.DisableForNextGesture(false);
       swipe_queued = false;
     }
   }
@@ -62,5 +64,6 @@ public class GestureDetector : MonoBehaviour {
   public void WaitForSwipe(PowerUpElement _pel) {
     pel = _pel;
     swipe_queued = true;
+    touch_detection.DisableForNextGesture(true);
   }
 }

@@ -25,6 +25,10 @@ public class TouchDetection: MonoBehaviour {
     SetDrawingArea();
 	}
 
+  public void DisableForNextGesture(bool value) {
+    temporarily_disabled = value;
+  }
+
   void SetDrawingArea() {
     // invert for host
     if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
@@ -35,6 +39,7 @@ public class TouchDetection: MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+    if (temporarily_disabled) { return; }
 		if(Input.GetMouseButtonDown(0))//click
 		{
 			firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);

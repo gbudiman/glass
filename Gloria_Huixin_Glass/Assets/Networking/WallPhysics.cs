@@ -5,6 +5,7 @@ using System.Collections;
 /// Class that controls collision against walls
 /// </summary>
 public class WallPhysics : MonoBehaviour {
+  const bool IS_SUPERCHARGED = true;
   public enum WallType { shredder_top, shredder_bottom, wall_left, wall_right };
   public WallType wall_type;
   WallController wall_controller;
@@ -18,6 +19,7 @@ public class WallPhysics : MonoBehaviour {
     is_supercharged = true;
     supercharge_timer = val;
     photon_view.RPC("SendSupercharge", PhotonTargets.Others, val);
+    ChangeColor(IS_SUPERCHARGED);
   }
 
   [PunRPC]
@@ -44,6 +46,7 @@ public class WallPhysics : MonoBehaviour {
 
     if (supercharge_timer < 0) {
       is_supercharged = false;
+      ChangeColor(!IS_SUPERCHARGED);
     }
   }
 
@@ -81,11 +84,8 @@ public class WallPhysics : MonoBehaviour {
 
 
 
-	public void ChangeColor()
-	{
+	public void ChangeColor(bool is_supercharged) {
 		Debug.Log("change color");
-		gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
-
-		
+		gameObject.GetComponent<MeshRenderer>().material.color = is_supercharged ? Color.red : Color.white;
 	}
 }
