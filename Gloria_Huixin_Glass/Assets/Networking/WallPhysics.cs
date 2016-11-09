@@ -31,6 +31,7 @@ public class WallPhysics : MonoBehaviour {
     photon_view = GetComponent<PhotonView>();
 		obj_id = GetComponent<ObjectIdentifier> ();
     wall_controller = GetComponentInParent<WallController>();
+
 	}
 
   void Update() {
@@ -77,4 +78,14 @@ public class WallPhysics : MonoBehaviour {
       rb.velocity *= 2.5f;
     }
   }
+
+
+
+	public void ChangeColor()
+	{
+		Debug.Log("change color");
+		gameObject.GetComponent<MeshRenderer>().material.color = Color.red;
+
+		
+	}
 }
