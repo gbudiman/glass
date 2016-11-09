@@ -12,7 +12,6 @@ public class WallPhysics : MonoBehaviour {
   public bool is_supercharged = false;
   PhotonView photon_view;
 
-  const float SUPERCHARGE_BASE = 10.0f;
   float supercharge_timer;
 
   public void SetSupercharge(float val) {
