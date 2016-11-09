@@ -3,11 +3,12 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class Launcher : Photon.PunBehaviour {
-  const string game_version = "0.1";
+  public string game_version = "Alpha Build 0.61";
 
   public PhotonLogLevel log_level = PhotonLogLevel.ErrorsOnly;
   public GameObject progress_label;
   public GameObject input_field_object;
+  public GameObject version_info;
   Text progress_text;
 
   bool is_connecting;
@@ -21,6 +22,7 @@ public class Launcher : Photon.PunBehaviour {
     PhotonNetwork.autoJoinLobby = false;
     PhotonNetwork.automaticallySyncScene = true;
     progress_text = progress_label.GetComponent<Text>();
+    version_info.GetComponent<Text>().text = "Glass | " + game_version;
   }
 
   void Update() {
