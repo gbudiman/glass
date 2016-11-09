@@ -19,12 +19,7 @@ public class Breakshot : MonoBehaviour {
   }
 
   void Update() {
-    TickRotation();
     TickPracticeArena();
-  }
-
-  void TickRotation() {
-    transform.Rotate(0, 0, 2);
   }
 
   void TickPracticeArena() {
@@ -64,7 +59,7 @@ public class Breakshot : MonoBehaviour {
     //Quaternion.Euler(0, 0, Time.time);
     //Quaternion.Euler()
 
-    Quaternion q = Quaternion.Euler(0, 0, Time.time * 10);
+    Quaternion q = Quaternion.Euler(0, 0, 0);//Time.time * 10);
     init_vector_0 = q * init_vector_0;
     init_vector_1 = q * init_vector_1;
 

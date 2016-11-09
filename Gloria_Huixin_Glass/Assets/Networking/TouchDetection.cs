@@ -110,13 +110,28 @@ public class TouchDetection: MonoBehaviour {
 
 			//scale
 			distance = Vector3.Distance(firstReleasePosition, firstTouchPosition);
-			mSquareSet[mSquareSet.Count-1].transform.localScale = new Vector3(distance, 0.3f, 0);
+			mSquareSet[mSquareSet.Count-1].transform.localScale = new Vector3(distance, 0.2f, 0);
 
       if (on_release) {
-        mSquareSet[mSquareSet.Count - 1].GetComponent<BoxCollider2D>().enabled = true;
+        //print("Distance = " + distance);
+        
+        float reflectivity = ComputeReflectivity(distance);
+        //if (!PhotonNetwork.connected || PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+        //  mSquareSet[mSquareSet.Count - 1].GetComponent<BoxCollider2D>().enabled = true;
+        //}
+        mSquareSet[mSquareSet.Count - 1].GetComponent<PaddleController>().SetReflectivity(reflectivity);
       }
     }
 	}
+
+  float ComputeReflectivity(float distance) {
+    float max_dist = 12;
+    float inverted_distance = max_dist - distance;
+    float max_refl = 2.25f;
+    float min_refl = 0.75f;
+
+    return inverted_distance / max_dist * (max_refl - min_refl) + min_refl;
+  }
 
 }
 
