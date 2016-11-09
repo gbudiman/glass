@@ -32,23 +32,23 @@ public class GlassGameManager : Photon.PunBehaviour {
     Screen.SetResolution(450, 800, false);
     photon_view = GetComponent<PhotonView>();
 
-		if (PhotonNetwork.connected) {
-			if (PlayerManager.local_player_instance == null) {
-				print ("attempting to create capsule object ...");
+		//if (PhotonNetwork.connected) {
+		//	if (PlayerManager.local_player_instance == null) {
+		//		print ("attempting to create capsule object ...");
 
-				// Controls must be inverted as well, not just camera
-				GameObject capsule = PhotonNetwork.Instantiate (capsule_test_prefab.name, new Vector3 (0, 0, 0), Quaternion.identity, 0) as GameObject;
-				if (PhotonNetwork.isMasterClient) {
-					capsule.GetComponent<KeyboardController> ().is_inverted = true;
-				}
-			} else {
-				print ("ignoring scene load");
-			}
+		//		// Controls must be inverted as well, not just camera
+		//		GameObject capsule = PhotonNetwork.Instantiate (capsule_test_prefab.name, new Vector3 (0, 0, 0), Quaternion.identity, 0) as GameObject;
+		//		if (PhotonNetwork.isMasterClient) {
+		//			capsule.GetComponent<KeyboardController> ().is_inverted = true;
+		//		}
+		//	} else {
+		//		print ("ignoring scene load");
+		//	}
 
-		} else {
-      // For single-player testing
-			Instantiate(capsule_test_prefab, new Vector3 (0, 0, 0), Quaternion.identity);
-		}
+		//} else {
+  //    // For single-player testing
+		//	Instantiate(capsule_test_prefab, new Vector3 (0, 0, 0), Quaternion.identity);
+		//}
 
     InitializeCamera();
 
@@ -109,10 +109,13 @@ public class GlassGameManager : Photon.PunBehaviour {
     Breakshot preexisting = GameObject.FindObjectOfType<Breakshot>();
     if (preexisting) { Destroy(preexisting); }
 
+
     if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      PhotonNetwork.Instantiate(breakshot_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0);
+      GameObject g = PhotonNetwork.Instantiate(breakshot_prefab.name, new Vector3(0, 0, 0), Quaternion.identity, 0) as GameObject;
+      g.GetComponent<Breakshot>().IsPracticeArena = PhotonNetwork.playerList.Length < 2;
     } else {
-      Instantiate(breakshot_prefab, new Vector3(0, 0, 0), Quaternion.identity);
+      GameObject g = Instantiate(breakshot_prefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+      g.GetComponent<Breakshot>().IsPracticeArena = true;
     }
   }
 

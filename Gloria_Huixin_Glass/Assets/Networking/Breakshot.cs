@@ -8,8 +8,35 @@ using System.Collections;
 ///   Breakshot should then "seed" balls when necessary.
 /// </summary>
 public class Breakshot : MonoBehaviour {
+  const float practice_trigger_base_interval = 1.0f;
   public GameObject glass_ball_prefab;
+  bool is_practice_arena = false;
 
+  float practice_trigger;
+
+  void Start() {
+    practice_trigger = practice_trigger_base_interval;
+  }
+
+  void Update() {
+    TickPracticeArena();
+  }
+
+  void TickPracticeArena() {
+    if (!is_practice_arena) { return; }
+
+    practice_trigger -= Time.deltaTime;
+
+    if (practice_trigger < 0) {
+      practice_trigger = practice_trigger_base_interval;
+      Trigger();
+    }
+  }
+
+  public bool IsPracticeArena {
+    get { return is_practice_arena; }
+    set { is_practice_arena = value; }
+  }
   /// <summary>
   /// Launch ball at same speed, one in 135-degrees and another in 315-degrees direction
   /// This is the seed functionality

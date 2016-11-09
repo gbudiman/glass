@@ -85,7 +85,10 @@ public class TouchDetection: MonoBehaviour {
 	{
 		if(i==0)
 		{
-			mSquareSet.Add((GameObject) Instantiate(squarePrefab, firstTouchPosition, Quaternion.identity));
+      GameObject g = PhotonNetwork.Instantiate(squarePrefab.name, firstTouchPosition, Quaternion.identity, 0) as GameObject;
+      mSquareSet.Add(g);
+
+      //mSquareSet.Add((GameObject) Instantiate(squarePrefab, firstTouchPosition, Quaternion.identity));
 		}else
 		{
 			//rotate
@@ -98,7 +101,6 @@ public class TouchDetection: MonoBehaviour {
 			mSquareSet[mSquareSet.Count-1].transform.localScale = new Vector3(distance, 0.3f, 0);
 		}
 	}
-
 
 }
 
