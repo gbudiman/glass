@@ -32,8 +32,8 @@ public class TouchDetection: MonoBehaviour {
   void SetDrawingArea() {
     // invert for host
     if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      topBoundaryY = -bottomBoundaryY;
-      bottomBoundaryY = -topBoundaryY;
+      topBoundaryY = 10.14f;
+      bottomBoundaryY = 3.3f;
     }
   }
 	
@@ -44,7 +44,7 @@ public class TouchDetection: MonoBehaviour {
 		{
 			firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			firstTouchPosition.z += 5f;
-      print(firstTouchPosition);
+      print(firstTouchPosition + " within bounds " + topBoundaryY + " / " + bottomBoundaryY);
 			if(firstTouchPosition.x > leftBoundaryX && firstReleasePosition.x < rightBoundaryX && 
 				firstTouchPosition.y <topBoundaryY && firstTouchPosition.y > bottomBoundaryY)
 			{

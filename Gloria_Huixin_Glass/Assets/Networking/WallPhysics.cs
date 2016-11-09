@@ -15,17 +15,20 @@ public class WallPhysics : MonoBehaviour {
 
   float supercharge_timer;
 
-  public void SetSupercharge(float val) {
+  public void SetSupercharge(float val, bool is_request_from_network = false) {
     is_supercharged = true;
     supercharge_timer = val;
-    photon_view.RPC("SendSupercharge", PhotonTargets.Others, val);
-    ChangeColor(IS_SUPERCHARGED);
+
+    if (!is_request_from_network) {
+      photon_view.RPC("SendSupercharge", PhotonTargets.Others, val);
+      ChangeColor(IS_SUPERCHARGED);
+    }
   }
 
   [PunRPC]
   public void SendSupercharge(float val) {
     print("Received RPC to supercharge " + name);
-    SetSupercharge(val);
+    SetSupercharge(val, true);
   }
   
 	// Use this for initialization
@@ -45,6 +48,7 @@ public class WallPhysics : MonoBehaviour {
     supercharge_timer -= Time.deltaTime;
 
     if (supercharge_timer < 0) {
+      print("discharged");
       is_supercharged = false;
       ChangeColor(!IS_SUPERCHARGED);
     }
