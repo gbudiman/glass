@@ -19,7 +19,12 @@ public class Breakshot : MonoBehaviour {
   }
 
   void Update() {
+    TickRotation();
     TickPracticeArena();
+  }
+
+  void TickRotation() {
+    transform.Rotate(0, 0, 2);
   }
 
   void TickPracticeArena() {
@@ -53,8 +58,20 @@ public class Breakshot : MonoBehaviour {
       g1 = Instantiate(glass_ball_prefab, new Vector3(-1, -1, 0), Quaternion.identity) as GameObject;
     }
 
-    g0.GetComponent<GlassBall>().SetInitialForce(new Vector3(+1/Mathf.Sqrt(2), -1/Mathf.Sqrt(2), 0));
-    g1.GetComponent<GlassBall>().SetInitialForce(new Vector3(-1/Mathf.Sqrt(2), +1/Mathf.Sqrt(2), 0));
+    Vector3 init_vector_0 = new Vector3(+1 / Mathf.Sqrt(2), -1 / Mathf.Sqrt(2), 0);
+    Vector3 init_vector_1 = new Vector3(-1 / Mathf.Sqrt(2), +1 / Mathf.Sqrt(2), 0);
+
+    //Quaternion.Euler(0, 0, Time.time);
+    //Quaternion.Euler()
+
+    Quaternion q = Quaternion.Euler(0, 0, Time.time * 10);
+    init_vector_0 = q * init_vector_0;
+    init_vector_1 = q * init_vector_1;
+
+    print(init_vector_0);
+
+    g0.GetComponent<GlassBall>().SetInitialForce(init_vector_0);
+    g1.GetComponent<GlassBall>().SetInitialForce(init_vector_1);
   }
 
   /// <summary>

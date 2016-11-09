@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class TouchDetection: MonoBehaviour {
-
+  const bool ON_RELEASE = true;
 	Vector3 firstTouchPosition;
 	Vector3 firstReleasePosition;
 	float distance;
@@ -11,10 +11,12 @@ public class TouchDetection: MonoBehaviour {
 	float angle;
 	List<GameObject> mSquareSet;
 	[SerializeField] GameObject squarePrefab;
-	float leftBoundaryX = -5.7f;
-	float rightBoundaryX = 5.7f;
+	float leftBoundaryX = -7f;
+	float rightBoundaryX = 7f;
 	float topBoundaryY = -3.3f;
 	float bottomBoundaryY = -10.14f;
+
+  bool temporarily_disabled;
 
 	// Use this for initialization
 	void Start () {
@@ -70,7 +72,7 @@ public class TouchDetection: MonoBehaviour {
 			if(firstTouchPosition.x > leftBoundaryX && firstReleasePosition.x < rightBoundaryX && 
 				firstTouchPosition.y <topBoundaryY && firstTouchPosition.y > bottomBoundaryY)
 			{
-				UpdateLine(1);
+				UpdateLine(1, ON_RELEASE);
 			}
 
 			//Debug.Log("distance: "+ distance);
@@ -81,11 +83,16 @@ public class TouchDetection: MonoBehaviour {
 
 
 
-	void UpdateLine(int i)
+	void UpdateLine(int i, bool on_release = false)
 	{
 		if(i==0)
 		{
-      GameObject g = PhotonNetwork.Instantiate(squarePrefab.name, firstTouchPosition, Quaternion.identity, 0) as GameObject;
+      GameObject g;
+      if (PhotonNetwork.connected) {
+        g = PhotonNetwork.Instantiate(squarePrefab.name, firstTouchPosition, Quaternion.identity, 0) as GameObject;
+      } else {
+        g = Instantiate(squarePrefab, firstTouchPosition, Quaternion.identity) as GameObject;
+      }
       mSquareSet.Add(g);
 
       //mSquareSet.Add((GameObject) Instantiate(squarePrefab, firstTouchPosition, Quaternion.identity));
@@ -99,7 +106,11 @@ public class TouchDetection: MonoBehaviour {
 			//scale
 			distance = Vector3.Distance(firstReleasePosition, firstTouchPosition);
 			mSquareSet[mSquareSet.Count-1].transform.localScale = new Vector3(distance, 0.3f, 0);
-		}
+
+      if (on_release) {
+        mSquareSet[mSquareSet.Count - 1].GetComponent<BoxCollider2D>().enabled = true;
+      }
+    }
 	}
 
 }
