@@ -20,6 +20,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   public GameObject rsg_prefab;
   public GameObject safety_net_prefab;
   public GameObject join_pack_prefab;
+  public GameObject drawing_meter_prefab;
 
   PhotonView photon_view;
 
@@ -65,6 +66,15 @@ public class GlassGameManager : Photon.PunBehaviour {
     InitializeRSG();
     InitializeSafetyNet();
     InitializeJoinPack();
+    InitializeDrawingMeter();
+  }
+
+  void InitializeDrawingMeter() {
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      Instantiate(drawing_meter_prefab, new Vector3(-5.6f, 9.8f, 0), Quaternion.Euler(0, 0, 180));
+    } else {
+      Instantiate(drawing_meter_prefab, new Vector3(-5.6f, -9.8f, 0), Quaternion.identity);
+    }
   }
 
 	void CleanUpBalls() {
