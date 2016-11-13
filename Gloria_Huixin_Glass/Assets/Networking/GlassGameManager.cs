@@ -70,11 +70,15 @@ public class GlassGameManager : Photon.PunBehaviour {
   }
 
   void InitializeDrawingMeter() {
+    GameObject g = null;
     if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      Instantiate(drawing_meter_prefab, new Vector3(-5.6f, 9.8f, 0), Quaternion.Euler(0, 0, 180));
+      g = Instantiate(drawing_meter_prefab, new Vector3(-5.6f, 9.8f, 0), Quaternion.Euler(0, 0, 180)) as GameObject;
     } else {
-      Instantiate(drawing_meter_prefab, new Vector3(-5.6f, -9.8f, 0), Quaternion.identity);
+      g = Instantiate(drawing_meter_prefab, new Vector3(-5.6f, -9.8f, 0), Quaternion.identity) as GameObject;
     }
+
+    TouchDetection tdt = GameObject.FindObjectOfType<TouchDetection>();
+    tdt.RegisterPowerupMeter(g.GetComponentInChildren<DrawingMeter>());
   }
 
 	void CleanUpBalls() {

@@ -15,6 +15,7 @@ public class TouchDetection: MonoBehaviour {
 	float rightBoundaryX = 7f;
 	float topBoundaryY = -4f;
 	float bottomBoundaryY = -10.14f;
+  DrawingMeter dwm;
 
   bool temporarily_disabled;
 
@@ -24,6 +25,10 @@ public class TouchDetection: MonoBehaviour {
 		mSquareSet = new List<GameObject>();
     SetDrawingArea();
 	}
+
+  public void RegisterPowerupMeter(DrawingMeter _dwm) {
+    dwm = _dwm;
+  }
 
   public void DisableForNextGesture(bool value) {
     temporarily_disabled = value;
@@ -91,8 +96,7 @@ public class TouchDetection: MonoBehaviour {
 
 	void UpdateLine(int i, bool on_release = false)
 	{
-		if(i==0)
-		{
+		if(i == 0) {
       GameObject g;
       if (PhotonNetwork.connected) {
         g = PhotonNetwork.Instantiate(squarePrefab.name, firstTouchPosition, Quaternion.identity, 0) as GameObject;
@@ -102,8 +106,7 @@ public class TouchDetection: MonoBehaviour {
       mSquareSet.Add(g);
 
       //mSquareSet.Add((GameObject) Instantiate(squarePrefab, firstTouchPosition, Quaternion.identity));
-		}else
-		{
+		} else {
 			//rotate
 			dir = firstReleasePosition - firstTouchPosition;
 			angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -113,11 +116,21 @@ public class TouchDetection: MonoBehaviour {
 			distance = Vector3.Distance(firstReleasePosition, firstTouchPosition);
 			mSquareSet[mSquareSet.Count-1].transform.localScale = new Vector3(distance, 0.2f, 0);
 
-      if (on_release) {
+      if (dwm.HasEnoughMeter(distance)) {
+        mSquareSet[mSquareSet.Count - 1].GetComponent<SpriteRenderer>().color = new Color(0xff, 0xff, 0xff, 1.0f);
+      } else {
+        mSquareSet[mSquareSet.Count-1].GetComponent<SpriteRenderer>().color = new Color(0x80, 0x80, 0x80, 0.5f);
+      }
+      
+
+      if (on_release && dwm.HasEnoughMeter(distance)) {
         //print("Distance = " + distance);
+        dwm.SubtractMeter(distance);
         float reflectivity = ComputeReflectivity(distance);
         mSquareSet[mSquareSet.Count - 1].GetComponent<PaddleController>().EnableCollider();
         mSquareSet[mSquareSet.Count - 1].GetComponent<PaddleController>().SetReflectivity(reflectivity);
+      } else if (on_release && !dwm.HasEnoughMeter(distance)) {
+        Destroy(mSquareSet[mSquareSet.Count - 1]);
       }
     }
 	}
