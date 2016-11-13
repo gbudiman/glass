@@ -40,7 +40,8 @@ public class PaddleController : MonoBehaviour {
   void OnCollisionExit2D(Collision2D other) {
     if (other.gameObject.GetComponents<GlassBall>().Length > 0) {
       GlassBall other_ball = other.gameObject.GetComponent<GlassBall>();
-      other_ball.GetComponent<Rigidbody2D>().velocity *= reflectivity;
+      //other_ball.GetComponent<Rigidbody2D>().velocity *= reflectivity;
+      other_ball.Accelerate(reflectivity);
       if (other_ball.GetComponent<PhotonView>().isMine) {
         
         //other.gameObject.GetComponent<GlassBall>().GetComponent<Rigidbody2D>().velocity *= reflectivity;

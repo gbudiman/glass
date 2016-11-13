@@ -81,8 +81,9 @@ public class WallPhysics : MonoBehaviour {
 	void OnCollisionExit2D(Collision2D other) {
     bool is_glass_ball = other.gameObject.GetComponents<CircleCollider2D>().Length > 0;
     if (is_glass_ball && is_supercharged && other.gameObject.GetComponent<GlassBall>().GetComponent<PhotonView>().isMine) {
-      Rigidbody2D rb = other.gameObject.GetComponent<Rigidbody2D>();
-      rb.velocity *= 2.5f;
+      //Rigidbody2D rb = other.gameObject.GetComponent<Rigidbody2D>();
+      //rb.velocity *= 2.5f;
+      other.gameObject.GetComponent<GlassBall>().Accelerate(2.0f);
     }
   }
 

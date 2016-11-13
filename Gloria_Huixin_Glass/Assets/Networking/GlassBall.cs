@@ -9,6 +9,7 @@ using System.Collections.Generic;
 /// </summary>
 public class GlassBall : Photon.PunBehaviour {
   WallController wcl;
+  public const float MAX_SPEED = 16;
   public const float INITIAL_MAGNITUDE_SCALER = 4000.0f;
   Rigidbody2D rb;
 
@@ -186,6 +187,18 @@ public class GlassBall : Photon.PunBehaviour {
 
     if (enabled) { 
       rb = GetComponent<Rigidbody2D>();
+    }
+  }
+
+  public void Accelerate(float factor) {
+    rb.velocity *= factor;
+    float magnitude = rb.velocity.magnitude;
+    float capped_magnitude = MAX_SPEED / magnitude;
+
+    print(rb.velocity.magnitude);
+    if (capped_magnitude < 1) {
+      rb.velocity *= capped_magnitude;
+      print("CAPPED TO " + rb.velocity.magnitude);
     }
   }
 
