@@ -5,7 +5,7 @@ public class PowerupShapeRandomizer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-    RandomizeScale();
+    //RandomizeScale();
 	}
 	
 	// Update is called once per frame
