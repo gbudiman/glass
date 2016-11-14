@@ -47,22 +47,23 @@ public class GestureDetector : MonoBehaviour {
     SwipeDirection swipe_y = SwipeDirection.no_swipe;
     float mag_x = Mathf.Abs(x - click_pos_x);
     float mag_y = Mathf.Abs(y - click_pos_y);
+    bool inverse = PhotonNetwork.connected && PhotonNetwork.isMasterClient;
 
     if (Mathf.Abs(x - click_pos_x) > 1.0f) {
       if (x < click_pos_x) {
         //swipe_direction = 0;
-        swipe_x = SwipeDirection.swipe_left;
+        swipe_x = inverse ? SwipeDirection.swipe_right : SwipeDirection.swipe_left;
       } else {
         //swipe_direction = 1;
-        swipe_x = SwipeDirection.swipe_right;
+        swipe_x = inverse ? SwipeDirection.swipe_left : SwipeDirection.swipe_right;
       }
     }
 
     if (Mathf.Abs(y - click_pos_y) > 1.0f) {
       if (y < click_pos_y) {
-        swipe_y = SwipeDirection.swipe_down;
+        swipe_y = inverse ? SwipeDirection.swipe_up : SwipeDirection.swipe_down;
       } else {
-        swipe_y = SwipeDirection.swipe_up;
+        swipe_y = inverse ? SwipeDirection.swipe_down : SwipeDirection.swipe_up;
       }
     }
 
@@ -81,10 +82,15 @@ public class GestureDetector : MonoBehaviour {
     SwipeLocation swipe_location = DetectSwipeLocation();
     SwipeDirection swipe_direction = DetectSwipeDirection(pos_x, pos_y);
 
-    //print(swipe_direction + " | " + swipe_location);
+    print(swipe_direction + " | " + swipe_location);
 
     if (swipe_location == SwipeLocation.on_else) {
-
+      switch (swipe_direction) {
+        case SwipeDirection.swipe_up: break;
+        case SwipeDirection.swipe_down: break;
+        case SwipeDirection.swipe_left: break;
+        case SwipeDirection.swipe_right: break;
+      }
     } 
     //if (swipe != SwipeDirection.no_swipe) {
     //  //print("on callback");

@@ -91,7 +91,7 @@ public class PaddleController : MonoBehaviour {
   void DecreaseHitPoint(int sequence = 0) {
     
     if (sequence > 0) {
-      print("seq: " + sequence + " | prev: " + last_rpc_sequence);
+      //print("seq: " + sequence + " | prev: " + last_rpc_sequence);
 
       if (last_rpc_sequence == sequence) {
         return;
@@ -99,7 +99,7 @@ public class PaddleController : MonoBehaviour {
         last_rpc_sequence = sequence;
       }
     } else {
-      print("no seq");
+      //print("no seq");
     }
 
     hit_point--;
