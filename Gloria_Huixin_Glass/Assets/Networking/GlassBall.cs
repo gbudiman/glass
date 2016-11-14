@@ -195,7 +195,7 @@ public class GlassBall : Photon.PunBehaviour {
     float magnitude = rb.velocity.magnitude;
     float capped_magnitude = MAX_SPEED / magnitude;
 
-    print(rb.velocity.magnitude);
+    //print(rb.velocity.magnitude);
     if (capped_magnitude < 1) {
       rb.velocity *= capped_magnitude;
       print("CAPPED TO " + rb.velocity.magnitude);

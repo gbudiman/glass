@@ -48,7 +48,7 @@ public class WallController : MonoBehaviour {
   void SendScoreUpdateOverNetwork(int _team_id, int _score) {
     if (this_team_st == null) { LateBindScoreTrackers(); }
 
-    Debug.Log("Received RPC update for " + _team_id.ToString() + " with score " + _score.ToString());
+    //Debug.Log("Received RPC update for " + _team_id.ToString() + " with score " + _score.ToString());
     switch (_team_id) {
       case 0: this_team_st.SetScore(_score); break;
       case 1: other_team_st.SetScore(_score); break;

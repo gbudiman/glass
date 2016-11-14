@@ -28,6 +28,9 @@ public class GlassGameManager : Photon.PunBehaviour {
   ScoreTracker opposing_team_score_tracker;
   ConnectionLogger connection_logger;
 
+  void Awake() {
+    PhotonNetwork.logLevel = PhotonLogLevel.ErrorsOnly;
+  }
   // Use this for initialization
   void Start () {
     Screen.SetResolution(450, 800, false);

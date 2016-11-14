@@ -5,7 +5,7 @@ public class PaddleController : MonoBehaviour {
   PhotonView photon_view;
   int hit_point;
   float reflectivity = 1;
-
+  int last_rpc_sequence;
   SpriteRenderer sr;
 
 	// Use this for initialization
@@ -14,6 +14,7 @@ public class PaddleController : MonoBehaviour {
     sr = GetComponent<SpriteRenderer>();
     hit_point = 1;
     UpdateVisual();
+    last_rpc_sequence = 0;
     //if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
     //  GetComponent<BoxCollider2D>().enabled = true;
     //}
@@ -66,22 +67,20 @@ public class PaddleController : MonoBehaviour {
   void OnCollisionExit2D(Collision2D other) {
     if (other.gameObject.GetComponents<GlassBall>().Length > 0) {
       GlassBall other_ball = other.gameObject.GetComponent<GlassBall>();
-      //other_ball.GetComponent<Rigidbody2D>().velocity *= reflectivity;
-      other_ball.Accelerate(reflectivity);
-      if (other_ball.GetComponent<PhotonView>().isMine) {
-        
-        //other.gameObject.GetComponent<GlassBall>().GetComponent<Rigidbody2D>().velocity *= reflectivity;
+      if (!PhotonNetwork.connected || PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+        other_ball.Accelerate(reflectivity);
       }
 
-      if (PhotonNetwork.connected) {
+      int rpc_sequence = (int)Random.Range(1, Mathf.Pow(2, 31));
+      if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
         if (photon_view.isMine) {
           //PhotonNetwork.Destroy(gameObject);
-          DecreaseHitPoint();
+          DecreaseHitPoint(rpc_sequence);
         } else {
           // photon_view.RPC("DestroyOverNetwork", PhotonTargets.Others);
-          photon_view.RPC("DecreaseHitPoint", PhotonTargets.Others);
+          photon_view.RPC("DecreaseHitPoint", PhotonTargets.Others, rpc_sequence);
         }
-      } else {
+      } else if (!PhotonNetwork.connected) {
         DecreaseHitPoint();
         //Destroy(gameObject, 0.01f);
       }
@@ -89,9 +88,23 @@ public class PaddleController : MonoBehaviour {
   }
 
   [PunRPC]
-  void DecreaseHitPoint() {
+  void DecreaseHitPoint(int sequence = 0) {
+    
+    if (sequence > 0) {
+      print("seq: " + sequence + " | prev: " + last_rpc_sequence);
+
+      if (last_rpc_sequence == sequence) {
+        return;
+      } else {
+        last_rpc_sequence = sequence;
+      }
+    } else {
+      print("no seq");
+    }
+
     hit_point--;
     UpdateVisual();
+    print("Decrease HP");
 
     if (hit_point < 1) {
       if (PhotonNetwork.connected) {

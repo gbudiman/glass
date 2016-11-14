@@ -32,7 +32,7 @@ public class ScoreTracker : MonoBehaviour {
   /// This function should ONLY be called by host
   /// </summary>
   public void InitializeScore() {
-    Debug.Log("Initializing score...");
+    //Debug.Log("Initializing score...");
     score = 0;
     UpdateScoreDisplay();
   }

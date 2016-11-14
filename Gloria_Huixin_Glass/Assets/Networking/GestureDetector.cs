@@ -34,7 +34,7 @@ public class GestureDetector : MonoBehaviour {
   }
 
   SwipeLocation DetectSwipeLocation() {
-    print(click_pos_y);
+    //print(click_pos_y);
     if (click_pos_y > DRAWING_AREA_Y) {
       return SwipeLocation.on_else;
     }
@@ -81,8 +81,11 @@ public class GestureDetector : MonoBehaviour {
     SwipeLocation swipe_location = DetectSwipeLocation();
     SwipeDirection swipe_direction = DetectSwipeDirection(pos_x, pos_y);
 
-    print(swipe_direction + " | " + swipe_location);
+    //print(swipe_direction + " | " + swipe_location);
 
+    if (swipe_location == SwipeLocation.on_else) {
+
+    } 
     //if (swipe != SwipeDirection.no_swipe) {
     //  //print("on callback");
     //  //pel.OnSwipeDetected(swipe);
@@ -98,10 +101,10 @@ public class GestureDetector : MonoBehaviour {
     SwipeLocation swipe_location = DetectSwipeLocation();
 
     if (current_time - last_click < 0.25f) {
-      print("double click detected at " + swipe_location);
+      //print("double click detected at " + swipe_location);
 
       RaycastHit2D rhd = Physics2D.CircleCast(prev_click, 0.33f, curr_click);
-      print(rhd);
+      //print(rhd);
       rhd.collider.GetComponent<PaddleController>().Reinforce();
     }
 

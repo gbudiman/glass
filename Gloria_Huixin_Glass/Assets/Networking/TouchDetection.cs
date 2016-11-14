@@ -138,7 +138,11 @@ public class TouchDetection: MonoBehaviour {
         mSquareSet[mSquareSet.Count - 1].GetComponent<PaddleController>().EnableCollider();
         mSquareSet[mSquareSet.Count - 1].GetComponent<PaddleController>().SetReflectivity(reflectivity);
       } else if (on_release && (!dwm.HasEnoughMeter(distance) || !HasSignificantDistance(distance))) {
-        Destroy(mSquareSet[mSquareSet.Count - 1]);
+        if (PhotonNetwork.connected) {
+          PhotonNetwork.Destroy(mSquareSet[mSquareSet.Count - 1]);
+        } else {
+          Destroy(mSquareSet[mSquareSet.Count - 1]);
+        }
       }
     }
 	}
