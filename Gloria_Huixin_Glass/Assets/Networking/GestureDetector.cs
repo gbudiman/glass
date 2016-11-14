@@ -10,11 +10,14 @@ public class GestureDetector : MonoBehaviour {
 
   const float DRAWING_AREA_Y = -4.5f;
   const float SWIPE_LENGTH_THRESHOLD = 0.5f;
+
+  PowerUpManager pum;
+  
   //bool swipe_queued = false;
   //PowerUpElement pel;
 	// Use this for initialization
 	void Start () {
-	
+    pum = GetComponentInParent<PowerUpManager>();
 	}
 	
 	// Update is called once per frame
@@ -87,9 +90,18 @@ public class GestureDetector : MonoBehaviour {
     if (swipe_location == SwipeLocation.on_else) {
       switch (swipe_direction) {
         case SwipeDirection.swipe_up: break;
-        case SwipeDirection.swipe_down: break;
-        case SwipeDirection.swipe_left: break;
-        case SwipeDirection.swipe_right: break;
+        case SwipeDirection.swipe_down: pum.ActivateSafetyNet(); break;
+        case SwipeDirection.swipe_left: 
+        case SwipeDirection.swipe_right:
+          bool inverse = PhotonNetwork.connected && PhotonNetwork.isMasterClient;
+          SwipeDirection actual_swipe = swipe_direction;
+          if (inverse) {
+            switch (swipe_direction) {
+              case SwipeDirection.swipe_left: actual_swipe = SwipeDirection.swipe_right; break;
+              case SwipeDirection.swipe_right: actual_swipe = SwipeDirection.swipe_left; break;
+            }
+          }
+          pum.SuperchargeWall(actual_swipe); break;
       }
     } 
     //if (swipe != SwipeDirection.no_swipe) {
@@ -112,6 +124,7 @@ public class GestureDetector : MonoBehaviour {
       RaycastHit2D rhd = Physics2D.CircleCast(prev_click, 0.33f, curr_click);
       //print(rhd);
       rhd.collider.GetComponent<PaddleController>().Reinforce();
+      pum.ReinforcePaddle(rhd.collider.gameObject);
     }
 
     

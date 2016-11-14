@@ -31,6 +31,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   void Awake() {
     PhotonNetwork.logLevel = PhotonLogLevel.ErrorsOnly;
   }
+
   // Use this for initialization
   void Start () {
     Screen.SetResolution(450, 800, false);
@@ -70,6 +71,12 @@ public class GlassGameManager : Photon.PunBehaviour {
     InitializeSafetyNet();
     InitializeJoinPack();
     InitializeDrawingMeter();
+    InitializePowerUpManager();
+  }
+
+  void InitializePowerUpManager() {
+    PowerupMeter pm = GameObject.FindObjectOfType<PowerupMeter>();
+    GetComponent<PowerUpManager>().RegisterPowerupMeter(pm);
   }
 
   void InitializeDrawingMeter() {

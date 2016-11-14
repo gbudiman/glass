@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// THIS IS OBSOLETE CLASS
+/// Use PowerUpManager instead
+/// </summary>
 public class PowerUpElement : MonoBehaviour {
   const float SUPERCHARGE_BASE_TIME = 5.0f;
   Animator animator;
