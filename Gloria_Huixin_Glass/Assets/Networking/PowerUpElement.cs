@@ -62,95 +62,95 @@ public class PowerUpElement : MonoBehaviour {
 	void Update () {
 	}
 
-  void OnMouseDown() {
-    switch(powerup_type) {
-      case PowerUpType.pu_triple_shot:
-        if (CheckPrerequisite()) {
-          FindSubject();
-          kbc.SetTripleShot();
-          cdm.Activate();
-        }
+  //void OnMouseDown() {
+  //  switch(powerup_type) {
+  //    case PowerUpType.pu_triple_shot:
+  //      if (CheckPrerequisite()) {
+  //        FindSubject();
+  //        kbc.SetTripleShot();
+  //        cdm.Activate();
+  //      }
         
-        break;
-      case PowerUpType.pu_safety_net:
-        if (CheckPrerequisite()) {
-          FindSafetyNet();
-          cdm.Activate();
-        }
-        break;
-      case PowerUpType.pu_supercharged_wall:
-        if (CheckPrerequisite()) {
-          gd.WaitForSwipe(this);
-        }
-        break;
-    }
-    powerup_ui.ToggleVisibility();
-  }
+  //      break;
+  //    case PowerUpType.pu_safety_net:
+  //      if (CheckPrerequisite()) {
+  //        FindSafetyNet();
+  //        cdm.Activate();
+  //      }
+  //      break;
+  //    case PowerUpType.pu_supercharged_wall:
+  //      if (CheckPrerequisite()) {
+  //        gd.WaitForSwipe(this);
+  //      }
+  //      break;
+  //  }
+  //  powerup_ui.ToggleVisibility();
+  //}
 
-  public void OnSwipeDetected(GestureDetector.SwipeDirection swipe) {
-    if (bouncer_left == null) {
-      InitializeBouncers();
-    }
+  //public void OnSwipeDetected(GestureDetector.SwipeDirection swipe) {
+  //  if (bouncer_left == null) {
+  //    InitializeBouncers();
+  //  }
 
-    bool inversion = PhotonNetwork.connected && PhotonNetwork.isMasterClient;
-    switch (swipe) {
-      case GestureDetector.SwipeDirection.swipe_right:
-        if (inversion) {
-          bouncer_left.SetSupercharge(SUPERCHARGE_BASE_TIME);
-				  //bouncer_left.ChangeColor();
-        } else {
-          bouncer_right.SetSupercharge(SUPERCHARGE_BASE_TIME);
-				  //bouncer_right.ChangeColor();
-        }
+  //  bool inversion = PhotonNetwork.connected && PhotonNetwork.isMasterClient;
+  //  switch (swipe) {
+  //    case GestureDetector.SwipeDirection.swipe_right:
+  //      if (inversion) {
+  //        bouncer_left.SetSupercharge(SUPERCHARGE_BASE_TIME);
+		//		  //bouncer_left.ChangeColor();
+  //      } else {
+  //        bouncer_right.SetSupercharge(SUPERCHARGE_BASE_TIME);
+		//		  //bouncer_right.ChangeColor();
+  //      }
 
-        cdm.Activate();
-        powerup_meter.ExecuteSubtract(1);
-        break;
-      case GestureDetector.SwipeDirection.swipe_left:
-        if (inversion) {
-          bouncer_right.SetSupercharge(SUPERCHARGE_BASE_TIME);
-				  //bouncer_right.ChangeColor();
-        } else {
-          bouncer_left.SetSupercharge(SUPERCHARGE_BASE_TIME);
-				  //bouncer_left.ChangeColor();
-        }
+  //      cdm.Activate();
+  //      powerup_meter.ExecuteSubtract(1);
+  //      break;
+  //    case GestureDetector.SwipeDirection.swipe_left:
+  //      if (inversion) {
+  //        bouncer_right.SetSupercharge(SUPERCHARGE_BASE_TIME);
+		//		  //bouncer_right.ChangeColor();
+  //      } else {
+  //        bouncer_left.SetSupercharge(SUPERCHARGE_BASE_TIME);
+		//		  //bouncer_left.ChangeColor();
+  //      }
         
-        cdm.Activate();
-        powerup_meter.ExecuteSubtract(1);
-        break;
-      default:
-        break;
-    }
-  }
+  //      cdm.Activate();
+  //      powerup_meter.ExecuteSubtract(1);
+  //      break;
+  //    default:
+  //      break;
+  //  }
+  //}
 
-  bool CheckPrerequisite() {
-    if (!GetComponentInChildren<DisablerMask>().GetComponent<SpriteRenderer>().enabled && !cdm.IsInCooldown) {
-      animator.SetBool("is_clicked", true);
-      return true;
-    }
+  //bool CheckPrerequisite() {
+  //  if (!GetComponentInChildren<DisablerMask>().GetComponent<SpriteRenderer>().enabled && !cdm.IsInCooldown) {
+  //    animator.SetBool("is_clicked", true);
+  //    return true;
+  //  }
 
-    return false;
-  }
+  //  return false;
+  //}
 
-  void FindSafetyNet() {
-    foreach (SafetyNet sfn in GameObject.FindObjectsOfType<SafetyNet>()) {
-      bool is_mine = sfn.GetComponent<PhotonView>().isMine;
-      if (!PhotonNetwork.connected || is_mine) {
-        sfn.SetEnable(true);
-        powerup_meter.ExecuteSubtract(1);
-        break;
-      }
-    }
+  //void FindSafetyNet() {
+  //  foreach (SafetyNet sfn in GameObject.FindObjectsOfType<SafetyNet>()) {
+  //    bool is_mine = sfn.GetComponent<PhotonView>().isMine;
+  //    if (!PhotonNetwork.connected || is_mine) {
+  //      sfn.SetEnable(true);
+  //      powerup_meter.ExecuteSubtract(1);
+  //      break;
+  //    }
+  //  }
 
-  }
+  //}
 
-  void FindSubject() {
-    foreach (KeyboardController _k in GameObject.FindObjectsOfType<KeyboardController>()) {
-      bool is_mine = _k.GetComponent<PhotonView>().isMine;
-      if (!PhotonNetwork.connected || is_mine) {
-        kbc = _k;
-        break;
-      }
-    }
-  }
+  //void FindSubject() {
+  //  foreach (KeyboardController _k in GameObject.FindObjectsOfType<KeyboardController>()) {
+  //    bool is_mine = _k.GetComponent<PhotonView>().isMine;
+  //    if (!PhotonNetwork.connected || is_mine) {
+  //      kbc = _k;
+  //      break;
+  //    }
+  //  }
+  //}
 }

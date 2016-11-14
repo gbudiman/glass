@@ -49,7 +49,7 @@ public class TouchDetection: MonoBehaviour {
 		{
 			firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			firstTouchPosition.z += 5f;
-      print(firstTouchPosition + " within bounds " + topBoundaryY + " / " + bottomBoundaryY);
+      //print(firstTouchPosition + " within bounds " + topBoundaryY + " / " + bottomBoundaryY);
 			if(firstTouchPosition.x > leftBoundaryX && firstReleasePosition.x < rightBoundaryX && 
 				firstTouchPosition.y <topBoundaryY && firstTouchPosition.y > bottomBoundaryY)
 			{
@@ -92,7 +92,9 @@ public class TouchDetection: MonoBehaviour {
 	
 	}
 
-
+  bool IsInsideDrawingArea(Vector3 p) {
+    return p.y < topBoundaryY;
+  }
 
 	void UpdateLine(int i, bool on_release = false)
 	{
@@ -116,7 +118,8 @@ public class TouchDetection: MonoBehaviour {
 			distance = Vector3.Distance(firstReleasePosition, firstTouchPosition);
 			mSquareSet[mSquareSet.Count-1].transform.localScale = new Vector3(distance, 0.2f, 0);
 
-      if (dwm.HasEnoughMeter(distance)) {
+
+      if (dwm.HasEnoughMeter(distance) && IsInsideDrawingArea(firstReleasePosition)) {
         mSquareSet[mSquareSet.Count - 1].GetComponent<SpriteRenderer>().color = new Color(0xff, 0xff, 0xff, 1.0f);
       } else {
         mSquareSet[mSquareSet.Count-1].GetComponent<SpriteRenderer>().color = new Color(0x80, 0x80, 0x80, 0.5f);
