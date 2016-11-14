@@ -40,7 +40,7 @@ public class TouchDetection: MonoBehaviour {
     // invert for host
     if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
       topBoundaryY = 10.14f;
-      bottomBoundaryY = 3.3f;
+      bottomBoundaryY = 3.5f;
     }
   }
 	
@@ -95,7 +95,11 @@ public class TouchDetection: MonoBehaviour {
 	}
 
   bool IsInsideDrawingArea(Vector3 p) {
-    return p.y < topBoundaryY;
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      return p.y > bottomBoundaryY;
+    } else {
+      return p.y < topBoundaryY;
+    }
   }
 
   bool HasSignificantDistance(float d) {

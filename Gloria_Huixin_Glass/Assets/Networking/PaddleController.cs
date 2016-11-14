@@ -75,11 +75,11 @@ public class PaddleController : MonoBehaviour {
       GlassBall other_ball = other.gameObject.GetComponent<GlassBall>();
       if (!PhotonNetwork.connected || PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
         other_ball.Accelerate(reflectivity);
+      }
 
-        if (pum.TripleShotQueued) {
-          other_ball.SetTripleShot();
-          pum.DeQueueTripleShot();
-        }
+      if (pum.TripleShotQueued) {
+        other_ball.SetTripleShot();
+        pum.DeQueueTripleShot();
       }
 
       int rpc_sequence = (int)Random.Range(1, Mathf.Pow(2, 31));

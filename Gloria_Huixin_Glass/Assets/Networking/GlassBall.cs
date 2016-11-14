@@ -16,8 +16,8 @@ public class GlassBall : Photon.PunBehaviour {
   float movement_vector_scaler;
   bool triple_shot = false;
 
-  public float triple_shot_delay_base = 0.2f;
-  public float triple_shot_delay_jitter = 0.1f;
+  public float triple_shot_delay_base = 0.1f;
+  public float triple_shot_delay_jitter = 0.05f;
   float triple_shot_countdown_timer = 10f;
   int triple_shot_counter;
 
@@ -95,7 +95,19 @@ public class GlassBall : Photon.PunBehaviour {
   /// Set this ball to split into 3 balls
   /// </summary>
   public void SetTripleShot() {
-    Debug.Log("Triple Shot Armed");
+    if (!PhotonNetwork.connected || PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      Debug.Log("Triple Shot Armed");
+      triple_shot = true;
+      triple_shot_counter = 3;
+      ReRollTripleShotTimer();
+    } else {
+      photon_view.RPC("SetTripleShotOverNetwork", PhotonTargets.Others);
+    }
+  }
+
+  [PunRPC]
+  public void SetTripleShotOverNetwork() {
+    Debug.Log("Triple Shot Armed Over Network");
     triple_shot = true;
     triple_shot_counter = 3;
     ReRollTripleShotTimer();
@@ -234,6 +246,10 @@ public class GlassBall : Photon.PunBehaviour {
 
   [PunRPC]
   void UpdatePowerUpMeterOverNetwork() {
+    if (powerup_meter == null) {
+      powerup_meter = GameObject.FindObjectOfType<PowerupMeter>();
+    }
+
     powerup_meter.Add();
   }
 }

@@ -85,6 +85,7 @@ public class PowerUpManager : MonoBehaviour {
     int cost = 1;
 
     if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost)) {
+      print("Power up queued");
       pm.ExecuteSubtract(cost);
       triple_shot_queued = true;
     }
