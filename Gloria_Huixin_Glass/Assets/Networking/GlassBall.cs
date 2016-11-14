@@ -258,9 +258,9 @@ public class GlassBall : Photon.PunBehaviour {
 			Instantiate(particleEffects, transform.position, Quaternion.identity);
 		}
 
-		if(particleEffects != null && other.gameObject.tag == "paddle" && is_picking_powerup == true)
+		if(particleEffects != null && other.gameObject.tag == "wall" && other.gameObject.GetComponent<WallPhysics>().is_supercharged)
 		{
-
+			Debug.Log("collide" + other.gameObject.GetComponent<WallPhysics>().is_supercharged);
 
 			Instantiate(explosionEffects, transform.position, Quaternion.identity);
 		}
