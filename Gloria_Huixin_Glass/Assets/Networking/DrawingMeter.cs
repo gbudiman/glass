@@ -48,7 +48,7 @@ public class DrawingMeter : MonoBehaviour {
         enable_lerp = false;
       }
     }
-    //print(current_position + " -> " + target_position);
+    
     //transform.position = new Vector3(target_position - cardinal, transform.position.y, 0);
   }
 
@@ -62,13 +62,21 @@ public class DrawingMeter : MonoBehaviour {
 
   void UpdateDisplay(float previous_meter) {
     float rectified_position = 0;
-    current_position = previous_meter + pos_min;
-    rectified_position = current_meter + pos_min;
+
+    
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      current_position = -(previous_meter + pos_min) + 2 * cardinal;
+      rectified_position = -(current_meter + pos_min) + 2 * cardinal;
+    } else {
+      current_position = previous_meter + pos_min;
+      rectified_position = current_meter + pos_min;
+    }
 
     
     enable_lerp = true;
     t_epsilon = 0f;
     
     target_position = rectified_position;
+    
   }
 }

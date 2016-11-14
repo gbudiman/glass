@@ -37,6 +37,11 @@ public class PaddleController : MonoBehaviour {
     reflectivity = value;
   }
 
+  [PunRPC]
+  void DestroyOverNetwork() {
+    PhotonNetwork.Destroy(gameObject);
+  }
+
   void OnCollisionExit2D(Collision2D other) {
     if (other.gameObject.GetComponents<GlassBall>().Length > 0) {
       GlassBall other_ball = other.gameObject.GetComponent<GlassBall>();
@@ -50,6 +55,8 @@ public class PaddleController : MonoBehaviour {
       if (PhotonNetwork.connected) {
         if (photon_view.isMine) {
           PhotonNetwork.Destroy(gameObject);
+        } else {
+          photon_view.RPC("DestroyOverNetwork", PhotonTargets.Others);
         }
       } else {
         Destroy(gameObject, 0.01f);
