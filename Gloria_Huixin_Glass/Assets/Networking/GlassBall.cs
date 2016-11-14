@@ -191,6 +191,7 @@ public class GlassBall : Photon.PunBehaviour {
   }
 
   public void Accelerate(float factor) {
+    rb = GetComponent<Rigidbody2D>();
     rb.velocity *= factor;
     float magnitude = rb.velocity.magnitude;
     float capped_magnitude = MAX_SPEED / magnitude;

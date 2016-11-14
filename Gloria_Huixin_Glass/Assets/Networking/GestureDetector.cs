@@ -8,7 +8,7 @@ public class GestureDetector : MonoBehaviour {
   float last_click;
   float click_pos_x, click_pos_y;
 
-  const float DRAWING_AREA_Y = -4.5f;
+  const float DRAWING_AREA_Y = -3.5f;
   const float SWIPE_LENGTH_THRESHOLD = 0.5f;
 
   PowerUpManager pum;
@@ -38,9 +38,16 @@ public class GestureDetector : MonoBehaviour {
 
   SwipeLocation DetectSwipeLocation() {
     //print(click_pos_y);
-    if (click_pos_y > DRAWING_AREA_Y) {
-      return SwipeLocation.on_else;
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      if (click_pos_y < -DRAWING_AREA_Y) {
+        return SwipeLocation.on_else;
+      }
+    } else {
+      if (click_pos_y > DRAWING_AREA_Y) {
+        return SwipeLocation.on_else;
+      }
     }
+    
 
     return SwipeLocation.on_drawing_area;
   }
@@ -89,7 +96,7 @@ public class GestureDetector : MonoBehaviour {
 
     if (swipe_location == SwipeLocation.on_else) {
       switch (swipe_direction) {
-        case SwipeDirection.swipe_up: break;
+        case SwipeDirection.swipe_up: pum.TripleShot(); break;
         case SwipeDirection.swipe_down: pum.ActivateSafetyNet(); break;
         case SwipeDirection.swipe_left: 
         case SwipeDirection.swipe_right:

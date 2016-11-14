@@ -8,9 +8,15 @@ public class PowerUpManager : MonoBehaviour {
 
   WallPhysics bouncer_left;
   WallPhysics bouncer_right;
+
+  bool triple_shot_queued;
+  public bool TripleShotQueued {
+    get { return triple_shot_queued; }
+  }
   // Use this for initialization
   void Start () {
     InitializeBouncers();
+    triple_shot_queued = false;
 	}
 
   void InitializeBouncers() {
@@ -72,6 +78,15 @@ public class PowerUpManager : MonoBehaviour {
     if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost)) {
       pm.ExecuteSubtract(cost);
       g.GetComponent<PaddleController>().Reinforce();
+    }
+  }
+
+  public void TripleShot() {
+    int cost = 1;
+
+    if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost)) {
+      pm.ExecuteSubtract(cost);
+      triple_shot_queued = true;
     }
   }
 }

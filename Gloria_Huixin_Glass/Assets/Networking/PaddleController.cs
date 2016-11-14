@@ -8,6 +8,8 @@ public class PaddleController : MonoBehaviour {
   int last_rpc_sequence;
   SpriteRenderer sr;
 
+  PowerUpManager pum;
+
 	// Use this for initialization
 	void Start () {
     photon_view = GetComponent<PhotonView>();
@@ -23,6 +25,10 @@ public class PaddleController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	}
+
+  public void RegisterPowerUpManager(PowerUpManager _pum) {
+    pum = _pum;
+  }
 
   public void Reinforce() {
     hit_point = 3;
@@ -69,16 +75,22 @@ public class PaddleController : MonoBehaviour {
       GlassBall other_ball = other.gameObject.GetComponent<GlassBall>();
       if (!PhotonNetwork.connected || PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
         other_ball.Accelerate(reflectivity);
+
+        if (pum.TripleShotQueued) {
+          other_ball.SetTripleShot();
+        }
       }
 
       int rpc_sequence = (int)Random.Range(1, Mathf.Pow(2, 31));
-      if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      if (PhotonNetwork.connected /*&& PhotonNetwork.isMasterClient*/) {
         if (photon_view.isMine) {
           //PhotonNetwork.Destroy(gameObject);
-          DecreaseHitPoint(rpc_sequence);
+          //DecreaseHitPoint();
+          photon_view.RPC("DecreaseHitPoint", PhotonTargets.AllViaServer);
         } else {
+          //print("destroying over network: " + rpc_sequence);
           // photon_view.RPC("DestroyOverNetwork", PhotonTargets.Others);
-          photon_view.RPC("DecreaseHitPoint", PhotonTargets.Others, rpc_sequence);
+          //photon_view.RPC("DecreaseHitPointOverNetwork", PhotonTargets.Others, rpc_sequence);
         }
       } else if (!PhotonNetwork.connected) {
         DecreaseHitPoint();
@@ -88,20 +100,7 @@ public class PaddleController : MonoBehaviour {
   }
 
   [PunRPC]
-  void DecreaseHitPoint(int sequence = 0) {
-    
-    if (sequence > 0) {
-      //print("seq: " + sequence + " | prev: " + last_rpc_sequence);
-
-      if (last_rpc_sequence == sequence) {
-        return;
-      } else {
-        last_rpc_sequence = sequence;
-      }
-    } else {
-      //print("no seq");
-    }
-
+  void DecreaseHitPoint() {
     hit_point--;
     UpdateVisual();
     print("Decrease HP");

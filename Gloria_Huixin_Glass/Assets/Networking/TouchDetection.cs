@@ -14,15 +14,16 @@ public class TouchDetection: MonoBehaviour {
 	[SerializeField] GameObject squarePrefab;
 	float leftBoundaryX = -7f;
 	float rightBoundaryX = 7f;
-	float topBoundaryY = -4f;
+	float topBoundaryY = -3.5f;
 	float bottomBoundaryY = -10.14f;
   DrawingMeter dwm;
 
+  PowerUpManager pum;
   bool temporarily_disabled;
 
 	// Use this for initialization
 	void Start () {
-		
+    pum = GameObject.FindObjectOfType<PowerUpManager>();
 		mSquareSet = new List<GameObject>();
     SetDrawingArea();
 	}
@@ -110,6 +111,8 @@ public class TouchDetection: MonoBehaviour {
       } else {
         g = Instantiate(squarePrefab, firstTouchPosition, Quaternion.identity) as GameObject;
       }
+
+      g.GetComponent<PaddleController>().RegisterPowerUpManager(pum);
       mSquareSet.Add(g);
 
       //mSquareSet.Add((GameObject) Instantiate(squarePrefab, firstTouchPosition, Quaternion.identity));
