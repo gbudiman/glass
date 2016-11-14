@@ -78,6 +78,7 @@ public class PaddleController : MonoBehaviour {
 
         if (pum.TripleShotQueued) {
           other_ball.SetTripleShot();
+          pum.DeQueueTripleShot();
         }
       }
 
@@ -103,7 +104,7 @@ public class PaddleController : MonoBehaviour {
   void DecreaseHitPoint() {
     hit_point--;
     UpdateVisual();
-    print("Decrease HP");
+    //print("Decrease HP");
 
     if (hit_point < 1) {
       if (PhotonNetwork.connected) {

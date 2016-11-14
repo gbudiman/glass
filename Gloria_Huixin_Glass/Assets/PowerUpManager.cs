@@ -89,4 +89,8 @@ public class PowerUpManager : MonoBehaviour {
       triple_shot_queued = true;
     }
   }
+
+  public void DeQueueTripleShot() {
+    triple_shot_queued = false;
+  }
 }

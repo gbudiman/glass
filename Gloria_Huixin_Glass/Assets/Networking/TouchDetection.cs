@@ -134,13 +134,13 @@ public class TouchDetection: MonoBehaviour {
       }
       
 
-      if (on_release && dwm.HasEnoughMeter(distance) && HasSignificantDistance(distance)) {
+      if (on_release && dwm.HasEnoughMeter(distance) && IsInsideDrawingArea(firstReleasePosition) && HasSignificantDistance(distance)) {
         //print("Distance = " + distance);
         dwm.SubtractMeter(distance);
         float reflectivity = ComputeReflectivity(distance);
         mSquareSet[mSquareSet.Count - 1].GetComponent<PaddleController>().EnableCollider();
         mSquareSet[mSquareSet.Count - 1].GetComponent<PaddleController>().SetReflectivity(reflectivity);
-      } else if (on_release && (!dwm.HasEnoughMeter(distance) || !HasSignificantDistance(distance))) {
+      } else if (on_release && (!dwm.HasEnoughMeter(distance) || !IsInsideDrawingArea(firstReleasePosition) || !HasSignificantDistance(distance))) {
         if (PhotonNetwork.connected) {
           PhotonNetwork.Destroy(mSquareSet[mSquareSet.Count - 1]);
         } else {
