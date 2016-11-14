@@ -12,6 +12,7 @@ public class PowerupCalculator : MonoBehaviour {
     GlassBall glass_ball = other.GetComponent<GlassBall>();
     if (glass_ball != null) {
       glass_ball.EnablePowerPickup(true);
+
     }
   }
 
@@ -21,6 +22,7 @@ public class PowerupCalculator : MonoBehaviour {
     GlassBall glass_ball = other.GetComponent<GlassBall>();
     if (glass_ball != null) {
       is_being_picked_up = true;
+
     }
   }
 
@@ -29,6 +31,7 @@ public class PowerupCalculator : MonoBehaviour {
     if (glass_ball != null) {
       glass_ball.EnablePowerPickup(false);
       is_being_picked_up = false;
+
     }
   }
 }

@@ -13,6 +13,9 @@ public class GlassBall : Photon.PunBehaviour {
   public const float INITIAL_MAGNITUDE_SCALER = 4000.0f;
   Rigidbody2D rb;
 
+	[SerializeField] GameObject particleEffects;
+	[SerializeField] GameObject explosionEffects;
+
   float movement_vector_scaler;
   bool triple_shot = false;
 
@@ -196,6 +199,7 @@ public class GlassBall : Photon.PunBehaviour {
 
   public void EnablePowerPickup(bool enabled) {
     is_picking_powerup = enabled;
+		ChangeBallColor();
 
     if (enabled) { 
       rb = GetComponent<Rigidbody2D>();
@@ -243,6 +247,32 @@ public class GlassBall : Photon.PunBehaviour {
       }
     }
   }
+		
+	//spawn collison effects
+	void OnCollisionEnter2D( Collision2D other ) 
+	{
+		if(particleEffects != null && other.gameObject.tag == "paddle" && is_picking_powerup == false)
+		{
+			
+			Debug.Log("collide" + is_picking_powerup);
+			Instantiate(particleEffects, transform.position, Quaternion.identity);
+		}
+
+		if(particleEffects != null && other.gameObject.tag == "paddle" && is_picking_powerup == true)
+		{
+
+			Debug.Log("collide" + is_picking_powerup);
+			Instantiate(explosionEffects, transform.position, Quaternion.identity);
+		}
+
+	}
+
+
+
+	void ChangeBallColor()
+	{
+		gameObject.GetComponent<Renderer> ().material.color = new Color(251/225f, 224/255f, 111/255f);
+	}
 
   [PunRPC]
   void UpdatePowerUpMeterOverNetwork() {

@@ -100,6 +100,8 @@ public class PaddleController : MonoBehaviour {
     }
   }
 
+
+
   [PunRPC]
   void DecreaseHitPoint() {
     hit_point--;
