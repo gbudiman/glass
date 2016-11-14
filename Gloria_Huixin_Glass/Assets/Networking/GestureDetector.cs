@@ -130,7 +130,7 @@ public class GestureDetector : MonoBehaviour {
 
       RaycastHit2D rhd = Physics2D.CircleCast(prev_click, 0.33f, curr_click);
       //print(rhd);
-      rhd.collider.GetComponent<PaddleController>().Reinforce();
+      //rhd.collider.GetComponent<PaddleController>().Reinforce();
       pum.ReinforcePaddle(rhd.collider.gameObject);
     }
 
