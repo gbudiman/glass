@@ -92,10 +92,17 @@ public class GestureDetector : MonoBehaviour {
 
   void DetectDoubleClick() {
     float current_time = Time.time;
+
+    Vector2 prev_click = new Vector2(click_pos_x, click_pos_y);
+    Vector2 curr_click = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     SwipeLocation swipe_location = DetectSwipeLocation();
 
     if (current_time - last_click < 0.25f) {
       print("double click detected at " + swipe_location);
+
+      RaycastHit2D rhd = Physics2D.CircleCast(prev_click, 0.33f, curr_click);
+      print(rhd);
+      rhd.collider.GetComponent<PaddleController>().Reinforce();
     }
 
     

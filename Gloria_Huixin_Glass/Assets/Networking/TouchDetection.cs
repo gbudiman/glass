@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class TouchDetection: MonoBehaviour {
   const bool ON_RELEASE = true;
+  const float MINIMUM_PADDLE_DISTANCE = 0.25f;
 	Vector3 firstTouchPosition;
 	Vector3 firstReleasePosition;
 	float distance;
@@ -96,6 +97,10 @@ public class TouchDetection: MonoBehaviour {
     return p.y < topBoundaryY;
   }
 
+  bool HasSignificantDistance(float d) {
+    return d > MINIMUM_PADDLE_DISTANCE;
+  }
+
 	void UpdateLine(int i, bool on_release = false)
 	{
 		if(i == 0) {
@@ -119,20 +124,20 @@ public class TouchDetection: MonoBehaviour {
 			mSquareSet[mSquareSet.Count-1].transform.localScale = new Vector3(distance, 0.2f, 0);
 
 
-      if (dwm.HasEnoughMeter(distance) && IsInsideDrawingArea(firstReleasePosition)) {
+      if (dwm.HasEnoughMeter(distance) && IsInsideDrawingArea(firstReleasePosition) && HasSignificantDistance(distance)) {
         mSquareSet[mSquareSet.Count - 1].GetComponent<SpriteRenderer>().color = new Color(0xff, 0xff, 0xff, 1.0f);
       } else {
         mSquareSet[mSquareSet.Count-1].GetComponent<SpriteRenderer>().color = new Color(0x80, 0x80, 0x80, 0.5f);
       }
       
 
-      if (on_release && dwm.HasEnoughMeter(distance)) {
+      if (on_release && dwm.HasEnoughMeter(distance) && HasSignificantDistance(distance)) {
         //print("Distance = " + distance);
         dwm.SubtractMeter(distance);
         float reflectivity = ComputeReflectivity(distance);
         mSquareSet[mSquareSet.Count - 1].GetComponent<PaddleController>().EnableCollider();
         mSquareSet[mSquareSet.Count - 1].GetComponent<PaddleController>().SetReflectivity(reflectivity);
-      } else if (on_release && !dwm.HasEnoughMeter(distance)) {
+      } else if (on_release && (!dwm.HasEnoughMeter(distance) || !HasSignificantDistance(distance))) {
         Destroy(mSquareSet[mSquareSet.Count - 1]);
       }
     }
