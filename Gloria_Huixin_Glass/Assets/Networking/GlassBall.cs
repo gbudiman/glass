@@ -251,17 +251,17 @@ public class GlassBall : Photon.PunBehaviour {
 	//spawn collison effects
 	void OnCollisionEnter2D( Collision2D other ) 
 	{
-		if(particleEffects != null && other.gameObject.tag == "paddle" && is_picking_powerup == false)
+		if(particleEffects != null && other.gameObject.tag == "paddle")
 		{
 			
-			Debug.Log("collide" + is_picking_powerup);
+
 			Instantiate(particleEffects, transform.position, Quaternion.identity);
 		}
 
 		if(particleEffects != null && other.gameObject.tag == "paddle" && is_picking_powerup == true)
 		{
 
-			Debug.Log("collide" + is_picking_powerup);
+
 			Instantiate(explosionEffects, transform.position, Quaternion.identity);
 		}
 

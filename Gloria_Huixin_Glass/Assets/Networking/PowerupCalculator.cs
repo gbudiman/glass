@@ -3,10 +3,10 @@ using System.Collections;
 
 public class PowerupCalculator : MonoBehaviour {
   bool is_being_picked_up = false;
-	Animator animator;
+
 
 	void Start () {
-		animator = gameObject.GetComponent<Animator> ();
+		
 	}
 
   public bool IsBeingPickedUp {
@@ -17,8 +17,7 @@ public class PowerupCalculator : MonoBehaviour {
     GlassBall glass_ball = other.GetComponent<GlassBall>();
     if (glass_ball != null) {
       glass_ball.EnablePowerPickup(true);
-	animator.SetBool ("isPoweredUp", true);
-
+	
 
     }
   }
@@ -29,7 +28,7 @@ public class PowerupCalculator : MonoBehaviour {
     GlassBall glass_ball = other.GetComponent<GlassBall>();
     if (glass_ball != null) {
       is_being_picked_up = true;
-			animator.SetBool ("isPoweredUp", true);
+
 
 
     }
@@ -40,7 +39,6 @@ public class PowerupCalculator : MonoBehaviour {
     if (glass_ball != null) {
       glass_ball.EnablePowerPickup(false);
       is_being_picked_up = false;
-			animator.SetBool ("isPoweredUp", false);
 
 
     }
