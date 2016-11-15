@@ -15,7 +15,8 @@ public class RSGDestructor : MonoBehaviour {
 
   void Trigger() {
     breakshot = GameObject.FindObjectOfType<Breakshot>();
-    breakshot.Trigger();
+    //breakshot.Trigger();
+    breakshot.RSGHasCompleted();
   }
 
   void Destroy() {

@@ -42,6 +42,11 @@ public class Breakshot : MonoBehaviour {
     }
   }
 
+  public void RSGHasCompleted() {
+    Trigger();
+    practice_trigger = practice_trigger_base_interval;
+  }
+
   public bool IsPracticeArena {
     get { return is_practice_arena; }
     set { is_practice_arena = value; }

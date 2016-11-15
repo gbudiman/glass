@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class PaddleController : MonoBehaviour {
   PhotonView photon_view;
-  int hit_point;
+  public int hit_point;
   float reflectivity = 1;
   int last_rpc_sequence;
   SpriteRenderer sr;
@@ -65,11 +65,11 @@ public class PaddleController : MonoBehaviour {
     float current_time = Time.time;
     collision_tracker.TryGetValue(view_id, out last_collision);
 
-    print("Last collision with " + view_id + " occurred at " + last_collision + " [" + collision_tracker.Count + "]");
+    //print("Last collision with " + view_id + " occurred at " + last_collision + " [" + collision_tracker.Count + "]");
     if (current_time - last_collision < TRIGGER_MIN_LAPSE) {
       return true;
     } else {
-      print("Can take trigger");
+      //print("Can take trigger");
       collision_tracker[view_id] = current_time;
       return false;
     }
