@@ -265,6 +265,18 @@ public class GlassBall : Photon.PunBehaviour {
 			Instantiate(explosionEffects, transform.position, Quaternion.identity);
 		}
 
+    // Because of possible lag in network communication,
+    //   LERP-ed ball position may not necessarily collide with
+    //   the actual paddle.
+    // Instead, draw a raycast within certain boundary.
+    //   The first paddle that comes into contact should register
+    //   collision trigger.
+    if (other.gameObject.tag == "paddle") {
+      RaycastHit2D rhd = Physics2D.CircleCast(transform.position, 0.5f, GetComponent<Rigidbody2D>().velocity);
+      if (rhd && rhd.collider.gameObject.tag == "paddle") {
+        rhd.collider.gameObject.GetComponent<PaddleController>().CreateArtificialCollision(photon_view.viewID);
+      }
+    }
 	}
 
 

@@ -120,6 +120,11 @@ public class PaddleController : MonoBehaviour {
     PhotonNetwork.Destroy(gameObject);
   }
 
+  public void CreateArtificialCollision(int view_id) {
+    print("created artificial collission");
+    photon_view.RPC("DecreaseHitPoint", PhotonTargets.AllViaServer, view_id);
+  }
+
   void OnCollisionExit2D(Collision2D other) {
     if (other.gameObject.GetComponents<GlassBall>().Length > 0) {
       GlassBall other_ball = other.gameObject.GetComponent<GlassBall>();
