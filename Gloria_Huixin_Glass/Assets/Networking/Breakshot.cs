@@ -9,12 +9,19 @@ using System.Collections;
 /// </summary>
 public class Breakshot : MonoBehaviour {
   const float practice_trigger_base_interval = 1.0f;
+  const float one_sqrt = 0.7071f;
   public GameObject glass_ball_prefab;
   bool is_practice_arena = false;
+  bool allow_spawn;
+  Vector3[] init_v0 = new Vector3[2] { new Vector3(1, 1, 0), new Vector3(-1, 1, 0) };
+  Vector3[] init_v1 = new Vector3[2] { new Vector3(-1, -1, 0), new Vector3(1, -1, 0) };
+  Vector3[] movf_v1 = new Vector3[2] { new Vector3(one_sqrt, -one_sqrt), new Vector3(-one_sqrt, -one_sqrt, 0) };
+  Vector3[] movf_v0 = new Vector3[2] { new Vector3(-one_sqrt, one_sqrt), new Vector3(one_sqrt, one_sqrt, 0) };
 
   float practice_trigger;
 
   void Start() {
+    allow_spawn = true;
     practice_trigger = practice_trigger_base_interval;
   }
 
@@ -23,7 +30,8 @@ public class Breakshot : MonoBehaviour {
   }
 
   void TickPracticeArena() {
-    if (!is_practice_arena) { return; }
+    //if (!is_practice_arena) { return; }
+    if (!allow_spawn) { return; }
 
     practice_trigger -= Time.deltaTime;
 
@@ -37,6 +45,12 @@ public class Breakshot : MonoBehaviour {
     get { return is_practice_arena; }
     set { is_practice_arena = value; }
   }
+
+  int SelectDiceRoll() {
+    float v = Random.value;
+    return v > 0.5 ? 1 : 0;
+  }
+
   /// <summary>
   /// Launch ball at same speed, one in 135-degrees and another in 315-degrees direction
   /// This is the seed functionality
@@ -44,18 +58,22 @@ public class Breakshot : MonoBehaviour {
   public void Trigger() {
     GameObject g0 = null;
     GameObject g1 = null;
+    int dice_roll = SelectDiceRoll();
+
     if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      g0 = PhotonNetwork.Instantiate(glass_ball_prefab.name, new Vector3(1, 1, 0), Quaternion.identity, 0) as GameObject;
-      g1 = PhotonNetwork.Instantiate(glass_ball_prefab.name, new Vector3(-1, -1, 0), Quaternion.identity, 0) as GameObject;
+      //g0 = PhotonNetwork.Instantiate(glass_ball_prefab.name, new Vector3(1, 1, 0), Quaternion.identity, 0) as GameObject;
+      //g1 = PhotonNetwork.Instantiate(glass_ball_prefab.name, new Vector3(-1, -1, 0), Quaternion.identity, 0) as GameObject;
+      g0 = PhotonNetwork.Instantiate(glass_ball_prefab.name, init_v0[dice_roll], Quaternion.identity, 0) as GameObject;
+      g1 = PhotonNetwork.Instantiate(glass_ball_prefab.name, init_v1[dice_roll], Quaternion.identity, 0) as GameObject;
 
     } else if (!PhotonNetwork.connected) {
-      g0 = Instantiate(glass_ball_prefab, new Vector3(1, 1, 0), Quaternion.identity) as GameObject;
-      g1 = Instantiate(glass_ball_prefab, new Vector3(-1, -1, 0), Quaternion.identity) as GameObject;
+      g0 = Instantiate(glass_ball_prefab, init_v0[dice_roll], Quaternion.identity) as GameObject;
+      g1 = Instantiate(glass_ball_prefab, init_v1[dice_roll], Quaternion.identity) as GameObject;
     }
 
     if (!PhotonNetwork.connected || PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      Vector3 init_vector_0 = new Vector3(+1 / Mathf.Sqrt(2), -1 / Mathf.Sqrt(2), 0);
-      Vector3 init_vector_1 = new Vector3(-1 / Mathf.Sqrt(2), +1 / Mathf.Sqrt(2), 0);
+      Vector3 init_vector_0 = movf_v0[dice_roll];
+      Vector3 init_vector_1 = movf_v1[dice_roll];
 
       //Quaternion.Euler(0, 0, Time.time);
       //Quaternion.Euler()
@@ -76,8 +94,11 @@ public class Breakshot : MonoBehaviour {
   /// </summary>
   public void CheckEmptyArena() {
     if (!PhotonNetwork.connected || PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      if (GameObject.FindObjectsOfType<GlassBall>().Length == 0) {
-        Trigger();
+      if (GameObject.FindObjectsOfType<GlassBall>().Length < 7) {
+        allow_spawn = true;
+        //Trigger();
+      } else {
+        allow_spawn = false;
       }
     }
   }

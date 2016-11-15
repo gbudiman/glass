@@ -9,8 +9,8 @@ using System.Collections.Generic;
 /// </summary>
 public class GlassBall : Photon.PunBehaviour {
   WallController wcl;
-  public const float MAX_SPEED = 16;
-  public const float INITIAL_MAGNITUDE_SCALER = 4000.0f;
+  public const float MAX_SPEED = 12;
+  public const float INITIAL_MAGNITUDE_SCALER = 2000.0f;
   Rigidbody2D rb;
 
 	[SerializeField] GameObject particleEffects;

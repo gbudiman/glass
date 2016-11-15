@@ -7,7 +7,6 @@ public class PaddleController : MonoBehaviour {
   float reflectivity = 1;
   int last_rpc_sequence;
   SpriteRenderer sr;
-
   PowerUpManager pum;
 
 	// Use this for initialization
@@ -17,7 +16,8 @@ public class PaddleController : MonoBehaviour {
     hit_point = 1;
     UpdateVisual();
     last_rpc_sequence = 0;
-    pum = GetComponent<PowerUpManager>();
+    pum = GameObject.FindObjectOfType<GlassGameManager>().GetComponent<PowerUpManager>();
+
     //if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
     //  GetComponent<BoxCollider2D>().enabled = true;
     //}
@@ -80,6 +80,7 @@ public class PaddleController : MonoBehaviour {
       }
 
       if (pum.TripleShotQueued) {
+        print("check triple");
         other_ball.SetTripleShot();
         pum.DeQueueTripleShot();
       }

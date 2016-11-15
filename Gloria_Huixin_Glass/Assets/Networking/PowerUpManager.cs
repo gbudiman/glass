@@ -9,7 +9,7 @@ public class PowerUpManager : MonoBehaviour {
   WallPhysics bouncer_left;
   WallPhysics bouncer_right;
 
-  bool triple_shot_queued;
+  public bool triple_shot_queued;
   public bool TripleShotQueued {
     get { return triple_shot_queued; }
   }
