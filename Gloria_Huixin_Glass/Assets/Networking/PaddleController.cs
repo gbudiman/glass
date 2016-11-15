@@ -17,6 +17,7 @@ public class PaddleController : MonoBehaviour {
     hit_point = 1;
     UpdateVisual();
     last_rpc_sequence = 0;
+    pum = GetComponent<PowerUpManager>();
     //if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
     //  GetComponent<BoxCollider2D>().enabled = true;
     //}
@@ -26,13 +27,14 @@ public class PaddleController : MonoBehaviour {
 	void Update () {
 	}
 
-  public void RegisterPowerUpManager(PowerUpManager _pum) {
-    pum = _pum;
+  [PunRPC]
+  void ReinforceOverNetwork() {
+    hit_point = 3;
+    UpdateVisual();
   }
 
   public void Reinforce() {
-    hit_point = 3;
-    UpdateVisual();
+    photon_view.RPC("ReinforceOverNetwork", PhotonTargets.AllViaServer);
   }
 
   void UpdateVisual() {
@@ -84,10 +86,12 @@ public class PaddleController : MonoBehaviour {
 
       int rpc_sequence = (int)Random.Range(1, Mathf.Pow(2, 31));
       if (PhotonNetwork.connected /*&& PhotonNetwork.isMasterClient*/) {
+        
         if (photon_view.isMine) {
+          photon_view.RPC("DecreaseHitPoint", PhotonTargets.AllViaServer);
           //PhotonNetwork.Destroy(gameObject);
           //DecreaseHitPoint();
-          photon_view.RPC("DecreaseHitPoint", PhotonTargets.AllViaServer);
+          //photon_view.RPC("DecreaseHitPoint", PhotonTargets.AllViaServer);
         } else {
           //print("destroying over network: " + rpc_sequence);
           // photon_view.RPC("DestroyOverNetwork", PhotonTargets.Others);
@@ -110,7 +114,11 @@ public class PaddleController : MonoBehaviour {
 
     if (hit_point < 1) {
       if (PhotonNetwork.connected) {
-        PhotonNetwork.Destroy(gameObject);
+        if (photon_view.isMine) {
+          PhotonNetwork.Destroy(gameObject);
+        } else {
+          photon_view.RPC("DestroyOverNetwork", PhotonTargets.Others);
+        }
       } else {
         Destroy(gameObject, 0.01f);
       }

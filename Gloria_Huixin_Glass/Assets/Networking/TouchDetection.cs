@@ -20,9 +20,11 @@ public class TouchDetection: MonoBehaviour {
 
   PowerUpManager pum;
   bool temporarily_disabled;
+  PhotonView photon_view;
 
 	// Use this for initialization
 	void Start () {
+    photon_view = GetComponent<PhotonView>();
     pum = GameObject.FindObjectOfType<PowerUpManager>();
 		mSquareSet = new List<GameObject>();
     SetDrawingArea();
@@ -116,7 +118,7 @@ public class TouchDetection: MonoBehaviour {
         g = Instantiate(squarePrefab, firstTouchPosition, Quaternion.identity) as GameObject;
       }
 
-      g.GetComponent<PaddleController>().RegisterPowerUpManager(pum);
+      //g.GetComponent<PaddleController>().RegisterPowerUpManager(pum);
       mSquareSet.Add(g);
 
       //mSquareSet.Add((GameObject) Instantiate(squarePrefab, firstTouchPosition, Quaternion.identity));
