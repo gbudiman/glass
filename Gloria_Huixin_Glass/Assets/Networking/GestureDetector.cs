@@ -11,6 +11,9 @@ public class GestureDetector : MonoBehaviour {
   const float DRAWING_AREA_Y = -3.5f;
   const float SWIPE_LENGTH_THRESHOLD = 0.5f;
 
+	[SerializeField] GameObject background;
+	 Animator animator;
+
   PowerUpManager pum;
   
   //bool swipe_queued = false;
@@ -18,6 +21,7 @@ public class GestureDetector : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
     pum = GetComponentInParent<PowerUpManager>();
+		animator = background.GetComponent<Animator> ();
 	}
 	
 	// Update is called once per frame
@@ -95,19 +99,29 @@ public class GestureDetector : MonoBehaviour {
     print(swipe_direction + " | " + swipe_location);
 
     if (swipe_location == SwipeLocation.on_else) {
-      switch (swipe_direction) {
+      switch (swipe_direction) 
+	{
         case SwipeDirection.swipe_up: pum.TripleShot(); break;
         case SwipeDirection.swipe_down: pum.ActivateSafetyNet(); break;
         case SwipeDirection.swipe_left: 
         case SwipeDirection.swipe_right:
           bool inverse = PhotonNetwork.connected && PhotonNetwork.isMasterClient;
+
           SwipeDirection actual_swipe = swipe_direction;
-          if (inverse) {
-            switch (swipe_direction) {
-              case SwipeDirection.swipe_left: actual_swipe = SwipeDirection.swipe_right; break;
-              case SwipeDirection.swipe_right: actual_swipe = SwipeDirection.swipe_left; break;
+          if (inverse)
+		{
+            switch (swipe_direction)
+			{
+              case SwipeDirection.swipe_left: 
+						actual_swipe = SwipeDirection.swipe_right;
+						animator.SetBool ("isSlidingRight", true);
+						break;
+              case SwipeDirection.swipe_right: 
+						actual_swipe = SwipeDirection.swipe_left; 
+						animator.SetBool ("isSlidingRight", false);
+						break;
             }
-          }
+        }
           pum.SuperchargeWall(actual_swipe); break;
       }
     } 
