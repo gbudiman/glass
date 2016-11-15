@@ -29,6 +29,8 @@ public class GlassGameManager : Photon.PunBehaviour {
   ConnectionLogger connection_logger;
 
   void Awake() {
+    PhotonNetwork.sendRate = 10;
+    PhotonNetwork.sendRateOnSerialize = 10;
     PhotonNetwork.logLevel = PhotonLogLevel.ErrorsOnly;
   }
 

@@ -8,7 +8,8 @@ using System.Collections;
 ///   Breakshot should then "seed" balls when necessary.
 /// </summary>
 public class Breakshot : MonoBehaviour {
-  const float practice_trigger_base_interval = 1.0f;
+  const int balls_limit = 5;
+  const float practice_trigger_base_interval = 2.5f;
   const float one_sqrt = 0.7071f;
   public GameObject glass_ball_prefab;
   bool is_practice_arena = false;
@@ -94,7 +95,7 @@ public class Breakshot : MonoBehaviour {
   /// </summary>
   public void CheckEmptyArena() {
     if (!PhotonNetwork.connected || PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      if (GameObject.FindObjectsOfType<GlassBall>().Length < 7) {
+      if (GameObject.FindObjectsOfType<GlassBall>().Length <= balls_limit) {
         allow_spawn = true;
         //Trigger();
       } else {
