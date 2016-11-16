@@ -119,8 +119,10 @@ public class GestureDetector : MonoBehaviour {
 				}
 
 				if (actual_swipe == SwipeDirection.swipe_right) {
+					animator.SetBool("isSliding", true);
 					animator.SetBool ("isSlidingRight", true);
 				} else {
+					animator.SetBool("isSliding", true);
 					animator.SetBool ("isSlidingRight", false);
 				}
         pum.SuperchargeWall(actual_swipe); break;
@@ -157,4 +159,7 @@ public class GestureDetector : MonoBehaviour {
   //  swipe_queued = true;
   //  touch_detection.DisableForNextGesture(true);
   //}
+	void SetToIdle(){
+		animator.SetBool("isSliding", false);
+	}
 }

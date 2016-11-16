@@ -14,6 +14,7 @@ public class PowerupMeter : MonoBehaviour {
   bool enable_lerp = false;
 
   PowerUpUI powerup_ui;
+	//SpriteRenderer meterSprite;
 
   public float AvailablePowerPool {
     get { return current_amount / cardinal; }
@@ -23,6 +24,7 @@ public class PowerupMeter : MonoBehaviour {
     current_amount = 0f;
     powerup_ui = GameObject.FindObjectOfType<PowerUpUI>();
     UpdateDisplay();
+		//meterSprite = GetComponent<SpriteRenderer>();	
 	}
 	
 	// Update is called once per frame
@@ -34,8 +36,10 @@ public class PowerupMeter : MonoBehaviour {
     if (enable_lerp) {
       t_epsilon += 2 * Time.deltaTime;
       transform.position = new Vector3(Mathf.Lerp(current_position, target_position, t_epsilon), transform.position.y, transform.position.z);
-
+			//meterSprite.color = Color.Lerp(Color.white, Color.red, t_epsilon);
       if (t_epsilon > 1) {
+				print ("Bar Filled turn red");
+				// TODO: 
         enable_lerp = false;
       }
     }

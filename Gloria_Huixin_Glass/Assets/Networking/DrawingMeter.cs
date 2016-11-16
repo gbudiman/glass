@@ -13,16 +13,24 @@ public class DrawingMeter : MonoBehaviour {
   float target_position;
   float t_epsilon;
   bool enable_lerp = false;
+
+	SpriteRenderer meterSprite;
+
 	// Use this for initialization
 	void Start () {
-    current_meter = INITIAL_DRAWING_POWER;
-    UpdateDisplay(INITIAL_DRAWING_POWER);
+    	current_meter = INITIAL_DRAWING_POWER;
+    	UpdateDisplay(INITIAL_DRAWING_POWER);
+		meterSprite = GetComponent<SpriteRenderer>();	
 	}
 	
 	// Update is called once per frame
 	void Update () {
-    TickFillMeter();
-    SmoothUpdate();
+        TickFillMeter();
+        SmoothUpdate();
+//		if(enable_lerp){
+//			t_epsilon += 2 * Time.deltaTime;
+//			meterSprite.color = Color.Lerp(Color.white, Color.red, t_epsilon);
+//		}
 	}
 
   float MapMeterToPosition() {
@@ -43,7 +51,7 @@ public class DrawingMeter : MonoBehaviour {
       t_epsilon += 2 * Time.deltaTime;
       transform.position = new Vector3(Mathf.Lerp(current_position - cardinal, target_position - cardinal, t_epsilon), transform.position.y, transform.position.z);
       //transform.position = new Vector3(target_position - cardinal, transform.position.y, 0);
-
+		meterSprite.color = Color.Lerp(Color.white, Color.red, t_epsilon);
       if (t_epsilon > 1) {
         enable_lerp = false;
       }
