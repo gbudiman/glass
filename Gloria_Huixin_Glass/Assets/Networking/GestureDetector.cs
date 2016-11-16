@@ -12,7 +12,7 @@ public class GestureDetector : MonoBehaviour {
   const float SWIPE_LENGTH_THRESHOLD = 0.5f;
 
 	[SerializeField] GameObject background;
-	 Animator animator;
+	Animator animator;
 
   PowerUpManager pum;
   
@@ -99,30 +99,31 @@ public class GestureDetector : MonoBehaviour {
     print(swipe_direction + " | " + swipe_location);
 
     if (swipe_location == SwipeLocation.on_else) {
-      switch (swipe_direction) 
-	{
+      switch (swipe_direction) {
         case SwipeDirection.swipe_up: pum.TripleShot(); break;
         case SwipeDirection.swipe_down: pum.ActivateSafetyNet(); break;
-        case SwipeDirection.swipe_left: 
-        case SwipeDirection.swipe_right:
-          bool inverse = PhotonNetwork.connected && PhotonNetwork.isMasterClient;
+			case SwipeDirection.swipe_left: 
+			case SwipeDirection.swipe_right:
+				bool inverse = PhotonNetwork.connected && PhotonNetwork.isMasterClient;
 
-          SwipeDirection actual_swipe = swipe_direction;
-          if (inverse)
-		{
-            switch (swipe_direction)
-			{
-              case SwipeDirection.swipe_left: 
+				SwipeDirection actual_swipe = swipe_direction;
+				if (inverse) {
+					switch (swipe_direction) {
+					case SwipeDirection.swipe_left: 
 						actual_swipe = SwipeDirection.swipe_right;
-						animator.SetBool ("isSlidingRight", true);
 						break;
-              case SwipeDirection.swipe_right: 
+					case SwipeDirection.swipe_right: 
 						actual_swipe = SwipeDirection.swipe_left; 
-						animator.SetBool ("isSlidingRight", false);
 						break;
-            }
-        }
-          pum.SuperchargeWall(actual_swipe); break;
+					}
+				}
+
+				if (actual_swipe == SwipeDirection.swipe_right) {
+					animator.SetBool ("isSlidingRight", true);
+				} else {
+					animator.SetBool ("isSlidingRight", false);
+				}
+        pum.SuperchargeWall(actual_swipe); break;
       }
     } 
     //if (swipe != SwipeDirection.no_swipe) {
