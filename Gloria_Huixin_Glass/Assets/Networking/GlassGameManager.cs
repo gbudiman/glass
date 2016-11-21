@@ -36,7 +36,13 @@ public class GlassGameManager : Photon.PunBehaviour {
 
   // Use this for initialization
   void Start () {
-    Screen.SetResolution(450, 800, false);
+		#if UNITY_IPHONE
+		Screen.SetResolution(450, 800, true);
+
+		#else 
+		Screen.SetResolution(450, 800, false);
+		#endif
+
     photon_view = GetComponent<PhotonView>();
 
 		//if (PhotonNetwork.connected) {

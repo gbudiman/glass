@@ -31,7 +31,13 @@ public class Launcher : Photon.PunBehaviour {
 
 	// Use this for initialization
 	void Start () {
-    Screen.SetResolution(450, 800, false);
+		#if UNITY_IPHONE
+		Screen.SetResolution(450, 800, true);
+
+		#else 
+		Screen.SetResolution(450, 800, false);
+		#endif
+    
 	}
 	
   public void Connect() {
