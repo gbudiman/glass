@@ -22,12 +22,15 @@ public class TouchDetection: MonoBehaviour {
   bool temporarily_disabled;
   PhotonView photon_view;
 
+  TutorialController tutorial;
+
 	// Use this for initialization
 	void Start () {
     photon_view = GetComponent<PhotonView>();
     pum = GameObject.FindObjectOfType<PowerUpManager>();
 		mSquareSet = new List<GameObject>();
     SetDrawingArea();
+    tutorial = GameObject.FindObjectOfType<TutorialController>();
 	}
 
   public void RegisterPowerupMeter(DrawingMeter _dwm) {
@@ -146,6 +149,10 @@ public class TouchDetection: MonoBehaviour {
         float reflectivity = ComputeReflectivity(distance);
         mSquareSet[mSquareSet.Count - 1].GetComponent<PaddleController>().EnableCollider();
         mSquareSet[mSquareSet.Count - 1].GetComponent<PaddleController>().SetReflectivity(reflectivity);
+
+        if (tutorial != null) {
+          tutorial.ProceedPaddleDrawn();
+        }
       } else if (on_release && (!dwm.HasEnoughMeter(distance) || !IsInsideDrawingArea(firstReleasePosition) || !HasSignificantDistance(distance))) {
         if (PhotonNetwork.connected) {
           PhotonNetwork.Destroy(mSquareSet[mSquareSet.Count - 1]);

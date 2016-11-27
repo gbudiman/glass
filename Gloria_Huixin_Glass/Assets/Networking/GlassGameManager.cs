@@ -23,6 +23,8 @@ public class GlassGameManager : Photon.PunBehaviour {
   public GameObject drawing_meter_prefab;
   public GameObject fake_paddles_prefab;
 
+  public bool is_tutorial_level = false;
+
   PhotonView photon_view;
 
   ScoreTracker this_team_score_tracker;
@@ -73,20 +75,31 @@ public class GlassGameManager : Photon.PunBehaviour {
 
     InitializeConnectionLogger();
     InitializePowerUpBlock();
-    InitializePowerUpSpawner();
+
+    if (!is_tutorial_level) {
+      InitializePowerUpSpawner();
+    }
     InitializePowerUpMeter();
-    InitializeBreakshot();
+
+    if (!is_tutorial_level) {
+      InitializeBreakshot();
+    }
+
     InitializeRSG();
     InitializeSafetyNet();
     InitializeJoinPack();
     InitializeDrawingMeter();
     InitializePowerUpManager();
-    InitializeFakePaddles();
+
+    if (!is_tutorial_level) {
+      InitializeFakePaddles();
+    }
   }
 
-  void InitializeFakePaddles() {
+  public void InitializeFakePaddles() {
     if (!PhotonNetwork.connected || PhotonNetwork.connected && PhotonNetwork.playerList.Length == 1) {
-      Instantiate(fake_paddles_prefab, new Vector3(0, -5.0f, 0), Quaternion.identity);
+      Vector3 position = new Vector3(0, (is_tutorial_level ? 1 : -1) * 5.0f, 0);
+      Instantiate(fake_paddles_prefab, position, Quaternion.identity);
     }
   }
 
@@ -156,7 +169,7 @@ public class GlassGameManager : Photon.PunBehaviour {
     }
   }
 
-  void InitializeBreakshot() {
+  public void InitializeBreakshot() {
     Breakshot preexisting = GameObject.FindObjectOfType<Breakshot>();
     if (preexisting) { Destroy(preexisting); }
 
@@ -305,6 +318,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   }
 
   public override void OnPhotonPlayerConnected(PhotonPlayer other_player) {
+    if (is_tutorial_level) { return; }
     Debug.Log("Player connected: " + other_player + " with id " + other_player.ID);
 
     // This is the cause of zombie objects

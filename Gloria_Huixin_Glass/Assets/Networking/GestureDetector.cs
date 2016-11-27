@@ -15,6 +15,8 @@ public class GestureDetector : MonoBehaviour {
 	Animator animator;
 
   PowerUpManager pum;
+
+  bool temporarily_disabled = false;
   
   //bool swipe_queued = false;
   //PowerUpElement pel;
@@ -26,7 +28,7 @@ public class GestureDetector : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-    touch_detection = GameObject.FindObjectOfType<TouchDetection>();
+    //touch_detection = GameObject.FindObjectOfType<TouchDetection>();
 	}
 
   void OnMouseDown() {
@@ -38,6 +40,10 @@ public class GestureDetector : MonoBehaviour {
 
   void OnMouseUp() {
     DetectSwipe();
+  }
+
+  public void DisableTemporarily(bool val) {
+    temporarily_disabled = val;
   }
 
   SwipeLocation DetectSwipeLocation() {
@@ -89,6 +95,7 @@ public class GestureDetector : MonoBehaviour {
   }
 
   void DetectSwipe() {
+    if (temporarily_disabled) { return; }
     float pos_x = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
     float pos_y = Camera.main.ScreenToWorldPoint(Input.mousePosition).y;
 
