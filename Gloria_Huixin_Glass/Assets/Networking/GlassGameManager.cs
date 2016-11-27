@@ -21,6 +21,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   public GameObject safety_net_prefab;
   public GameObject join_pack_prefab;
   public GameObject drawing_meter_prefab;
+  public GameObject fake_paddles_prefab;
 
   PhotonView photon_view;
 
@@ -80,6 +81,13 @@ public class GlassGameManager : Photon.PunBehaviour {
     InitializeJoinPack();
     InitializeDrawingMeter();
     InitializePowerUpManager();
+    InitializeFakePaddles();
+  }
+
+  void InitializeFakePaddles() {
+    if (!PhotonNetwork.connected || PhotonNetwork.connected && PhotonNetwork.playerList.Length == 1) {
+      Instantiate(fake_paddles_prefab, new Vector3(0, -5.0f, 0), Quaternion.identity);
+    }
   }
 
   void InitializePowerUpManager() {
@@ -140,6 +148,10 @@ public class GlassGameManager : Photon.PunBehaviour {
       GameObject g = Instantiate(rsg_prefab, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
       if (PhotonNetwork.isMasterClient) {
         UnInvertObject(g);
+      }
+    } else {
+      foreach(ScoreTracker st in FindObjectsOfType<ScoreTracker>()) {
+        st.SetGameHasStarted(true);
       }
     }
   }
