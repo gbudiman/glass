@@ -73,10 +73,9 @@ public class GlassGameManager : Photon.PunBehaviour {
     InitializeScoreTrackers();
     InitializeWalls();
 
-    InitializeConnectionLogger();
-    InitializePowerUpBlock();
-
     if (!is_tutorial_level) {
+      InitializeConnectionLogger();
+      InitializePowerUpBlock();
       InitializePowerUpSpawner();
     }
     InitializePowerUpMeter();
@@ -191,7 +190,7 @@ public class GlassGameManager : Photon.PunBehaviour {
     }
   }
 
-  void InitializePowerUpSpawner() {
+  public void InitializePowerUpSpawner() {
     if (!PhotonNetwork.connected) {
       Instantiate(powerup_spawner, new Vector3(0, 0, 0), Quaternion.identity);
     } else if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class TutorialController : MonoBehaviour {
@@ -11,7 +12,7 @@ public class TutorialController : MonoBehaviour {
   enum Stage { basic_control, lets_draw, paused,
                paddle_drawn, paddle_drawn_2, paddle_drawn_3, paddle_drawn_4, paddle_drawn_5,
                with_breakshot,
-               more_challenge, more_challenge_2, more_challenge_3,
+               more_challenge, more_challenge_2, more_challenge_3, more_challenge_4, more_challenge_5,
                getting_the_hang, getting_the_hang_2, getting_the_hang_3 };
   State state;
   Stage stage;
@@ -23,6 +24,7 @@ public class TutorialController : MonoBehaviour {
   GestureDetector gesture_detector;
   GlassGameManager game_manager;
   int paddle_drawn_count;
+  public GameObject next_button;
 
 	// Use this for initialization
 	void Start () {
@@ -34,10 +36,11 @@ public class TutorialController : MonoBehaviour {
     gesture_detector.DisableTemporarily(true);
     guide_text = guide_text_object.GetComponent<Text>();
     guide_text.color = new Color(guide_text.color.r, guide_text.color.g, guide_text.color.b, 0);
-    guide_text.text = "Let's learn basic control";
+    guide_text.text = "Let's learn some basic control";
     state = State.fading_in;
     stage = Stage.basic_control;
     stage_elapsed = stage_interval;
+    next_button.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -79,6 +82,7 @@ public class TutorialController : MonoBehaviour {
           stage = Stage.with_breakshot;
           state = State.fading_out;
           game_manager.InitializeBreakshot();
+          print("starting score");
           foreach (ScoreTracker st in FindObjectsOfType<ScoreTracker>()) {
             st.SetGameHasStarted(true);
           }
@@ -90,6 +94,14 @@ public class TutorialController : MonoBehaviour {
         case Stage.more_challenge_2:
           stage = Stage.more_challenge_3;
           state = State.fading_out;
+          break;
+        case Stage.more_challenge_3:
+          stage = Stage.more_challenge_4;
+          state = State.fading_out;
+          break;
+        case Stage.more_challenge_4:
+          stage = Stage.more_challenge_5;
+          state = State.fading_out;
           game_manager.InitializeFakePaddles();
           break;
         case Stage.getting_the_hang:
@@ -97,6 +109,7 @@ public class TutorialController : MonoBehaviour {
           state = State.fading_out;
           break;
         case Stage.getting_the_hang_2:
+          next_button.SetActive(true);
           stage = Stage.getting_the_hang_3;
           state = State.fading_out;
           break;
@@ -117,11 +130,13 @@ public class TutorialController : MonoBehaviour {
       case Stage.paddle_drawn_4: latched_string = "Shorter paddle is more risky\nBut it reflects faster balls"; break;
       case Stage.paddle_drawn_5: latched_string = "Let's try it.\nGet ready..."; break;
       case Stage.with_breakshot: latched_string = ""; break;
-      case Stage.more_challenge_2: latched_string = "Let's add some challenge\nImagine this is your opponent"; break;
-      case Stage.more_challenge_3: latched_string = ""; break;
+      case Stage.more_challenge_2: latched_string = "See the score on the left?\nThey increment as balls leave the arena"; break;
+      case Stage.more_challenge_3: latched_string = "Your objective is to score more goals\nthan your opponent"; break;
+      case Stage.more_challenge_4: latched_string = "Let's add some challenge\nImagine this is your opponent..."; break;
+      case Stage.more_challenge_5: latched_string = ""; break;
       case Stage.getting_the_hang: latched_string = ""; break;
       case Stage.getting_the_hang_2: latched_string = "Looking great\nYou're getting the hang of it..."; break;
-      case Stage.getting_the_hang_3: latched_string = "Press next when you're\nready to proceed"; break;
+      case Stage.getting_the_hang_3: latched_string = "Press Next button above\nwhen you'reready to proceed"; break;
     }
   }
 
@@ -165,19 +180,21 @@ public class TutorialController : MonoBehaviour {
     } else if (stage == Stage.with_breakshot) {
       paddle_drawn_count++;
 
-      if (paddle_drawn_count == 7) {
+      if (paddle_drawn_count == 3) {
         stage = Stage.more_challenge;
       }
     } else if (stage == Stage.more_challenge) {
       paddle_drawn_count = 0;
-    } else if (stage == Stage.more_challenge_3) {
+    } else if (stage == Stage.more_challenge_5) {
       paddle_drawn_count++;
 
-      if (paddle_drawn_count == 7) {
+      if (paddle_drawn_count == 3) {
         stage = Stage.getting_the_hang;
       }
     }
   }
 
-  
+  public void NextTutorial() {
+    SceneManager.LoadScene("Tutorial 2 - PowerUps");
+  }
 }

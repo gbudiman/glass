@@ -16,6 +16,10 @@ public class PowerupMeter : MonoBehaviour {
   PowerUpUI powerup_ui;
 	//SpriteRenderer meterSprite;
 
+  public float CurrentAmount {
+    get { return current_amount / cardinal; }
+  }
+
   public float AvailablePowerPool {
     get { return current_amount / cardinal; }
   }
@@ -45,11 +49,16 @@ public class PowerupMeter : MonoBehaviour {
     }
   }
 
+  public void FillToFull() {
+    current_amount = Mathf.Clamp(10f, 0, cardinal);
+    UpdateDisplay();
+  }
+
   public void Add() {
     current_amount += pickup_tick_unit;
     current_amount = Mathf.Clamp(current_amount, 0, cardinal);
     UpdateDisplay();
-    powerup_ui.UpdatePowerRequirement();
+    //powerup_ui.UpdatePowerRequirement();
   }
 
   /// <summary>
@@ -66,7 +75,7 @@ public class PowerupMeter : MonoBehaviour {
   public void ExecuteSubtract(int _amount) {
     current_amount -= _amount * cardinal / 4;
     UpdateDisplay();
-    powerup_ui.UpdatePowerRequirement();
+    //powerup_ui.UpdatePowerRequirement();
   }
 
   void UpdateDisplay() {

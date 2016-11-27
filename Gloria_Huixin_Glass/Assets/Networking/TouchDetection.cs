@@ -23,6 +23,7 @@ public class TouchDetection: MonoBehaviour {
   PhotonView photon_view;
 
   TutorialController tutorial;
+  TutorialPowerUp tutorial_powerup;
 
 	// Use this for initialization
 	void Start () {
@@ -31,6 +32,7 @@ public class TouchDetection: MonoBehaviour {
 		mSquareSet = new List<GameObject>();
     SetDrawingArea();
     tutorial = GameObject.FindObjectOfType<TutorialController>();
+    tutorial_powerup = GameObject.FindObjectOfType<TutorialPowerUp>();
 	}
 
   public void RegisterPowerupMeter(DrawingMeter _dwm) {
@@ -152,6 +154,10 @@ public class TouchDetection: MonoBehaviour {
 
         if (tutorial != null) {
           tutorial.ProceedPaddleDrawn();
+        }
+
+        if (tutorial_powerup != null) {
+          tutorial_powerup.ProceedPaddleDrawn();
         }
       } else if (on_release && (!dwm.HasEnoughMeter(distance) || !IsInsideDrawingArea(firstReleasePosition) || !HasSignificantDistance(distance))) {
         if (PhotonNetwork.connected) {

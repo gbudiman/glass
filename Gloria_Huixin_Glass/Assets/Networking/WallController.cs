@@ -41,6 +41,12 @@ public class WallController : MonoBehaviour {
           photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.Others, 1, this_team_st.Score);
         }
       }
+    } else {
+      if (y_pos > 0) {
+        this_team_st.AddScore();
+      } else {
+        other_team_st.AddScore();
+      }
     }
   }
 

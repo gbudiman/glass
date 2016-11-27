@@ -82,7 +82,13 @@ public class PaddleController : MonoBehaviour {
   }
 
   public void Reinforce() {
-    photon_view.RPC("ReinforceOverNetwork", PhotonTargets.AllViaServer);
+    if (PhotonNetwork.connected) {
+      photon_view.RPC("ReinforceOverNetwork", PhotonTargets.AllViaServer);
+    } else {
+      print("reinforcing...");
+      hit_point = 3;
+      UpdateVisual();
+    }
   }
 
   void UpdateVisual() {

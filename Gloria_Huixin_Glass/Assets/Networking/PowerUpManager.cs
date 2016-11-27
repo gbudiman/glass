@@ -2,21 +2,37 @@
 using System.Collections;
 
 public class PowerUpManager : MonoBehaviour {
-  const bool ENABLE_CONSTRAINT = false;
+  const bool ENABLE_CONSTRAINT = true;
   const float SUPERCHARGE_BASE_TIME = 5.0f;
   PowerupMeter pm;
 
   WallPhysics bouncer_left;
   WallPhysics bouncer_right;
 
+  TutorialPowerUp tutorial_power_up;
+
   public bool triple_shot_queued;
   public bool TripleShotQueued {
     get { return triple_shot_queued; }
   }
+
+  public bool allow_reinforced = true;
+  public bool allow_supercharge = true;
+  public bool allow_safety = true;
+  public bool allow_triple_shot = true;
+
+  public void DisableAllPowerUp() {
+    allow_reinforced = false;
+    allow_supercharge = false;
+    allow_safety = false;
+    allow_triple_shot = false;
+  }
+
   // Use this for initialization
   void Start () {
     InitializeBouncers();
     triple_shot_queued = false;
+    tutorial_power_up = GameObject.FindObjectOfType<TutorialPowerUp>();
 	}
 
   void InitializeBouncers() {
@@ -43,7 +59,7 @@ public class PowerUpManager : MonoBehaviour {
       InitializeBouncers();
     }
 
-    if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost)) {
+    if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost) && allow_supercharge) {
       pm.ExecuteSubtract(cost);
       switch (swipe) {
         case GestureDetector.SwipeDirection.swipe_right:
@@ -59,7 +75,7 @@ public class PowerUpManager : MonoBehaviour {
   public void ActivateSafetyNet() {
     int cost = 3;
 
-    if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost)) {
+    if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost) && allow_safety) {
       pm.ExecuteSubtract(cost);
       foreach (SafetyNet sfn in GameObject.FindObjectsOfType<SafetyNet>()) {
         bool is_mine = sfn.GetComponent<PhotonView>().isMine;
@@ -75,16 +91,21 @@ public class PowerUpManager : MonoBehaviour {
   public void ReinforcePaddle(GameObject g) {
     int cost = 1;
 
-    if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost)) {
+    if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost) && allow_reinforced) {
       pm.ExecuteSubtract(cost);
       g.GetComponent<PaddleController>().Reinforce();
+
+      if (tutorial_power_up != null) {
+        tutorial_power_up.ProceedReinforced();
+      }
     }
   }
 
   public void TripleShot() {
-    int cost = 1;
+    int cost = 3;
 
-    if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost)) {
+    print("here " + pm.TestSubtract(cost) + " && " + allow_triple_shot);
+    if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost) && allow_triple_shot) {
       print("Power up queued");
       pm.ExecuteSubtract(cost);
       triple_shot_queued = true;

@@ -38,6 +38,7 @@ public class ScoreTracker : MonoBehaviour {
   }
 
   public void AddScore() {
+    print("Adding score " + game_has_started);
     if (!game_has_started) { return; }
     score++;
     UpdateScoreDisplay();
