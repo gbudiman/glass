@@ -82,6 +82,10 @@ public class PowerUpManager : MonoBehaviour {
         if (!PhotonNetwork.connected || is_mine) {
           sfn.SetEnable(true);
           //powerup_meter.ExecuteSubtract(1);
+
+          if (tutorial_power_up != null) {
+            tutorial_power_up.ProceedSafetyNetActivated();
+          }
           break;
         }
       }
@@ -109,10 +113,18 @@ public class PowerUpManager : MonoBehaviour {
       print("Power up queued");
       pm.ExecuteSubtract(cost);
       triple_shot_queued = true;
+
+      if (tutorial_power_up != null) {
+        tutorial_power_up.ProceedTripleShot();
+      }
     }
   }
 
   public void DeQueueTripleShot() {
     triple_shot_queued = false;
+
+    if (tutorial_power_up != null) {
+      tutorial_power_up.ProceedTripleShotLaunched();
+    }
   }
 }

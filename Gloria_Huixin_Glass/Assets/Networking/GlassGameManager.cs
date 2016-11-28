@@ -142,12 +142,12 @@ public class GlassGameManager : Photon.PunBehaviour {
 
     if (PhotonNetwork.connected) {
       GameObject g = null;
-      g = PhotonNetwork.Instantiate(safety_net_prefab.name, new Vector3(0, -2, 0), Quaternion.identity, 0);
+      g = PhotonNetwork.Instantiate(safety_net_prefab.name, new Vector3(0, -2.5f, 0), Quaternion.identity, 0);
       if (PhotonNetwork.isMasterClient) {
         UnInvertObject(g);
       }
     } else {
-      Instantiate(safety_net_prefab, new Vector3(0, -2, 0), Quaternion.identity);
+      Instantiate(safety_net_prefab, new Vector3(0, -2.5f, 0), Quaternion.identity);
     }
 
   }

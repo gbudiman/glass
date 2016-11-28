@@ -14,7 +14,12 @@ public class TutorialPowerUp : MonoBehaviour {
                watch_collected, watch_collected_2, watch_collected_3, watch_collected_4,
                learn_reinforced,
                reinforced, reinforced_2, reinforced_3, reinforced_4, reinforced_5,
-               triple_shot_intro, triple_shot_1, triple_shot_2, triple_shot_3};
+               triple_shot_intro, triple_shot_1, triple_shot_2, triple_shot_3,
+               triple_wait,
+               triple_launched, triple_launched_2, triple_launched_3, triple_launched_4, triple_launched_5,
+               defensive_intro, defensive_intro_2, defensive_intro_3,
+               safe_activated, safe_activated_1, safe_activated_2, safe_activated_3,
+               supercharge_intro };
   State state;
   Stage stage;
 
@@ -55,7 +60,7 @@ public class TutorialPowerUp : MonoBehaviour {
     sprite_renderer.enabled = false;
 
     // Fast jump for test mode
-    stage = Stage.triple_shot_1;
+    stage = Stage.triple_launched_3;
     state = State.fading_out;
     game_manager.InitializeBreakshot();
     game_manager.InitializePowerUpSpawner();
@@ -139,12 +144,63 @@ public class TutorialPowerUp : MonoBehaviour {
           break;
         case Stage.triple_shot_2:
           powerup_meter.FillToFull();
+          GameObject.Find("slide_up_gesture").GetComponent<SpriteRenderer>().enabled = true;
+          powerup_manager.allow_triple_shot = true;
           stage = Stage.triple_shot_3;
           state = State.fading_out;
           break;
         case Stage.triple_shot_3:
-          GameObject.Find("slide_up_gesture").GetComponent<SpriteRenderer>().enabled = true;
-          powerup_manager.allow_triple_shot = true;
+          break;
+        case Stage.triple_launched:
+          stage = Stage.triple_launched_2;
+          state = State.fading_out;
+          break;
+        case Stage.triple_launched_2:
+          stage = Stage.triple_launched_3;
+          state = State.fading_out;
+          break;
+        case Stage.triple_launched_3:
+          next_button.SetActive(true);
+          stage = Stage.triple_launched_4;
+          state = State.fading_out;
+          break;
+        case Stage.triple_launched_4:
+          stage = Stage.triple_launched_5;
+          state = State.fading_out;
+          break;
+        case Stage.defensive_intro:
+          game_manager.InitializeFakePaddles();
+          powerup_meter.FillToFull();
+          stage = Stage.defensive_intro_2;
+          state = State.fading_out;
+          break;
+        case Stage.defensive_intro_2:
+          powerup_manager.allow_safety = true;
+          sprite_renderer.transform.position = new Vector3(4f, sprite_renderer.transform.position.y, 0);
+          sprite_renderer.enabled = true;
+          GameObject go_slide_up = GameObject.Find("slide_up_gesture");
+          go_slide_up.transform.rotation = Quaternion.Euler(0, 0, 180);
+          go_slide_up.GetComponent<SpriteRenderer>().enabled = true;
+          stage = Stage.defensive_intro_3;
+          state = State.fading_out;
+          break;
+        case Stage.defensive_intro_3:
+          
+          break;
+        case Stage.safe_activated:
+          stage = Stage.safe_activated_1;
+          state = State.fading_out;
+          break;
+        case Stage.safe_activated_1:
+          next_button.SetActive(true);
+          stage = Stage.safe_activated_2;
+          state = State.fading_out;
+          break;
+        case Stage.safe_activated_2:
+          stage = Stage.safe_activated_3;
+          state = State.fading_out;
+          break;
+        case Stage.safe_activated_3:
           break;
       }
 
@@ -178,6 +234,20 @@ public class TutorialPowerUp : MonoBehaviour {
       case Stage.triple_shot_1: latched_string = "It's called Triple Shot"; break;
       case Stage.triple_shot_2: latched_string = "I'll top-up the Power Up for you..."; break;
       case Stage.triple_shot_3: latched_string = "Now make slide-up gesture"; break;
+      case Stage.triple_wait: latched_string = "Good! Now draw a paddle\nif you haven't already"; break;
+      case Stage.triple_launched: latched_string = "Whoa! Did you see that?\nA ball split into 3!"; break;
+      case Stage.triple_launched_2: latched_string = "It's guaranteed to catch\nyour opponent off-guard"; break;
+      case Stage.triple_launched_3: latched_string = "But watch out, it costs\n3/4 of Power Up"; break;
+      case Stage.triple_launched_4: latched_string = "Click Next whenever\nyou're ready to proceed"; break;
+      case Stage.triple_launched_5: latched_string = ""; break;
+      case Stage.defensive_intro: latched_string = "Now let's see about\ndefensive Power Up"; break;
+      case Stage.defensive_intro_2: latched_string = "As usual, I'll top-up\nthe Power Up for you"; break;
+      case Stage.defensive_intro_3: latched_string = "Now make a downward gesture"; break;
+      case Stage.safe_activated: latched_string = "See all the incoming balls\nare slowing down?"; break;
+      case Stage.safe_activated_1: latched_string = "It costs 3/4 Power Up\nand lasts for 5 seconds"; break;
+      case Stage.safe_activated_2: latched_string = "Press Next when you're ready\n"; break;
+      case Stage.safe_activated_3: latched_string = ""; break;
+      case Stage.supercharge_intro: latched_string = "Last Powerup\nSlide either left or right"; break;
     }
   }
 
@@ -218,6 +288,25 @@ public class TutorialPowerUp : MonoBehaviour {
         stage_elapsed = stage_interval;
         sprite_renderer.transform.position = new Vector3(4f, sprite_renderer.transform.position.y, 0);
         break;
+      case Stage.triple_launched_4:
+      case Stage.triple_launched_5:
+        PowerUpSpawner powerup_spawner = GameObject.FindObjectOfType<PowerUpSpawner>();
+        powerup_spawner.enabled = false;
+        foreach (PowerupCalculator puc in GameObject.FindObjectsOfType<PowerupCalculator>()) {
+          Destroy(puc.gameObject);
+        }
+
+        
+        stage = Stage.defensive_intro;
+        state = State.fading_out;
+        stage_elapsed = stage_interval;
+        break;
+      case Stage.safe_activated_2:
+      case Stage.safe_activated_3:
+        sprite_renderer.transform.position = new Vector3(2.68f, sprite_renderer.transform.position.y, 0);
+        stage = Stage.supercharge_intro;
+        state = State.fading_out;
+        break;
     }
   }
 
@@ -242,6 +331,32 @@ public class TutorialPowerUp : MonoBehaviour {
       stage = Stage.reinforced;
       state = State.fading_out;
       stage_elapsed = stage_interval;
+    }
+  }
+
+  public void ProceedTripleShot() {
+    if (stage == Stage.triple_shot_3) {
+      stage = Stage.triple_wait;
+      state = State.fading_out;
+      stage_elapsed = stage_interval;
+      GameObject.Find("slide_up_gesture").GetComponent<SpriteRenderer>().enabled = false;
+    }
+  }
+
+  public void ProceedTripleShotLaunched() {
+    if (stage == Stage.triple_wait) {
+      stage = Stage.triple_launched;
+      state = State.fading_out;
+      stage_elapsed = stage_interval;
+    }
+  }
+
+  public void ProceedSafetyNetActivated() {
+    if (stage == Stage.defensive_intro_3 || stage == Stage.defensive_intro_2) {
+      stage = Stage.safe_activated;
+      state = State.fading_out;
+      stage_elapsed = stage_interval;
+      GameObject.Find("slide_up_gesture").GetComponent<SpriteRenderer>().enabled = false;
     }
   }
 }
