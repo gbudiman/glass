@@ -119,8 +119,10 @@ public class TouchDetection: MonoBehaviour {
       GameObject g;
       if (PhotonNetwork.connected) {
         g = PhotonNetwork.Instantiate(squarePrefab.name, firstTouchPosition, Quaternion.identity, 0) as GameObject;
+				//g.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 100);
       } else {
         g = Instantiate(squarePrefab, firstTouchPosition, Quaternion.identity) as GameObject;
+				//g.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 100);
       }
 
       //g.GetComponent<PaddleController>().RegisterPowerUpManager(pum);
@@ -139,7 +141,7 @@ public class TouchDetection: MonoBehaviour {
 
 
       if (dwm.HasEnoughMeter(distance) && IsInsideDrawingArea(firstReleasePosition) && HasSignificantDistance(distance)) {
-        mSquareSet[mSquareSet.Count - 1].GetComponent<SpriteRenderer>().color = new Color(0xff, 0xff, 0xff, 1.0f);
+        mSquareSet[mSquareSet.Count - 1].GetComponent<SpriteRenderer>().color = new Color(0xff, 0xff, 0xff, 0.8f);
       } else {
         mSquareSet[mSquareSet.Count-1].GetComponent<SpriteRenderer>().color = new Color(0x80, 0x80, 0x80, 0.5f);
       }
