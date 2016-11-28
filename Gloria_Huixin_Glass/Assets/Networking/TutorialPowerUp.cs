@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class TutorialPowerUp : MonoBehaviour {
+public class TutorialPowerUp : Photon.PunBehaviour {
   public GameObject guide_text_object;
   const float opacity_step = 0.05f;
   const float stage_interval = 3.0f;
@@ -19,7 +19,8 @@ public class TutorialPowerUp : MonoBehaviour {
                triple_launched, triple_launched_2, triple_launched_3, triple_launched_4, triple_launched_5,
                defensive_intro, defensive_intro_2, defensive_intro_3,
                safe_activated, safe_activated_1, safe_activated_2, safe_activated_3,
-               supercharge_intro };
+               supercharge_intro, supercharge_intro_2, supercharge_intro_3, supercharge_intro_4, supercharge_intro_5
+  };
   State state;
   Stage stage;
 
@@ -34,6 +35,7 @@ public class TutorialPowerUp : MonoBehaviour {
   SpriteRenderer sprite_renderer;
   int paddle_drawn_count;
   public GameObject next_button;
+  public GameObject quit_button;
 
   bool paddle_drawn = false;
 
@@ -55,17 +57,23 @@ public class TutorialPowerUp : MonoBehaviour {
     stage = Stage.intro;
     stage_elapsed = stage_interval;
     next_button.SetActive(false);
+    quit_button.SetActive(false);
     touch_detection.DisableForNextGesture(true);
     powerup_manager.DisableAllPowerUp();
     sprite_renderer.enabled = false;
 
     // Fast jump for test mode
-    stage = Stage.triple_launched_3;
+    stage = Stage.supercharge_intro_3;
     state = State.fading_out;
     game_manager.InitializeBreakshot();
     game_manager.InitializePowerUpSpawner();
     touch_detection.DisableForNextGesture(false);
     gesture_detector.DisableTemporarily(false);
+    PowerUpSpawner powerup_spawner = GameObject.FindObjectOfType<PowerUpSpawner>();
+    powerup_spawner.enabled = false;
+    foreach (PowerupCalculator puc in GameObject.FindObjectsOfType<PowerupCalculator>()) {
+      Destroy(puc.gameObject);
+    }
   }
 	
 	// Update is called once per frame
@@ -202,6 +210,21 @@ public class TutorialPowerUp : MonoBehaviour {
           break;
         case Stage.safe_activated_3:
           break;
+        case Stage.supercharge_intro_2:
+          stage = Stage.supercharge_intro_3;
+          state = State.fading_out;
+          break;
+        case Stage.supercharge_intro_3:
+          stage = Stage.supercharge_intro_4;
+          state = State.fading_out;
+          break;
+        case Stage.supercharge_intro_4:
+          next_button.GetComponentInChildren<Text>().text = "Quick Play";
+          next_button.SetActive(true);
+          quit_button.SetActive(true);
+          stage = Stage.supercharge_intro_5;
+          state = State.fading_out;
+          break;
       }
 
       
@@ -248,6 +271,10 @@ public class TutorialPowerUp : MonoBehaviour {
       case Stage.safe_activated_2: latched_string = "Press Next when you're ready\n"; break;
       case Stage.safe_activated_3: latched_string = ""; break;
       case Stage.supercharge_intro: latched_string = "Last Powerup\nSlide either left or right"; break;
+      case Stage.supercharge_intro_2: latched_string = "That wall is now Supercharged\nfor 10 seconds"; break;
+      case Stage.supercharge_intro_3: latched_string = "It will accelerate any balls\nbumping against it"; break;
+      case Stage.supercharge_intro_4: latched_string = "Carefully use it against your\nlefty or right opponent"; break;
+      case Stage.supercharge_intro_5: latched_string = "That's all the basics\nYou're ready to go!"; break;
     }
   }
 
@@ -279,6 +306,10 @@ public class TutorialPowerUp : MonoBehaviour {
     }
   }
 
+  public void QuitTutorial() {
+    SceneManager.LoadScene(0);
+  }
+
   public void NextTutorial() {
     next_button.SetActive(false);
     switch (stage) {
@@ -303,9 +334,31 @@ public class TutorialPowerUp : MonoBehaviour {
         break;
       case Stage.safe_activated_2:
       case Stage.safe_activated_3:
+        powerup_meter.FillToFull();
         sprite_renderer.transform.position = new Vector3(2.68f, sprite_renderer.transform.position.y, 0);
+        sprite_renderer.enabled = true;
         stage = Stage.supercharge_intro;
         state = State.fading_out;
+
+        GameObject go_slide = GameObject.Find("slide_up_gesture");
+        go_slide.GetComponent<SpriteRenderer>().enabled = true;
+        go_slide.transform.Rotate(0, 0, 90);
+        go_slide.transform.position = new Vector3(-2.75f, 0, 0);
+
+        GameObject go_slide_2 = Instantiate(go_slide);
+        go_slide_2.name = "slide_up_gesture_clone";
+        go_slide.transform.Rotate(0, 0, 180);
+        go_slide.transform.position = new Vector3(2.75f, 0, 0);
+        powerup_manager.allow_supercharge = true;
+        break;
+      case Stage.supercharge_intro_4:
+      case Stage.supercharge_intro_5:
+        Launcher launcher = GameObject.FindObjectOfType<Launcher>();
+        string game_version = launcher.game_version;
+
+        next_button.SetActive(true);
+        next_button.GetComponent<Button>().interactable = false;
+        launcher.Connect();
         break;
     }
   }
@@ -357,6 +410,16 @@ public class TutorialPowerUp : MonoBehaviour {
       state = State.fading_out;
       stage_elapsed = stage_interval;
       GameObject.Find("slide_up_gesture").GetComponent<SpriteRenderer>().enabled = false;
+    }
+  }
+
+  public void ProceedSupercharge() {
+    if (stage == Stage.supercharge_intro) {
+      GameObject.Find("slide_up_gesture").GetComponent<SpriteRenderer>().enabled = false;
+      GameObject.Find("slide_up_gesture_clone").GetComponent<SpriteRenderer>().enabled = false;
+      stage = Stage.supercharge_intro_2;
+      state = State.fading_out;
+      stage_elapsed = stage_interval;
     }
   }
 }

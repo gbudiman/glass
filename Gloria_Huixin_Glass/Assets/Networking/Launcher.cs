@@ -22,7 +22,10 @@ public class Launcher : Photon.PunBehaviour {
     PhotonNetwork.autoJoinLobby = false;
     PhotonNetwork.automaticallySyncScene = true;
     progress_text = progress_label.GetComponent<Text>();
-    version_info.GetComponent<Text>().text = "Glass | " + game_version;
+
+    if (version_info != null) {
+      version_info.GetComponent<Text>().text = "Glass | " + game_version;
+    }
   }
 
   void Update() {
@@ -100,7 +103,14 @@ public class Launcher : Photon.PunBehaviour {
   public override void OnPhotonRandomJoinFailed(object[] codeAndMsg) {
     //base.OnPhotonRandomJoinFailed(codeAndMsg);
 
-    string room_name = input_field_object.GetComponent<InputField>().text;
+    string room_name;
+
+    if (input_field_object != null) {
+      room_name = input_field_object.GetComponent<InputField>().text;
+    } else {
+      int rand = Random.Range((int)10000, (int)99999);
+      room_name = "rookie_" + rand.ToString();
+    }
     progress_text.text = "No random room available, creating one...";
     PhotonNetwork.CreateRoom(room_name, new RoomOptions() { MaxPlayers = 2, IsVisible = true }, null);
   }

@@ -3,7 +3,7 @@ using System.Collections;
 
 public class PowerUpManager : MonoBehaviour {
   const bool ENABLE_CONSTRAINT = true;
-  const float SUPERCHARGE_BASE_TIME = 5.0f;
+  const float SUPERCHARGE_BASE_TIME = 10.0f;
   PowerupMeter pm;
 
   WallPhysics bouncer_left;
@@ -61,14 +61,22 @@ public class PowerUpManager : MonoBehaviour {
 
     if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost) && allow_supercharge) {
       pm.ExecuteSubtract(cost);
+      bool successful_swipe = false;
       switch (swipe) {
         case GestureDetector.SwipeDirection.swipe_right:
           bouncer_right.SetSupercharge(SUPERCHARGE_BASE_TIME);
+          successful_swipe = true;
           break;
         case GestureDetector.SwipeDirection.swipe_left:
           bouncer_left.SetSupercharge(SUPERCHARGE_BASE_TIME);
+          successful_swipe = true;
           break;
       }
+
+      if (tutorial_power_up != null && successful_swipe) {
+        tutorial_power_up.ProceedSupercharge();
+      }
+
     }
   }
 
