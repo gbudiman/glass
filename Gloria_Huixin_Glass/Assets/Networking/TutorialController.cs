@@ -75,13 +75,14 @@ public class TutorialController : MonoBehaviour {
           state = State.fading_out;
           break;
         case Stage.paddle_drawn_4:
+          game_manager.InitializeBreakshot();
           stage = Stage.paddle_drawn_5;
           state = State.fading_out;
           break;
         case Stage.paddle_drawn_5:
           stage = Stage.with_breakshot;
           state = State.fading_out;
-          game_manager.InitializeBreakshot();
+          
           print("starting score");
           foreach (ScoreTracker st in FindObjectsOfType<ScoreTracker>()) {
             st.SetGameHasStarted(true);
@@ -136,7 +137,7 @@ public class TutorialController : MonoBehaviour {
       case Stage.more_challenge_5: latched_string = ""; break;
       case Stage.getting_the_hang: latched_string = ""; break;
       case Stage.getting_the_hang_2: latched_string = "Looking great\nYou're getting the hang of it..."; break;
-      case Stage.getting_the_hang_3: latched_string = "Press Next button above\nwhen you'reready to proceed"; break;
+      case Stage.getting_the_hang_3: latched_string = "Press Next button above\nwhen you're ready to proceed"; break;
     }
   }
 
@@ -185,10 +186,11 @@ public class TutorialController : MonoBehaviour {
       }
     } else if (stage == Stage.more_challenge) {
       paddle_drawn_count = 0;
-    } else if (stage == Stage.more_challenge_5) {
+    } else if (stage == Stage.more_challenge_5 || stage == Stage.more_challenge_4) {
       paddle_drawn_count++;
+      print(paddle_drawn_count);
 
-      if (paddle_drawn_count == 3) {
+      if (stage == Stage.more_challenge_5 && paddle_drawn_count > 3) {
         stage = Stage.getting_the_hang;
       }
     }

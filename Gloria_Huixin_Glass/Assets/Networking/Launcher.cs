@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Launcher : Photon.PunBehaviour {
   public string game_version = "Alpha Build 0.61";
@@ -156,5 +157,9 @@ public class Launcher : Photon.PunBehaviour {
       NotifyIsConnecting();
       PhotonNetwork.ConnectUsingSettings(game_version);
     }
+  }
+
+  public void LaunchTutorial() {
+    SceneManager.LoadScene("Tutorial 1 - Paddles");
   }
 }

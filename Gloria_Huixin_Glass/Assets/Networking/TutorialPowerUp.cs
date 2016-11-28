@@ -63,17 +63,17 @@ public class TutorialPowerUp : Photon.PunBehaviour {
     sprite_renderer.enabled = false;
 
     // Fast jump for test mode
-    stage = Stage.supercharge_intro_3;
-    state = State.fading_out;
-    game_manager.InitializeBreakshot();
-    game_manager.InitializePowerUpSpawner();
-    touch_detection.DisableForNextGesture(false);
-    gesture_detector.DisableTemporarily(false);
-    PowerUpSpawner powerup_spawner = GameObject.FindObjectOfType<PowerUpSpawner>();
-    powerup_spawner.enabled = false;
-    foreach (PowerupCalculator puc in GameObject.FindObjectsOfType<PowerupCalculator>()) {
-      Destroy(puc.gameObject);
-    }
+    //stage = Stage.supercharge_intro_3;
+    //state = State.fading_out;
+    //game_manager.InitializeBreakshot();
+    //game_manager.InitializePowerUpSpawner();
+    //touch_detection.DisableForNextGesture(false);
+    //gesture_detector.DisableTemporarily(false);
+    //PowerUpSpawner powerup_spawner = GameObject.FindObjectOfType<PowerUpSpawner>();
+    //powerup_spawner.enabled = false;
+    //foreach (PowerupCalculator puc in GameObject.FindObjectsOfType<PowerupCalculator>()) {
+    //  Destroy(puc.gameObject);
+    //}
   }
 	
 	// Update is called once per frame
