@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class TouchDetection: MonoBehaviour {
   const bool ON_RELEASE = true;
-  const float MINIMUM_PADDLE_DISTANCE = 0.25f;
+  const float MINIMUM_PADDLE_DISTANCE = 0.8f;
 	Vector3 firstTouchPosition;
 	Vector3 firstReleasePosition;
 	float distance;

@@ -82,7 +82,14 @@ public class TutorialPowerUp : Photon.PunBehaviour {
     HandleStateTask();
     HandleStageTransition();
     HandleStageTask();
+    HandleKeyboardInput();
 	}
+
+  void HandleKeyboardInput() {
+    if (Input.GetKeyDown(KeyCode.Escape)) {
+      SceneManager.LoadScene(0);
+    }
+  }
 
   void HandleStageTransition() {
     stage_elapsed -= Time.deltaTime;
@@ -236,7 +243,13 @@ public class TutorialPowerUp : Photon.PunBehaviour {
       case Stage.see_that: latched_string = "See the circle above?\nThat's the Power Up Area"; break;
       case Stage.try_shooting: latched_string = "You collect Power Up when balls\ngo through it"; break;
       case Stage.try_shooting_2: latched_string = "Try it..."; break;
-      case Stage.try_shooting_3: latched_string = ""; break;
+      case Stage.try_shooting_3: latched_string = "";
+        if (powerup_meter.CurrentAmount > 0.05) {
+          stage = Stage.watch_collected;
+          state = State.fading_out;
+          stage_elapsed = stage_interval;
+        }
+        break;
       case Stage.watch_collected: latched_string = "Excellent!\nSee the bar on bottom right?"; break;
       case Stage.watch_collected_2: latched_string = "It fills as balls go through\nthe Power Up Area"; break;
       case Stage.watch_collected_3: latched_string = "Now let's try using some Power Up"; break;
@@ -247,8 +260,8 @@ public class TutorialPowerUp : Photon.PunBehaviour {
           state = State.fading_out;
         }
         break;
-      case Stage.learn_reinforced: latched_string = "Great! Now double-tap on\nany paddles you created"; break;
-      case Stage.reinforced: latched_string = "Awesome! You just actived\nReinforced Paddle Power Up"; break;
+      case Stage.learn_reinforced: latched_string = "Double-tap on\nany paddles you created"; break;
+      case Stage.reinforced: latched_string = "Awesome! You just activated\nReinforced Paddle Power Up"; break;
       case Stage.reinforced_2: latched_string = "Reinforced Paddle can reflect 3 balls\nbefore vanishing"; break;
       case Stage.reinforced_3: latched_string = "Note that it consumed a quarter\nof your Power Up"; break;
       case Stage.reinforced_4: latched_string = "Use it wisely..."; break;
@@ -370,13 +383,13 @@ public class TutorialPowerUp : Photon.PunBehaviour {
   }
 
   public void ProceedPowerUpCollected() {
-    if (stage == Stage.try_shooting_3) {
-      if (paddle_drawn) {
-        stage = Stage.watch_collected;
-        state = State.fading_out;
-        stage_elapsed = stage_interval;
-      }
-    }
+    //if (stage == Stage.try_shooting_3) {
+    //  if (paddle_drawn) {
+    //    stage = Stage.watch_collected;
+    //    state = State.fading_out;
+    //    stage_elapsed = stage_interval;
+    //  }
+    //}
   }
 
   public void ProceedReinforced() {

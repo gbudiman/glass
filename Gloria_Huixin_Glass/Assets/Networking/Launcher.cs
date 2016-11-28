@@ -160,6 +160,9 @@ public class Launcher : Photon.PunBehaviour {
   }
 
   public void LaunchTutorial() {
+    GameObject tutorial_button = GameObject.Find("Tutorial");
+    tutorial_button.GetComponentInChildren<Text>().text = "Loading Tutorial...";
+    tutorial_button.GetComponent<Button>().interactable = false;
     SceneManager.LoadScene("Tutorial 1 - Paddles");
   }
 }

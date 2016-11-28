@@ -49,7 +49,14 @@ public class TutorialController : MonoBehaviour {
     HandleStateTask();
     HandleStageTransition();
     HandleStageTask();
+    HandleKeyboardInput();
 	}
+
+  void HandleKeyboardInput() {
+    if (Input.GetKeyDown(KeyCode.Escape)) {
+      SceneManager.LoadScene(0);
+    }
+  }
 
   void HandleStageTransition() {
     stage_elapsed -= Time.deltaTime;
