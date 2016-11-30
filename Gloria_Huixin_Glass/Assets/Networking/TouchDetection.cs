@@ -141,9 +141,9 @@ public class TouchDetection: MonoBehaviour {
 
 
       if (dwm.HasEnoughMeter(distance) && IsInsideDrawingArea(firstReleasePosition) && HasSignificantDistance(distance)) {
-        mSquareSet[mSquareSet.Count - 1].GetComponent<SpriteRenderer>().color = new Color(0xff, 0xff, 0xff, 0.8f);
+        mSquareSet[mSquareSet.Count - 1].GetComponent<SpriteRenderer>().color = new Color(0xff, 0xff, 0xff, 1f);
       } else {
-        mSquareSet[mSquareSet.Count-1].GetComponent<SpriteRenderer>().color = new Color(0x80, 0x80, 0x80, 0.5f);
+        mSquareSet[mSquareSet.Count-1].GetComponent<SpriteRenderer>().color = new Color(93/255f, 93/255f, 93/255f, 0.5f);
       }
       
 
