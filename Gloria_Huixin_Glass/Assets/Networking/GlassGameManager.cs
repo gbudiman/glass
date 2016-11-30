@@ -259,8 +259,8 @@ public class GlassGameManager : Photon.PunBehaviour {
   }
 
   void InitializeScoreTrackers() {
-    GameObject this_gost = Instantiate(score_tracker_prefab, new Vector3(-4.8f, -0.5f, 0), Quaternion.identity) as GameObject;
-		GameObject other_gost = Instantiate(score_tracker_prefab, new Vector3(-4.8f, 0.5f, 0), Quaternion.identity) as GameObject;
+    GameObject this_gost = Instantiate(score_tracker_prefab, new Vector3(-5.25f, -0.5f, 0), Quaternion.identity) as GameObject;
+		GameObject other_gost = Instantiate(score_tracker_prefab, new Vector3(-5.25f, 0.5f, 0), Quaternion.identity) as GameObject;
 
     this_team_score_tracker = this_gost.GetComponent<ScoreTracker>();
     opposing_team_score_tracker = other_gost.GetComponent<ScoreTracker>();
