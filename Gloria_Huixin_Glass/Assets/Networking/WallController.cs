@@ -32,13 +32,13 @@ public class WallController : MonoBehaviour {
         
         if (PhotonNetwork.isMasterClient) {
           other_team_st.AddScore();
-          photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.Others, 0, other_team_st.Score);
+          photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.OthersBuffered, 0, other_team_st.Score);
         }
       } else {
         
         if (PhotonNetwork.isMasterClient) {
           this_team_st.AddScore();
-          photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.Others, 1, this_team_st.Score);
+          photon_view.RPC("SendScoreUpdateOverNetwork", PhotonTargets.OthersBuffered, 1, this_team_st.Score);
         }
       }
     } else {

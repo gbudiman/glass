@@ -20,7 +20,7 @@ public class WallPhysics : MonoBehaviour {
     supercharge_timer = val;
 
     if (!is_request_from_network) {
-      photon_view.RPC("SendSupercharge", PhotonTargets.Others, val);
+      photon_view.RPC("SendSupercharge", PhotonTargets.OthersBuffered, val);
       ChangeColor(IS_SUPERCHARGED);
     }
   }

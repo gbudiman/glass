@@ -14,6 +14,7 @@ public class Breakshot : MonoBehaviour {
   public GameObject glass_ball_prefab;
   bool is_practice_arena = false;
   bool allow_spawn;
+  bool game_has_ended = false;
   Vector3[] init_v0 = new Vector3[2] { new Vector3(1, 1, 0), new Vector3(-1, 1, 0) };
   Vector3[] init_v1 = new Vector3[2] { new Vector3(-1, -1, 0), new Vector3(1, -1, 0) };
   Vector3[] movf_v1 = new Vector3[2] { new Vector3(one_sqrt, -one_sqrt), new Vector3(-one_sqrt, -one_sqrt, 0) };
@@ -28,6 +29,11 @@ public class Breakshot : MonoBehaviour {
 
   void Update() {
     TickPracticeArena();
+  }
+
+  public void Disable() {
+    allow_spawn = false;
+    game_has_ended = true;
   }
 
   void TickPracticeArena() {
@@ -62,6 +68,7 @@ public class Breakshot : MonoBehaviour {
   /// This is the seed functionality
   /// </summary>
   public void Trigger() {
+    print(allow_spawn);
     GameObject g0 = null;
     GameObject g1 = null;
     int dice_roll = SelectDiceRoll();
@@ -99,6 +106,7 @@ public class Breakshot : MonoBehaviour {
   ///   on the arena and re-seed if necessary
   /// </summary>
   public void CheckEmptyArena() {
+    if (game_has_ended) { return; }
     if (!PhotonNetwork.connected || PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
       if (GameObject.FindObjectsOfType<GlassBall>().Length <= balls_limit) {
         allow_spawn = true;

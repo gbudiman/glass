@@ -30,6 +30,14 @@ public class GlassGameManager : Photon.PunBehaviour {
   ScoreTracker this_team_score_tracker;
   ScoreTracker opposing_team_score_tracker;
   ConnectionLogger connection_logger;
+  GameObject return_to_lobby_button;
+  Text game_over_text;
+  bool game_over_text_fading_out = false;
+  const int limit = 4;
+
+  public int ScoreLimit {
+    get { return limit; }
+  }
 
   void Awake() {
     PhotonNetwork.sendRate = 10;
@@ -93,6 +101,20 @@ public class GlassGameManager : Photon.PunBehaviour {
     if (!is_tutorial_level) {
       InitializeFakePaddles();
     }
+  }
+
+  public void InitializeGameOver() {
+    print("init==========================================");
+    game_over_text = GameObject.Find("GameOver").GetComponent<Text>();
+
+    if (PhotonNetwork.connected && PhotonNetwork.playerList.Length > 1) {
+      game_over_text.text = "Score " + limit.ToString() + " points to win!";
+    } else {
+      game_over_text.enabled = false;
+    }
+
+    return_to_lobby_button = GameObject.Find("ReturnToLobby");
+    return_to_lobby_button.SetActive(false);
   }
 
   public void InitializeFakePaddles() {
@@ -161,6 +183,8 @@ public class GlassGameManager : Photon.PunBehaviour {
       if (PhotonNetwork.isMasterClient) {
         UnInvertObject(g);
       }
+
+      InitializeGameOver();
     } else {
       foreach(ScoreTracker st in FindObjectsOfType<ScoreTracker>()) {
         st.SetGameHasStarted(true);
@@ -277,10 +301,30 @@ public class GlassGameManager : Photon.PunBehaviour {
         UnInvertObject(other_gost);
       }
     }
+
+    if (PhotonNetwork.connected && PhotonNetwork.playerList.Length == 1) {
+      this_team_score_tracker.IsPracticeArena = true;
+      opposing_team_score_tracker.IsPracticeArena = true;
+    }
   }
 
   void Update() {
     HandleKeyboardInput();
+    TickGameOverFadeOut();
+  }
+
+  void TickGameOverFadeOut() {
+    if (!game_over_text_fading_out) { return; }
+    if (game_over_text == null) {
+      InitializeGameOver();
+    }
+
+    Color c = game_over_text.color;
+    game_over_text.color = new Color(c.r, c.g, c.b, c.a - 0.05f);
+    if (c.a < 0.1f) {
+      game_over_text_fading_out = false;
+      game_over_text.enabled = false;
+    }
   }
 
   void HandleKeyboardInput() {
@@ -338,5 +382,31 @@ public class GlassGameManager : Photon.PunBehaviour {
       Debug.Log("Upon disconnection: I am master client");
       LoadArena();
     }
+  }
+
+  public void SetGameEnd(ScoreTracker.Owner owner) {
+    foreach (ScoreTracker st in FindObjectsOfType<ScoreTracker>()) {
+      st.SetGameEnd();
+    }
+
+    string winner = "";
+    switch (owner) {
+      case ScoreTracker.Owner.this_team: winner = "You Win"; break;
+      case ScoreTracker.Owner.opposing_team: winner = "You Lose"; break;
+    }
+    game_over_text.enabled = true;
+    game_over_text.text = "Game Over: " + winner;
+    Color c = game_over_text.color;
+    game_over_text.color = new Color(c.r, c.g, c.b, 1.0f);
+    GameObject.FindObjectOfType<Breakshot>().Disable();
+    return_to_lobby_button.SetActive(true);
+  }
+
+  public void FadeOutGameOverText() {
+    game_over_text_fading_out = true;
+  }
+
+  public void RetunToLobby() {
+    LeaveRoom();
   }
 }

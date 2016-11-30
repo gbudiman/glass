@@ -83,7 +83,7 @@ public class PaddleController : MonoBehaviour {
 
   public void Reinforce() {
     if (PhotonNetwork.connected) {
-      photon_view.RPC("ReinforceOverNetwork", PhotonTargets.AllViaServer);
+      photon_view.RPC("ReinforceOverNetwork", PhotonTargets.AllBufferedViaServer);
     } else {
       print("reinforcing...");
       hit_point = 3;
@@ -103,7 +103,7 @@ public class PaddleController : MonoBehaviour {
 
   public void EnableCollider() {
     GetComponent<BoxCollider2D>().enabled = true;
-    photon_view.RPC("EnableColliderOverNetwork", PhotonTargets.Others);
+    photon_view.RPC("EnableColliderOverNetwork", PhotonTargets.OthersBuffered);
   }
 
   [PunRPC]
@@ -113,7 +113,7 @@ public class PaddleController : MonoBehaviour {
 
   public void SetReflectivity(float value) {
     reflectivity = value;
-    photon_view.RPC("SetReflectivityOverNetwork", PhotonTargets.Others, value);
+    photon_view.RPC("SetReflectivityOverNetwork", PhotonTargets.OthersBuffered, value);
   }
 
   [PunRPC]
@@ -128,7 +128,7 @@ public class PaddleController : MonoBehaviour {
 
   public void CreateArtificialCollision(int view_id) {
     print("created artificial collission");
-    photon_view.RPC("DecreaseHitPoint", PhotonTargets.AllViaServer, view_id);
+    photon_view.RPC("DecreaseHitPoint", PhotonTargets.AllBufferedViaServer, view_id);
   }
 
   void OnCollisionExit2D(Collision2D other) {
@@ -148,7 +148,7 @@ public class PaddleController : MonoBehaviour {
       if (PhotonNetwork.connected /*&& PhotonNetwork.isMasterClient*/) {
         
         if (photon_view.isMine) {
-          photon_view.RPC("DecreaseHitPoint", PhotonTargets.AllViaServer, photon_view_id);
+          photon_view.RPC("DecreaseHitPoint", PhotonTargets.AllBufferedViaServer, photon_view_id);
           //PhotonNetwork.Destroy(gameObject);
           //DecreaseHitPoint();
           //photon_view.RPC("DecreaseHitPoint", PhotonTargets.AllViaServer);
@@ -179,7 +179,7 @@ public class PaddleController : MonoBehaviour {
         if (photon_view.isMine) {
           PhotonNetwork.Destroy(gameObject);
         } else {
-          photon_view.RPC("DestroyOverNetwork", PhotonTargets.Others);
+          photon_view.RPC("DestroyOverNetwork", PhotonTargets.OthersBuffered);
         }
       } else {
         Destroy(gameObject, 0.01f);

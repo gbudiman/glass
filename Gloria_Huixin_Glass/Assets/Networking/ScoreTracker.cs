@@ -14,8 +14,16 @@ public class ScoreTracker : MonoBehaviour {
   public Owner ScoreOwner { get { return owner; } }
 
   bool game_has_started = false;
+  bool is_practice_arena = false;
+
+  GlassGameManager game_manager;
+
+  public bool IsPracticeArena {
+    set { is_practice_arena = value; }
+  }
 
   public void SetOwner(Owner _owner) {
+    game_manager = GameObject.FindObjectOfType<GlassGameManager>();
     photon_view = GetComponent<PhotonView>();
     text_mesh = GetComponent<TextMesh>();
     score = 0;
@@ -41,17 +49,38 @@ public class ScoreTracker : MonoBehaviour {
     print("Adding score " + game_has_started);
     if (!game_has_started) { return; }
     score++;
+
+    
     UpdateScoreDisplay();
+    CheckGameEnd();
+    
   }
 
   public void SetScore(int s) {
     if (!game_has_started) { return; }
     score = s;
     UpdateScoreDisplay();
+    CheckGameEnd();
+  }
+
+  void CheckGameEnd() {
+    if (score >= game_manager.ScoreLimit && !is_practice_arena) {
+      //switch (owner) {
+      //  case Owner.this_team: print("you win"); break;
+      //  case Owner.opposing_team: print("you lose"); break;
+      //}
+
+      game_manager.SetGameEnd(owner);
+    }
+  }
+
+  public void SetGameEnd() {
+    game_has_started = false;
   }
 
   public void SetGameHasStarted(bool val) {
     game_has_started = val;
+    game_manager.FadeOutGameOverText();
   }
 
   public void UpdateScoreDisplay() {
