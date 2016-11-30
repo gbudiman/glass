@@ -13,6 +13,9 @@ public class DrawingMeter : MonoBehaviour {
   float target_position;
   float t_epsilon;
   bool enable_lerp = false;
+	private Color lerpingColor1 = new Color (118/255f, 87/255f, 63/255f);
+	private Color lerpingColor2 = new Color (255/255f, 209/255f, 58/255f);
+
 
 	SpriteRenderer meterSprite;
 
@@ -51,7 +54,7 @@ public class DrawingMeter : MonoBehaviour {
       t_epsilon += 2 * Time.deltaTime;
       transform.position = new Vector3(Mathf.Lerp(current_position - cardinal, target_position - cardinal, t_epsilon), transform.position.y, transform.position.z);
       //transform.position = new Vector3(target_position - cardinal, transform.position.y, 0);
-		  meterSprite.color = Color.Lerp(Color.white, Color.red, t_epsilon);
+			meterSprite.color = Color.Lerp(lerpingColor1, lerpingColor2, t_epsilon);
 
       if (t_epsilon > 1) {
         enable_lerp = false;
