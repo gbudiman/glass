@@ -33,7 +33,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   GameObject return_to_lobby_button;
   Text game_over_text;
   bool game_over_text_fading_out = false;
-  const int limit = 4;
+  const int limit = 42;
 
   public int ScoreLimit {
     get { return limit; }
