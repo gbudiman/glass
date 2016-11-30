@@ -125,7 +125,9 @@ public class GestureDetector : MonoBehaviour {
 					}
 				}
 
-				if (actual_swipe == SwipeDirection.swipe_right) {
+        
+				if (!inverse && actual_swipe == SwipeDirection.swipe_right ||
+             inverse && actual_swipe == SwipeDirection.swipe_left) {
 					animator.SetBool("isSliding", true);
 					animator.SetBool ("isSlidingRight", true);
 				} else {
