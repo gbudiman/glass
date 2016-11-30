@@ -171,4 +171,8 @@ public class Launcher : Photon.PunBehaviour {
     tutorial_button.GetComponent<Button>().interactable = false;
     SceneManager.LoadScene("Tutorial 1 - Paddles");
   }
+
+  public void LaunchQuickRef() {
+    SceneManager.LoadScene("QuickRef");
+  }
 }
