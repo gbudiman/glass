@@ -30,11 +30,17 @@ public class Launcher : Photon.PunBehaviour {
   }
 
   void Update() {
+    HandleKeyboardInput();
   }
 
+  void HandleKeyboardInput() {
+    if (Input.GetKeyDown(KeyCode.Escape)) {
+      Application.Quit();
+    }
+  }
 
-	// Use this for initialization
-	void Start () {
+  // Use this for initialization
+  void Start () {
 		#if UNITY_IPHONE
 		Screen.SetResolution(450, 800, true);
 
