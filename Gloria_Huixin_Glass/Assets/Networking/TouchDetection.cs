@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -25,6 +26,8 @@ public class TouchDetection: MonoBehaviour {
   TutorialController tutorial;
   TutorialPowerUp tutorial_powerup;
 
+  Text paddle_status;
+
 	// Use this for initialization
 	void Start () {
     photon_view = GetComponent<PhotonView>();
@@ -33,6 +36,7 @@ public class TouchDetection: MonoBehaviour {
     SetDrawingArea();
     tutorial = GameObject.FindObjectOfType<TutorialController>();
     tutorial_powerup = GameObject.FindObjectOfType<TutorialPowerUp>();
+    paddle_status = GameObject.Find("PaddleStatus").GetComponent<Text>();
 	}
 
   public void RegisterPowerupMeter(DrawingMeter _dwm) {
@@ -141,8 +145,19 @@ public class TouchDetection: MonoBehaviour {
 
 
       if (dwm.HasEnoughMeter(distance) && IsInsideDrawingArea(firstReleasePosition) && HasSignificantDistance(distance)) {
+        paddle_status.enabled = true;
+        paddle_status.text = "OK";
         mSquareSet[mSquareSet.Count - 1].GetComponent<SpriteRenderer>().color = new Color(0xff, 0xff, 0xff, 1f);
       } else {
+        if (!HasSignificantDistance(distance)) {
+          paddle_status.enabled = true;
+          paddle_status.text = "Too short";
+        } else {
+          if (!dwm.HasEnoughMeter(distance)) {
+            paddle_status.enabled = true;
+            paddle_status.text = "Too long";
+          }
+        }
         mSquareSet[mSquareSet.Count-1].GetComponent<SpriteRenderer>().color = new Color(93/255f, 93/255f, 93/255f, 0.5f);
       }
       
@@ -161,6 +176,8 @@ public class TouchDetection: MonoBehaviour {
         if (tutorial_powerup != null) {
           tutorial_powerup.ProceedPaddleDrawn();
         }
+
+        paddle_status.enabled = false;
       } else if (on_release && (!dwm.HasEnoughMeter(distance) || !IsInsideDrawingArea(firstReleasePosition) || !HasSignificantDistance(distance))) {
         if (PhotonNetwork.connected) {
           PhotonNetwork.Destroy(mSquareSet[mSquareSet.Count - 1]);

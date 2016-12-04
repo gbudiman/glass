@@ -104,7 +104,6 @@ public class GlassGameManager : Photon.PunBehaviour {
   }
 
   public void InitializeGameOver() {
-    print("init==========================================");
     game_over_text = GameObject.Find("GameOver").GetComponent<Text>();
 
     if (PhotonNetwork.connected && PhotonNetwork.playerList.Length > 1) {
@@ -314,6 +313,8 @@ public class GlassGameManager : Photon.PunBehaviour {
   }
 
   void TickGameOverFadeOut() {
+    if (is_tutorial_level) { return;  }
+
     if (!game_over_text_fading_out) { return; }
     if (game_over_text == null) {
       InitializeGameOver();

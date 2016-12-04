@@ -10,6 +10,7 @@ public class PaddleController : MonoBehaviour {
   SpriteRenderer sr;
   PowerUpManager pum;
 
+
   const float TRIGGER_MIN_LAPSE = 0.25f;
   Dictionary<int, float> collision_tracker;
 
