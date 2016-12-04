@@ -13,7 +13,7 @@ public class DrawingMeter : MonoBehaviour {
   float target_position;
   float t_epsilon;
   bool enable_lerp = false;
-	private Color lerpingColor1 = new Color (118/255f, 87/255f, 63/255f);
+	private Color lerpingColor1 = new Color (255/255f, 255/255f, 255/255f);
 	private Color lerpingColor2 = new Color (255/255f, 209/255f, 58/255f);
 
 
