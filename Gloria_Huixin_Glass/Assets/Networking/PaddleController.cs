@@ -133,7 +133,9 @@ public class PaddleController : MonoBehaviour {
 
   void OnCollisionExit2D(Collision2D other) {
     if (other.gameObject.GetComponents<GlassBall>().Length > 0) {
+      
       GlassBall other_ball = other.gameObject.GetComponent<GlassBall>();
+
       int photon_view_id = other_ball.GetComponent<PhotonView>().viewID;
       if (!PhotonNetwork.connected || PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
         other_ball.Accelerate(reflectivity);
@@ -144,27 +146,15 @@ public class PaddleController : MonoBehaviour {
         pum.DeQueueTripleShot();
       }
 
-      int rpc_sequence = (int)Random.Range(1, Mathf.Pow(2, 31));
-      if (PhotonNetwork.connected /*&& PhotonNetwork.isMasterClient*/) {
-        
+      if (PhotonNetwork.connected) {
         if (photon_view.isMine) {
           photon_view.RPC("DecreaseHitPoint", PhotonTargets.AllBufferedViaServer, photon_view_id);
-          //PhotonNetwork.Destroy(gameObject);
-          //DecreaseHitPoint();
-          //photon_view.RPC("DecreaseHitPoint", PhotonTargets.AllViaServer);
-        } else {
-          //print("destroying over network: " + rpc_sequence);
-          // photon_view.RPC("DestroyOverNetwork", PhotonTargets.Others);
-          //photon_view.RPC("DecreaseHitPointOverNetwork", PhotonTargets.Others, rpc_sequence);
         }
       } else if (!PhotonNetwork.connected) {
         DecreaseHitPoint();
-        //Destroy(gameObject, 0.01f);
       }
     }
   }
-
-
 
   [PunRPC]
   void DecreaseHitPoint(int view_id = 0) {

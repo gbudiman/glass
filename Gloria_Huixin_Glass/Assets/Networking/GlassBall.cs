@@ -183,9 +183,16 @@ public class GlassBall : Photon.PunBehaviour {
   }
 
   public void DisableColliderFor(float time) {
+    print("Disabling for " + time.ToString() + " seconds");
     GetComponent<CircleCollider2D>().enabled = false;
     box_collider_disabled = true;
     box_collider_disabling_timer = time;
+  }
+
+
+  [PunRPC]
+  void DisableColliderOverNetworkFor(float time) {
+    DisableColliderFor(time);
   }
 
   Vector2 RotateVector(Vector2 v, float angle) {
@@ -251,10 +258,11 @@ public class GlassBall : Photon.PunBehaviour {
 	//spawn collison effects
 	void OnCollisionEnter2D( Collision2D other ) 
 	{
+    bool sfx_rendered = false;
+
 		if(particleEffects != null && other.gameObject.tag == "paddle")
 		{
-			
-
+      sfx_rendered = true;
 			Instantiate(particleEffects, transform.position, Quaternion.identity);
 		}
 
@@ -272,9 +280,13 @@ public class GlassBall : Photon.PunBehaviour {
     //   The first paddle that comes into contact should register
     //   collision trigger.
     if (other.gameObject.tag == "paddle") {
-      RaycastHit2D rhd = Physics2D.CircleCast(transform.position, 0.5f, GetComponent<Rigidbody2D>().velocity);
+      RaycastHit2D rhd = Physics2D.CircleCast(transform.position, 1f, GetComponent<Rigidbody2D>().velocity);
       if (rhd && rhd.collider.gameObject.tag == "paddle") {
         rhd.collider.gameObject.GetComponent<PaddleController>().CreateArtificialCollision(photon_view.viewID);
+
+        if (!sfx_rendered) {
+          Instantiate(particleEffects, rhd.collider.gameObject.transform.position, Quaternion.identity);
+        }
       }
     }
 	}

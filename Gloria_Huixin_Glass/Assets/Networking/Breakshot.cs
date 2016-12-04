@@ -68,7 +68,6 @@ public class Breakshot : MonoBehaviour {
   /// This is the seed functionality
   /// </summary>
   public void Trigger() {
-    print(allow_spawn);
     GameObject g0 = null;
     GameObject g1 = null;
     int dice_roll = SelectDiceRoll();
