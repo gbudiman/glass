@@ -92,6 +92,6 @@ public class WallPhysics : MonoBehaviour {
 
 	public void ChangeColor(bool is_supercharged) {
 		Debug.Log("change color");
-		gameObject.GetComponent<MeshRenderer>().material.color = is_supercharged ? Color.red : Color.white;
+		gameObject.GetComponent<SpriteRenderer>().material.color = is_supercharged ? Color.red : Color.white;
 	}
 }

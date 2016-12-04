@@ -99,8 +99,8 @@ public class TouchDetection: MonoBehaviour {
 				UpdateLine(1, ON_RELEASE);
 			}
 
-			//Debug.Log("distance: "+ distance);
-
+      //Debug.Log("distance: "+ distance);
+      paddle_status.enabled = false;
 		}
 	
 	}
@@ -176,8 +176,6 @@ public class TouchDetection: MonoBehaviour {
         if (tutorial_powerup != null) {
           tutorial_powerup.ProceedPaddleDrawn();
         }
-
-        paddle_status.enabled = false;
       } else if (on_release && (!dwm.HasEnoughMeter(distance) || !IsInsideDrawingArea(firstReleasePosition) || !HasSignificantDistance(distance))) {
         if (PhotonNetwork.connected) {
           PhotonNetwork.Destroy(mSquareSet[mSquareSet.Count - 1]);
