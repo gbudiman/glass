@@ -33,7 +33,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   GameObject return_to_lobby_button;
   Text game_over_text;
   bool game_over_text_fading_out = false;
-  const int limit = 42;
+  const int limit = 4;
 
   public int ScoreLimit {
     get { return limit; }
@@ -88,11 +88,8 @@ public class GlassGameManager : Photon.PunBehaviour {
     }
     InitializePowerUpMeter();
 
-    if (!is_tutorial_level) {
-      InitializeBreakshot();
-    }
-
-    InitializeRSG();
+    //InitializeRSG();
+    InitializeGameOver();
     InitializeSafetyNet();
     InitializeJoinPack();
     InitializeDrawingMeter();
@@ -100,10 +97,34 @@ public class GlassGameManager : Photon.PunBehaviour {
 
     if (!is_tutorial_level) {
       InitializeFakePaddles();
+      SignalReady();
     }
   }
 
+  public void SignalReady() {
+    if (PhotonNetwork.connected && !PhotonNetwork.isMasterClient) {
+      print("Client sending ready signal...");
+      photon_view.RPC("ClientSignaledReady", PhotonTargets.OthersBuffered);
+      InitializeBreakshot();
+      InitializeRSG();
+    } else if (!PhotonNetwork.connected ||
+               PhotonNetwork.connected && PhotonNetwork.playerList.Length == 1) {
+      InitializeBreakshot();
+      InitializeRSG();
+    }
+  }
+
+  [PunRPC]
+  public void ClientSignaledReady() {
+    print("RPC received... starting game");
+    InitializeBreakshot();
+    InitializeRSG();
+    
+  }
+
   public void InitializeGameOver() {
+    if (GameObject.Find("GameOver") == null) { return; }
+
     game_over_text = GameObject.Find("GameOver").GetComponent<Text>();
 
     if (PhotonNetwork.connected && PhotonNetwork.playerList.Length > 1) {
@@ -113,6 +134,8 @@ public class GlassGameManager : Photon.PunBehaviour {
     }
 
     return_to_lobby_button = GameObject.Find("ReturnToLobby");
+    print("TEST...");
+    print(return_to_lobby_button);
     return_to_lobby_button.SetActive(false);
   }
 
@@ -183,7 +206,7 @@ public class GlassGameManager : Photon.PunBehaviour {
         UnInvertObject(g);
       }
 
-      InitializeGameOver();
+      //InitializeGameOver();
     } else {
       foreach(ScoreTracker st in FindObjectsOfType<ScoreTracker>()) {
         st.SetGameHasStarted(true);

@@ -31,7 +31,9 @@ public class PowerUpSpawner : MonoBehaviour {
     GameObject existing_powerup_region = GameObject.FindGameObjectWithTag("powerup_region");
     if (PhotonNetwork.connected) {
       if (PhotonNetwork.isMasterClient) {
-        PhotonNetwork.Destroy(existing_powerup_region);
+        if (existing_powerup_region != null) {
+          PhotonNetwork.Destroy(existing_powerup_region);
+        }
         g = PhotonNetwork.Instantiate(powerup_prefab.name, rand_position, rand_quaternion, 0) as GameObject;
       }
     } else {

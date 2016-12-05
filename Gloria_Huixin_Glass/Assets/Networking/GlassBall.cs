@@ -117,9 +117,8 @@ public class GlassBall : Photon.PunBehaviour {
   }
 
   void OnDestroy() {
-    wcl.ShredDetection(transform.position.y);
-
     if (normal_in_game_destruction) {
+      wcl.ShredDetection(transform.position.y);
       breakshot.CheckEmptyArena();
     }
   }

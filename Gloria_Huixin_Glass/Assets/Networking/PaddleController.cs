@@ -104,7 +104,9 @@ public class PaddleController : MonoBehaviour {
 
   public void EnableCollider() {
     GetComponent<BoxCollider2D>().enabled = true;
-    photon_view.RPC("EnableColliderOverNetwork", PhotonTargets.OthersBuffered);
+    if (PhotonNetwork.connected) {
+      photon_view.RPC("EnableColliderOverNetwork", PhotonTargets.OthersBuffered);
+    }
   }
 
   [PunRPC]
@@ -114,7 +116,9 @@ public class PaddleController : MonoBehaviour {
 
   public void SetReflectivity(float value) {
     reflectivity = value;
-    photon_view.RPC("SetReflectivityOverNetwork", PhotonTargets.OthersBuffered, value);
+    if (PhotonNetwork.connected) {
+      photon_view.RPC("SetReflectivityOverNetwork", PhotonTargets.OthersBuffered, value);
+    }
   }
 
   [PunRPC]
