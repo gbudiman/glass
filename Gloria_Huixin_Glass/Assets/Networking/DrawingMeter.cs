@@ -16,15 +16,22 @@ public class DrawingMeter : MonoBehaviour {
 	private Color lerpingColor1 = new Color (255/255f, 255/255f, 255/255f);
 	private Color lerpingColor2 = new Color (255/255f, 209/255f, 58/255f);
 
-
+  Shaker shaker;
 	SpriteRenderer meterSprite;
 
 	// Use this for initialization
 	void Start () {
     	UpdateDisplay(INITIAL_DRAWING_POWER);
-		meterSprite = GetComponent<SpriteRenderer>();	
+		meterSprite = GetComponent<SpriteRenderer>();
+    shaker = GetComponent<Shaker>();
+    shaker.RegisterObject(transform.parent.position);
+    shaker.CustomShakeDuration = 0.01f;
 	}
 	
+  public void Shake() {
+    shaker.EnableShake();
+  }
+
 	// Update is called once per frame
 	void Update () {
         TickFillMeter();

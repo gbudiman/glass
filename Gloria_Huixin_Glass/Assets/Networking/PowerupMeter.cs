@@ -17,7 +17,9 @@ public class PowerupMeter : MonoBehaviour {
 
   PowerUpUI powerup_ui;
   GridHighlighter grid_highlighter;
-	//SpriteRenderer meterSprite;
+  //SpriteRenderer meterSprite;
+
+  Shaker shaker;
 
   public float CurrentAmount {
     get { return current_amount / cardinal; }
@@ -35,9 +37,9 @@ public class PowerupMeter : MonoBehaviour {
     grid_highlighter = transform.parent.GetComponentInChildren<GridHighlighter>();
     print(grid_highlighter);
     grid = grid_highlighter.GetComponent<SpriteRenderer>();
-    //Color c = grid.color;
-    //grid.color = new Color(c.r, c.g, c.b, 0.67f);
-		//meterSprite = GetComponent<SpriteRenderer>();	
+
+    shaker = GetComponent<Shaker>();
+    shaker.RegisterObject(transform.parent.position);
 	}
 	
 	// Update is called once per frame
@@ -101,7 +103,10 @@ public class PowerupMeter : MonoBehaviour {
   /// <param name="amount">Supply this argument as fourth. E.g. 1 equals to 1/4 subtraction of full meter</param>
   public bool TestSubtract(int _amount) {
     float amount = _amount * cardinal / 4;
-    if (amount > current_amount) { return false;  }
+    if (amount > current_amount) {
+      shaker.EnableShake();
+      return false;
+    }
 
     return true;
   }

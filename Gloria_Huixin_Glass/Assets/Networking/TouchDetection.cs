@@ -156,6 +156,7 @@ public class TouchDetection: MonoBehaviour {
           if (!dwm.HasEnoughMeter(distance)) {
             paddle_status.enabled = true;
             paddle_status.text = "Too long";
+            dwm.Shake();
           }
         }
         mSquareSet[mSquareSet.Count-1].GetComponent<SpriteRenderer>().color = new Color(93/255f, 93/255f, 93/255f, 0.5f);
