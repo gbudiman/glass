@@ -107,6 +107,9 @@ public class GlassGameManager : Photon.PunBehaviour {
         print("Client sending ready signal...");
         photon_view.RPC("ClientSignaledReady", PhotonTargets.OthersBuffered);
         GameObject.FindObjectOfType<DrawingMeter>().FillToFull();
+        InitializeBreakshot();
+        InitializeRSG();
+        InitializeGameOver();
       } else {
         if (PhotonNetwork.playerList.Length > 1) {
           game_over_text.text = "Waiting for opponent...";
