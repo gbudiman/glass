@@ -13,7 +13,10 @@ public class PowerupMeter : MonoBehaviour {
   float t_epsilon;
   bool enable_lerp = false;
 
+  SpriteRenderer grid;
+
   PowerUpUI powerup_ui;
+  GridHighlighter grid_highlighter;
 	//SpriteRenderer meterSprite;
 
   public float CurrentAmount {
@@ -28,6 +31,12 @@ public class PowerupMeter : MonoBehaviour {
     current_amount = 0f;
     powerup_ui = GameObject.FindObjectOfType<PowerUpUI>();
     UpdateDisplay();
+
+    grid_highlighter = transform.parent.GetComponentInChildren<GridHighlighter>();
+    print(grid_highlighter);
+    grid = grid_highlighter.GetComponent<SpriteRenderer>();
+    //Color c = grid.color;
+    //grid.color = new Color(c.r, c.g, c.b, 0.67f);
 		//meterSprite = GetComponent<SpriteRenderer>();	
 	}
 	
@@ -46,6 +55,31 @@ public class PowerupMeter : MonoBehaviour {
 				// TODO: 
         enable_lerp = false;
       }
+    }
+
+    UpdateGridMarker();
+  }
+
+  void UpdateGridMarker() {
+    float positional_fraction;
+    if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+      positional_fraction = (transform.position.x + pos_max) / cardinal;
+    } else {
+      positional_fraction = (-transform.position.x + pos_max) / cardinal;
+      print(-transform.position.x + " + " + pos_max + " / " + cardinal + " => " + positional_fraction);
+    }
+    
+    
+    if (0.75f <= positional_fraction) {
+      grid.sprite = grid_highlighter.zero;
+    } else if (0.5f <= positional_fraction && positional_fraction < 0.75f) {
+      grid.sprite = grid_highlighter.one_quarter;
+    } else if (0.25f <= positional_fraction && positional_fraction < 0.5f) {
+      grid.sprite = grid_highlighter.two_quarter;
+    } else if (0.05f <= positional_fraction && positional_fraction < 0.25f) {
+      grid.sprite = grid_highlighter.three_quarter;
+    } else {
+      grid.sprite = grid_highlighter.full;
     }
   }
 
