@@ -33,7 +33,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   GameObject return_to_lobby_button;
   Text game_over_text;
   bool game_over_text_fading_out = false;
-  const int limit = 4;
+  const int limit = 42;
 
   public int ScoreLimit {
     get { return limit; }
@@ -102,13 +102,18 @@ public class GlassGameManager : Photon.PunBehaviour {
   }
 
   public void SignalReady() {
-    if (PhotonNetwork.connected && !PhotonNetwork.isMasterClient) {
-      print("Client sending ready signal...");
-      photon_view.RPC("ClientSignaledReady", PhotonTargets.OthersBuffered);
-      InitializeBreakshot();
-      InitializeRSG();
-    } else if (!PhotonNetwork.connected ||
-               PhotonNetwork.connected && PhotonNetwork.playerList.Length == 1) {
+    if (PhotonNetwork.connected) {
+      if (!PhotonNetwork.isMasterClient) {
+        print("Client sending ready signal...");
+        photon_view.RPC("ClientSignaledReady", PhotonTargets.OthersBuffered);
+        GameObject.FindObjectOfType<DrawingMeter>().FillToFull();
+      } else {
+        if (PhotonNetwork.playerList.Length > 1) {
+          game_over_text.text = "Waiting for opponent...";
+          game_over_text.enabled = true;
+        }
+      }
+    } else {
       InitializeBreakshot();
       InitializeRSG();
     }
@@ -119,13 +124,13 @@ public class GlassGameManager : Photon.PunBehaviour {
     print("RPC received... starting game");
     InitializeBreakshot();
     InitializeRSG();
-    
+    InitializeGameOver();
   }
 
   public void InitializeGameOver() {
     if (GameObject.Find("GameOver") == null) { return; }
 
-    game_over_text = GameObject.Find("GameOver").GetComponent<Text>();
+    game_over_text = game_over_text ?? GameObject.Find("GameOver").GetComponent<Text>();
 
     if (PhotonNetwork.connected && PhotonNetwork.playerList.Length > 1) {
       game_over_text.text = "Score " + limit.ToString() + " points to win!";
@@ -133,9 +138,7 @@ public class GlassGameManager : Photon.PunBehaviour {
       game_over_text.enabled = false;
     }
 
-    return_to_lobby_button = GameObject.Find("ReturnToLobby");
-    print("TEST...");
-    print(return_to_lobby_button);
+    return_to_lobby_button = return_to_lobby_button ?? GameObject.Find("ReturnToLobby");
     return_to_lobby_button.SetActive(false);
   }
 

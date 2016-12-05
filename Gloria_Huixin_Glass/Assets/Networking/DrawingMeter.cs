@@ -8,7 +8,7 @@ public class DrawingMeter : MonoBehaviour {
   const float INITIAL_DRAWING_POWER = 2.0f;
   public float per_tick_fill = 0.01f;
 
-  float current_meter;
+  float current_meter = INITIAL_DRAWING_POWER;
   float current_position;
   float target_position;
   float t_epsilon;
@@ -21,7 +21,6 @@ public class DrawingMeter : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-    	current_meter = INITIAL_DRAWING_POWER;
     	UpdateDisplay(INITIAL_DRAWING_POWER);
 		meterSprite = GetComponent<SpriteRenderer>();	
 	}
@@ -38,6 +37,13 @@ public class DrawingMeter : MonoBehaviour {
 
   float MapMeterToPosition() {
     return current_meter + pos_min;
+  }
+
+  public void FillToFull() {
+    print("Filling to full");
+    current_meter = cardinal;
+    UpdateDisplay(0);
+    print(current_meter);
   }
 
   void TickFillMeter() {
