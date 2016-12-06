@@ -15,6 +15,7 @@ public class GestureDetector : MonoBehaviour {
 	Animator animator;
 
   PowerUpManager pum;
+  PowerupMeter powerup_meter;
 
   bool temporarily_disabled = false;
   
@@ -23,6 +24,7 @@ public class GestureDetector : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
     pum = GetComponentInParent<PowerUpManager>();
+    powerup_meter = GameObject.FindObjectOfType<PowerupMeter>();
 		animator = background.GetComponent<Animator> ();
 	}
 	
@@ -99,6 +101,10 @@ public class GestureDetector : MonoBehaviour {
     float pos_x = Camera.main.ScreenToWorldPoint(Input.mousePosition).x;
     float pos_y = Camera.main.ScreenToWorldPoint(Input.mousePosition).y;
 
+    if (powerup_meter == null) {
+      powerup_meter = GameObject.FindObjectOfType<PowerupMeter>();
+    }
+
     // Swipe location is determined by the first contact
     SwipeLocation swipe_location = DetectSwipeLocation();
     SwipeDirection swipe_direction = DetectSwipeDirection(pos_x, pos_y);
@@ -125,16 +131,19 @@ public class GestureDetector : MonoBehaviour {
 					}
 				}
 
-        
-				if (!inverse && actual_swipe == SwipeDirection.swipe_right ||
-             inverse && actual_swipe == SwipeDirection.swipe_left) {
-					animator.SetBool("isSliding", true);
-					animator.SetBool ("isSlidingRight", true);
-				} else {
-					animator.SetBool("isSliding", true);
-					animator.SetBool ("isSlidingRight", false);
-				}
-        pum.SuperchargeWall(actual_swipe); break;
+        if (powerup_meter.TestSubtract(2)) {
+          if (!inverse && actual_swipe == SwipeDirection.swipe_right ||
+                inverse && actual_swipe == SwipeDirection.swipe_left) {
+            animator.SetBool("isSliding", true);
+            animator.SetBool("isSlidingRight", true);
+          } else {
+            animator.SetBool("isSliding", true);
+            animator.SetBool("isSlidingRight", false);
+          }
+          pum.SuperchargeWall(actual_swipe); break;
+        }
+
+        break;
       }
     } 
     //if (swipe != SwipeDirection.no_swipe) {
