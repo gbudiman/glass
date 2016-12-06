@@ -19,6 +19,9 @@ public class DrawingMeter : MonoBehaviour {
   Shaker shaker;
 	SpriteRenderer meterSprite;
 
+  public float CurrentMeter {
+    get { return current_meter;  }
+  }
 	// Use this for initialization
 	void Start () {
     	UpdateDisplay(INITIAL_DRAWING_POWER);

@@ -68,9 +68,9 @@ public class TouchDetection: MonoBehaviour {
         if (!audio_source.isPlaying) {
           audio_source.Play();
           audio_source.loop = true;
-          //audio_source.volume = 0.5f;
         }
       } else {
+        audio_source.Stop();
         switch (input_state) {
           case ClipState.ok:
             audio_source.clip = rattle_clip;
@@ -91,7 +91,6 @@ public class TouchDetection: MonoBehaviour {
     } else {
       stop_queued = true;
       stop_delay = STOP_DELAY;
-      print("stop queued");
     }
   }
 
@@ -117,6 +116,8 @@ public class TouchDetection: MonoBehaviour {
     if (temporarily_disabled) { return; }
 		if(Input.GetMouseButtonDown(0))//click
 		{
+      mSquareSet = new List<GameObject>(); // Prevent memory leak
+
 			firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			firstTouchPosition.z += 5f;
       //print(firstTouchPosition + " within bounds " + topBoundaryY + " / " + bottomBoundaryY);
@@ -190,6 +191,7 @@ public class TouchDetection: MonoBehaviour {
       //g.GetComponent<PaddleController>().RegisterPowerUpManager(pum);
       mSquareSet.Add(g);
 
+      print(mSquareSet.Count);
       //mSquareSet.Add((GameObject) Instantiate(squarePrefab, firstTouchPosition, Quaternion.identity));
 		} else {
 			//rotate
@@ -202,7 +204,7 @@ public class TouchDetection: MonoBehaviour {
 			mSquareSet[mSquareSet.Count-1].transform.localScale = new Vector3(distance, 0.2f, 0);
 
 
-      if (dwm.HasEnoughMeter(distance) && IsInsideDrawingArea(firstReleasePosition) && HasSignificantDistance(distance)) {
+      if (dwm.HasEnoughMeter(distance) /* && IsInsideDrawingArea(firstReleasePosition)*/ && HasSignificantDistance(distance)) {
         paddle_status.enabled = true;
         paddle_status.text = "OK";
         mSquareSet[mSquareSet.Count - 1].GetComponent<SpriteRenderer>().color = new Color(0xff, 0xff, 0xff, 1f);
@@ -223,7 +225,7 @@ public class TouchDetection: MonoBehaviour {
       }
       
 
-      if (on_release && dwm.HasEnoughMeter(distance) && IsInsideDrawingArea(firstReleasePosition) && HasSignificantDistance(distance)) {
+      if (on_release && dwm.HasEnoughMeter(distance) /*&& IsInsideDrawingArea(firstReleasePosition)*/ && HasSignificantDistance(distance)) {
         //print("Distance = " + distance);
         dwm.SubtractMeter(distance);
         float reflectivity = ComputeReflectivity(distance);
@@ -238,16 +240,34 @@ public class TouchDetection: MonoBehaviour {
           tutorial_powerup.ProceedPaddleDrawn();
         }
 
-        //audio_source.Stop();
-        //audio_source.clip = plop_clip;
-        ////audio_source.loop = false;
-
-        //audio_source.volume = 1f;
-        //print(audio_source.clip);
-        //audio_source.PlayDelayed(0.55f);
-        //print("Playing one shot");
         SetClipToPlay(true, ClipState.plop);
-      } else if (on_release && (!dwm.HasEnoughMeter(distance) || !IsInsideDrawingArea(firstReleasePosition) || !HasSignificantDistance(distance))) {
+      } else if (on_release && (!dwm.HasEnoughMeter(distance) /*|| !IsInsideDrawingArea(firstReleasePosition)*/ || !HasSignificantDistance(distance))) {
+        if (!dwm.HasEnoughMeter(distance) && HasSignificantDistance(dwm.CurrentMeter)) {
+          float scale_back = dwm.CurrentMeter / distance;
+          Vector3 drawn_vector = (firstReleasePosition - firstTouchPosition) * scale_back;
+          Vector3 actual_final_position = firstTouchPosition + drawn_vector;
+
+          float ap_angle = Mathf.Atan2(drawn_vector.y, drawn_vector.x) * Mathf.Rad2Deg;
+          float ap_distance = Vector3.Distance(actual_final_position, firstTouchPosition);
+          float ap_reflectivity = ComputeReflectivity(ap_distance);
+
+          GameObject g = null;
+
+          if (PhotonNetwork.connected) {
+            g = PhotonNetwork.Instantiate(squarePrefab.name, firstTouchPosition, Quaternion.identity, 0) as GameObject;
+          } else {
+            g = Instantiate(squarePrefab, firstTouchPosition, Quaternion.identity) as GameObject;
+          }
+          g.transform.rotation = Quaternion.AngleAxis(ap_angle, Vector3.forward);
+          g.transform.localScale = new Vector3(ap_distance, 0.2f, 0);
+
+          //mSquareSet[mSquareSet.Count - 1].transform.localScale *= scale_back;
+          Destroy(mSquareSet[mSquareSet.Count - 1]);
+          dwm.SubtractMeter(ap_distance);
+          g.GetComponent<PaddleController>().EnableCollider();
+          g.GetComponent<PaddleController>().SetReflectivity(ap_reflectivity);
+        }
+
         if (PhotonNetwork.connected) {
           PhotonNetwork.Destroy(mSquareSet[mSquareSet.Count - 1]);
         } else {
