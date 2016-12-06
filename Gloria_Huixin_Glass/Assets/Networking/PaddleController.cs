@@ -167,6 +167,7 @@ public class PaddleController : MonoBehaviour {
         }
       } else if (!PhotonNetwork.connected) {
         DecreaseHitPoint();
+        audio_source.Play();
       }
     }
   }

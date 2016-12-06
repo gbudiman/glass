@@ -141,8 +141,8 @@ public class TutorialController : MonoBehaviour {
       case Stage.paddle_drawn_4: latched_string = "Shorter paddle is more risky\nBut it reflects faster balls"; break;
       case Stage.paddle_drawn_5: latched_string = "Let's try it.\nGet ready..."; break;
       case Stage.with_breakshot: latched_string = ""; break;
-      case Stage.more_challenge_2: latched_string = "See the score on the left?\nThey increment as balls leave the arena"; break;
-      case Stage.more_challenge_3: latched_string = "Your objective is to score more goals\nthan your opponent"; break;
+      case Stage.more_challenge_2: latched_string = "See the score on the left?\nThey add as balls leave the arena"; break;
+      case Stage.more_challenge_3: latched_string = "Your task is to score more\nthan your opponent"; break;
       case Stage.more_challenge_4: latched_string = "Let's add some challenge\nImagine this is your opponent..."; break;
       case Stage.more_challenge_5: latched_string = ""; break;
       case Stage.getting_the_hang: latched_string = ""; break;

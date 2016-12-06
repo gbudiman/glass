@@ -36,11 +36,11 @@ public class ScoreTracker : MonoBehaviour {
     audio_source = GetComponent<AudioSource>();
     switch (owner) {
       case Owner.this_team:
-        text_mesh.text = "T0";
+        text_mesh.text = "0";
         audio_source.clip = opponent_conceded;
         break;
       case Owner.opposing_team:
-        text_mesh.text = "O0";
+        text_mesh.text = "0";
         audio_source.clip = this_team_conceded;
         break;
     }
@@ -72,12 +72,7 @@ public class ScoreTracker : MonoBehaviour {
   }
 
   void CheckGameEnd() {
-    if (score >= game_manager.ScoreLimit && !is_practice_arena) {
-      //switch (owner) {
-      //  case Owner.this_team: print("you win"); break;
-      //  case Owner.opposing_team: print("you lose"); break;
-      //}
-
+    if (score >= game_manager.ScoreLimit && !is_practice_arena && !game_manager.is_tutorial_level) {
       game_manager.SetGameEnd(owner);
     }
   }
@@ -94,10 +89,10 @@ public class ScoreTracker : MonoBehaviour {
   public void UpdateScoreDisplay() {
     string prefix = "";
 
-    switch (owner) {
-      case Owner.this_team: prefix = "T"; break;
-      case Owner.opposing_team: prefix = "O"; break;
-    }
+    //switch (owner) {
+    //  case Owner.this_team: prefix = "T"; break;
+    //  case Owner.opposing_team: prefix = "O"; break;
+    //}
 
     text_mesh.text = prefix + score.ToString();
     if (score > 0) {

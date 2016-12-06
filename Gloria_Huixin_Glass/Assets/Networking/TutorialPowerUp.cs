@@ -271,7 +271,7 @@ public class TutorialPowerUp : Photon.PunBehaviour {
         break;
       case Stage.learn_reinforced: latched_string = "Double-tap on\nany paddles you created"; break;
       case Stage.reinforced: latched_string = "Awesome! You just activated\nReinforced Paddle Power Up"; break;
-      case Stage.reinforced_2: latched_string = "Reinforced Paddle can reflect 3 balls\nbefore vanishing"; break;
+      case Stage.reinforced_2: latched_string = "Reinforced Paddle can reflect\n3 balls before vanishing"; break;
       case Stage.reinforced_3: latched_string = "Note that it consumed a quarter\nof your Power Up"; break;
       case Stage.reinforced_4: latched_string = "Use it wisely..."; break;
       case Stage.reinforced_5: latched_string = "Click Next button above\nwhen you're ready..."; break;
