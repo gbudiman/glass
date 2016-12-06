@@ -122,7 +122,7 @@ public class Launcher : Photon.PunBehaviour {
     if (input_field_object != null) {
       room_name = input_field_object.GetComponent<InputField>().text;
     } else {
-      int rand = Random.Range((int)10000, (int)99999);
+      int rand = Random.Range((int)100, (int)999);
       room_name = "rookie_" + rand.ToString();
     }
     progress_text.text = "No random room available, creating one...";

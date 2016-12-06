@@ -8,7 +8,7 @@ public class SafetyNet : MonoBehaviour {
   AudioSource audio_source;
   public AudioClip clip_slow_down;
 
-  const float base_duration = 5f;
+  const float base_duration = 8f;
   float timer;
   bool is_enabled = false;
 

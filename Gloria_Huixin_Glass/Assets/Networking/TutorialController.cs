@@ -184,7 +184,7 @@ public class TutorialController : MonoBehaviour {
       state = State.fading_out;
       stage = Stage.paused;
       print("paddle drawn");
-      latched_string = "Excellent!\nSee the bar on the top left?";
+      latched_string = "Excellent!\nSee the bar on the bottom left?";
       stage_elapsed = stage_interval;
       stage = Stage.paddle_drawn;
       paddle_drawn_count = 0;

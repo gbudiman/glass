@@ -6,7 +6,7 @@ using System.Collections;
 /// </summary>
 public class PowerUpManager : MonoBehaviour {
   const bool ENABLE_CONSTRAINT = true;
-  const float SUPERCHARGE_BASE_TIME = 10.0f;
+  const float SUPERCHARGE_BASE_TIME = 16.0f;
   PowerupMeter pm;
 
   WallPhysics bouncer_left;
@@ -64,7 +64,7 @@ public class PowerUpManager : MonoBehaviour {
   }
 
   public void SuperchargeWall(GestureDetector.SwipeDirection swipe) {
-    int cost = 2;
+    int cost = 1;
     if (bouncer_left == null) {
       InitializeBouncers();
     }
@@ -127,7 +127,7 @@ public class PowerUpManager : MonoBehaviour {
   }
 
   public void TripleShot() {
-    int cost = 3;
+    int cost = 2;
 
     print("here " + pm.TestSubtract(cost) + " && " + allow_triple_shot);
     if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost) && allow_triple_shot) {

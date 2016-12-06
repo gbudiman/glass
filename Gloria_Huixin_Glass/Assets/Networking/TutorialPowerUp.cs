@@ -107,6 +107,10 @@ public class TutorialPowerUp : Photon.PunBehaviour {
           game_manager.InitializePowerUpSpawner();
           stage = Stage.see_that;
           state = State.fading_out;
+          foreach (ScoreTracker st in FindObjectsOfType<ScoreTracker>()) {
+            st.SetGameHasStarted(true);
+          }
+
           break;
         case Stage.see_that:
           stage = Stage.try_shooting;
@@ -255,7 +259,7 @@ public class TutorialPowerUp : Photon.PunBehaviour {
           stage_elapsed = stage_interval;
         }
         break;
-      case Stage.watch_collected: latched_string = "Excellent!\nSee the bar on top right?"; break;
+      case Stage.watch_collected: latched_string = "Excellent!\nSee the bar on bottom right?"; break;
       case Stage.watch_collected_2: latched_string = "It fills as balls go through\nthe Power Up Area"; break;
       case Stage.watch_collected_3: latched_string = "Now let's try using some Power Up"; break;
       case Stage.watch_collected_4:
@@ -278,18 +282,18 @@ public class TutorialPowerUp : Photon.PunBehaviour {
       case Stage.triple_wait: latched_string = "Good! Now draw a paddle\nif you haven't already"; break;
       case Stage.triple_launched: latched_string = "Whoa! Did you see that?\nA ball split into 3!"; break;
       case Stage.triple_launched_2: latched_string = "It's guaranteed to catch\nyour opponent off-guard"; break;
-      case Stage.triple_launched_3: latched_string = "But watch out, it costs\n3/4 of Power Up"; break;
+      case Stage.triple_launched_3: latched_string = "But watch out, it costs\n2/4 of Power Up"; break;
       case Stage.triple_launched_4: latched_string = "Click Next whenever\nyou're ready to proceed"; break;
       case Stage.triple_launched_5: latched_string = ""; break;
       case Stage.defensive_intro: latched_string = "Now let's see about\ndefensive Power Up"; break;
       case Stage.defensive_intro_2: latched_string = "As usual, I'll top-up\nthe Power Up for you"; break;
       case Stage.defensive_intro_3: latched_string = "Now make a downward gesture"; break;
       case Stage.safe_activated: latched_string = "See all the incoming balls\nare slowing down?"; break;
-      case Stage.safe_activated_1: latched_string = "It costs 3/4 Power Up\nand lasts for 5 seconds"; break;
+      case Stage.safe_activated_1: latched_string = "It costs 3/4 Power Up\nand lasts for 8 seconds"; break;
       case Stage.safe_activated_2: latched_string = "Press Next when you're ready\n"; break;
       case Stage.safe_activated_3: latched_string = ""; break;
       case Stage.supercharge_intro: latched_string = "Last Powerup\nSlide either left or right"; break;
-      case Stage.supercharge_intro_2: latched_string = "That wall is now Supercharged\nfor 10 seconds"; break;
+      case Stage.supercharge_intro_2: latched_string = "That wall is now Supercharged\nfor 16 seconds"; break;
       case Stage.supercharge_intro_3: latched_string = "It will accelerate any balls\nbumping against it"; break;
       case Stage.supercharge_intro_4: latched_string = "Carefully use it against your\nlefty or right opponent"; break;
       case Stage.supercharge_intro_5: latched_string = "That's all the basics\nYou're ready to go!"; break;
@@ -337,15 +341,15 @@ public class TutorialPowerUp : Photon.PunBehaviour {
         stage = Stage.triple_shot_intro;
         state = State.fading_out;
         stage_elapsed = stage_interval;
-        sprite_renderer.transform.position = new Vector3(4.15f, sprite_renderer.transform.position.y, 0);
+        sprite_renderer.transform.position = new Vector3(2.76f, sprite_renderer.transform.position.y, 0);
         break;
       case Stage.triple_launched_4:
       case Stage.triple_launched_5:
-        PowerUpSpawner powerup_spawner = GameObject.FindObjectOfType<PowerUpSpawner>();
-        powerup_spawner.enabled = false;
-        foreach (PowerupCalculator puc in GameObject.FindObjectsOfType<PowerupCalculator>()) {
-          Destroy(puc.gameObject);
-        }
+        //PowerUpSpawner powerup_spawner = GameObject.FindObjectOfType<PowerUpSpawner>();
+        //powerup_spawner.enabled = false;
+        //foreach (PowerupCalculator puc in GameObject.FindObjectsOfType<PowerupCalculator>()) {
+        //  Destroy(puc.gameObject);
+        //}
 
         
         stage = Stage.defensive_intro;
@@ -355,7 +359,7 @@ public class TutorialPowerUp : Photon.PunBehaviour {
       case Stage.safe_activated_2:
       case Stage.safe_activated_3:
         powerup_meter.FillToFull();
-        sprite_renderer.transform.position = new Vector3(2.68f, sprite_renderer.transform.position.y, 0);
+        sprite_renderer.transform.position = new Vector3(1.37f, sprite_renderer.transform.position.y, 0);
         sprite_renderer.enabled = true;
         stage = Stage.supercharge_intro;
         state = State.fading_out;

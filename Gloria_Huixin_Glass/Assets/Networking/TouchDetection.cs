@@ -208,7 +208,6 @@ public class TouchDetection: MonoBehaviour {
       //g.GetComponent<PaddleController>().RegisterPowerUpManager(pum);
       mSquareSet.Add(g);
 
-      print(mSquareSet.Count);
       //mSquareSet.Add((GameObject) Instantiate(squarePrefab, firstTouchPosition, Quaternion.identity));
 		} else {
 			//rotate
