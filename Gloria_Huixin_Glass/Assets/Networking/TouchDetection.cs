@@ -27,6 +27,8 @@ public class TouchDetection: MonoBehaviour {
   TutorialPowerUp tutorial_powerup;
 
   Text paddle_status;
+  const float PADDLE_STATUS_FADE_TICK = 0.02f;
+  bool paddle_status_is_fading = false;
 
   AudioSource audio_source;
   public AudioClip rattle_clip;
@@ -52,6 +54,30 @@ public class TouchDetection: MonoBehaviour {
     audio_source.clip = rattle_clip;
     time_elapsed_clip_play = 0f;
 	}
+
+  void TickPaddleStatusFade() {
+    if (!paddle_status_is_fading) { return;  }
+
+    Color c = paddle_status.color;
+    paddle_status.color = new Color(c.r, c.g, c.b, c.a - PADDLE_STATUS_FADE_TICK);
+
+    if (c.a < 0.1f) {
+      paddle_status.enabled = false;
+      paddle_status_is_fading = false;
+    }
+  }
+
+  void ShowPaddleStatus(string status) {
+    Color c = paddle_status.color;
+    paddle_status.color = new Color(c.r, c.g, c.b, 1f);
+    paddle_status.enabled = true;
+    paddle_status_is_fading = false;
+    paddle_status.text = status;
+  }
+
+  void FadeOutPaddleStatus() {
+    paddle_status_is_fading = true;
+  }
 
   void TickAudioStop() {
     if (!stop_queued) { return;  }
@@ -130,6 +156,7 @@ public class TouchDetection: MonoBehaviour {
 	void Update () {
     TickAudioStop();
     TickLoopElapsed();
+    TickPaddleStatusFade();
     if (temporarily_disabled) { return; }
 		if(Input.GetMouseButtonDown(0))//click
 		{
@@ -175,7 +202,8 @@ public class TouchDetection: MonoBehaviour {
 			}
 
       //Debug.Log("distance: "+ distance);
-      paddle_status.enabled = false;
+      //paddle_status.enabled = false;
+      FadeOutPaddleStatus();
       SetClipToPlay(false);
 		}
 	
@@ -221,19 +249,17 @@ public class TouchDetection: MonoBehaviour {
 
 
       if (dwm.HasEnoughMeter(distance) /* && IsInsideDrawingArea(firstReleasePosition)*/ && HasSignificantDistance(distance)) {
-        paddle_status.enabled = true;
-        paddle_status.text = "OK";
+        //paddle_status.enabled = true;
+        ShowPaddleStatus("OK");
         mSquareSet[mSquareSet.Count - 1].GetComponent<SpriteRenderer>().color = new Color(0xff, 0xff, 0xff, 1f);
         SetClipToPlay(true, ClipState.ok);
       } else {
         SetClipToPlay(true, ClipState.error);
         if (!HasSignificantDistance(distance)) {
-          paddle_status.enabled = true;
-          paddle_status.text = "Too short";
+          ShowPaddleStatus("Too Short");
         } else {
           if (!dwm.HasEnoughMeter(distance)) {
-            paddle_status.enabled = true;
-            paddle_status.text = "Too long";
+            ShowPaddleStatus("Too Long");
             dwm.Shake();
           }
         }
@@ -283,7 +309,8 @@ public class TouchDetection: MonoBehaviour {
           g.GetComponent<PaddleController>().EnableCollider();
           g.GetComponent<PaddleController>().SetReflectivity(ap_reflectivity);
           Destroy(mSquareSet[mSquareSet.Count - 1]);
-          paddle_status.enabled = false;
+          FadeOutPaddleStatus();
+          //paddle_status.enabled = false;
         }
 
         if (PhotonNetwork.connected) {
