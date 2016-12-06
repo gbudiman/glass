@@ -18,7 +18,12 @@ public class Launcher : Photon.PunBehaviour {
 
   string join_room_name;
 
+  AudioSource audio_source;
+  public AudioClip clip_click;
+
   void Awake() {
+    audio_source = GetComponent<AudioSource>();
+    audio_source.clip = clip_click;
     PhotonNetwork.logLevel = log_level;
     PhotonNetwork.autoJoinLobby = false;
     PhotonNetwork.automaticallySyncScene = true;
@@ -51,6 +56,7 @@ public class Launcher : Photon.PunBehaviour {
 	}
 	
   public void Connect() {
+    audio_source.Play();
     is_hosting = false;
     is_connecting = true;
 
@@ -64,6 +70,7 @@ public class Launcher : Photon.PunBehaviour {
   }
 
   public void HostGame() {
+    audio_source.Play();
     is_hosting = true;
     is_connecting = true;
     progress_label.SetActive(true);
@@ -154,6 +161,7 @@ public class Launcher : Photon.PunBehaviour {
   }
 
   public void JoinRoomByName(GameObject g) {
+    audio_source.Play();
     is_connecting = true;
     is_joining_by_name = true;
     join_room_name = g.GetComponent<InputField>().text;
@@ -166,6 +174,7 @@ public class Launcher : Photon.PunBehaviour {
   }
 
   public void LaunchTutorial() {
+    audio_source.Play();
     PhotonNetwork.Disconnect();
 
     GameObject tutorial_button = GameObject.Find("Tutorial");
@@ -175,6 +184,7 @@ public class Launcher : Photon.PunBehaviour {
   }
 
   public void LaunchQuickRef() {
+    audio_source.Play();
     SceneManager.LoadScene("QuickRef");
   }
 }

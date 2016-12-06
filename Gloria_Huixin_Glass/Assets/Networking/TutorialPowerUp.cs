@@ -39,8 +39,13 @@ public class TutorialPowerUp : Photon.PunBehaviour {
 
   bool paddle_drawn = false;
 
+  AudioSource audio_source;
+  public AudioClip click_clip;
+
 	// Use this for initialization
 	void Start () {
+    audio_source = GetComponent<AudioSource>();
+    audio_source.clip = click_clip;
     touch_detection = GameObject.FindObjectOfType<TouchDetection>();
     gesture_detector = GameObject.FindObjectOfType<GestureDetector>();
     game_manager = GameObject.FindObjectOfType<GlassGameManager>();
@@ -191,7 +196,7 @@ public class TutorialPowerUp : Photon.PunBehaviour {
           break;
         case Stage.defensive_intro_2:
           powerup_manager.allow_safety = true;
-          sprite_renderer.transform.position = new Vector3(4f, sprite_renderer.transform.position.y, 0);
+          sprite_renderer.transform.position = new Vector3(4.15f, sprite_renderer.transform.position.y, 0);
           sprite_renderer.enabled = true;
           GameObject go_slide_up = GameObject.Find("slide_up_gesture");
           go_slide_up.transform.rotation = Quaternion.Euler(0, 0, 180);
@@ -320,17 +325,19 @@ public class TutorialPowerUp : Photon.PunBehaviour {
   }
 
   public void QuitTutorial() {
+    audio_source.Play();
     SceneManager.LoadScene(0);
   }
 
   public void NextTutorial() {
+    audio_source.Play();
     next_button.SetActive(false);
     switch (stage) {
       case Stage.reinforced_5:
         stage = Stage.triple_shot_intro;
         state = State.fading_out;
         stage_elapsed = stage_interval;
-        sprite_renderer.transform.position = new Vector3(4f, sprite_renderer.transform.position.y, 0);
+        sprite_renderer.transform.position = new Vector3(4.15f, sprite_renderer.transform.position.y, 0);
         break;
       case Stage.triple_launched_4:
       case Stage.triple_launched_5:
@@ -361,7 +368,7 @@ public class TutorialPowerUp : Photon.PunBehaviour {
         GameObject go_slide_2 = Instantiate(go_slide);
         go_slide_2.name = "slide_up_gesture_clone";
         go_slide.transform.Rotate(0, 0, 180);
-        go_slide.transform.position = new Vector3(2.75f, 0, 0);
+        go_slide.transform.position = new Vector3(2.76f, 0, 0);
         powerup_manager.allow_supercharge = true;
         break;
       case Stage.supercharge_intro_4:

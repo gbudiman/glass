@@ -34,7 +34,7 @@ public class TouchDetection: MonoBehaviour {
   public AudioClip plop_clip;
   enum ClipState { ok, error, plop };
   bool stop_queued = false;
-  const float STOP_DELAY = 2.25f;
+  const float STOP_DELAY = 0.5f;
   float stop_delay;
   ClipState clip_state;
 

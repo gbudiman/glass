@@ -138,7 +138,10 @@ public class PaddleController : MonoBehaviour {
 
   public void CreateArtificialCollision(int view_id) {
     print("created artificial collission");
-    photon_view.RPC("DecreaseHitPoint", PhotonTargets.AllBufferedViaServer, view_id);
+
+    if (PhotonNetwork.connected) {
+      photon_view.RPC("DecreaseHitPoint", PhotonTargets.AllBufferedViaServer, view_id);
+    }
   }
 
   void OnCollisionExit2D(Collision2D other) {

@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class TutorialController : MonoBehaviour {
+  AudioSource audio_source;
+  public AudioClip click_clip;
   public GameObject guide_text_object;
   const float opacity_step = 0.05f;
   const float stage_interval = 3.0f;
@@ -28,6 +30,8 @@ public class TutorialController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+    audio_source = GetComponent<AudioSource>();
+    audio_source.clip = click_clip;
     touch_detection = GameObject.FindObjectOfType<TouchDetection>();
     gesture_detector = GameObject.FindObjectOfType<GestureDetector>();
     game_manager = GameObject.FindObjectOfType<GlassGameManager>();
@@ -203,6 +207,7 @@ public class TutorialController : MonoBehaviour {
   }
 
   public void NextTutorial() {
+    audio_source.Play();
     SceneManager.LoadScene("Tutorial 2 - PowerUps");
   }
 }

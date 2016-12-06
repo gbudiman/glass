@@ -35,6 +35,9 @@ public class GlassGameManager : Photon.PunBehaviour {
   bool game_over_text_fading_out = false;
   const int limit = 42;
 
+  AudioSource audio_source;
+  public AudioClip startup;
+
   public int ScoreLimit {
     get { return limit; }
   }
@@ -55,6 +58,9 @@ public class GlassGameManager : Photon.PunBehaviour {
 		#endif
 
     photon_view = GetComponent<PhotonView>();
+    audio_source = GetComponent<AudioSource>();
+    audio_source.clip = startup;
+    audio_source.Play();
 
 		//if (PhotonNetwork.connected) {
 		//	if (PlayerManager.local_player_instance == null) {
