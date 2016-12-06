@@ -10,6 +10,9 @@ public class PaddleController : MonoBehaviour {
   SpriteRenderer sr;
   PowerUpManager pum;
 
+  public AudioClip bounce_mine;
+  public AudioClip bounce_other;
+  AudioSource audio_source;
 
   const float TRIGGER_MIN_LAPSE = 0.25f;
   Dictionary<int, float> collision_tracker;
@@ -25,6 +28,8 @@ public class PaddleController : MonoBehaviour {
     last_rpc_sequence = 0;
     pum = GameObject.FindObjectOfType<GlassGameManager>().GetComponent<PowerUpManager>();
 
+    audio_source = GetComponent<AudioSource>();
+    audio_source.clip = bounce_mine;
     //if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
     //  GetComponent<BoxCollider2D>().enabled = true;
     //}
@@ -138,7 +143,6 @@ public class PaddleController : MonoBehaviour {
 
   void OnCollisionExit2D(Collision2D other) {
     if (other.gameObject.GetComponents<GlassBall>().Length > 0) {
-      
       GlassBall other_ball = other.gameObject.GetComponent<GlassBall>();
 
       int photon_view_id = other_ball.GetComponent<PhotonView>().viewID;
@@ -153,7 +157,10 @@ public class PaddleController : MonoBehaviour {
 
       if (PhotonNetwork.connected) {
         if (photon_view.isMine) {
+          audio_source.Play();
           photon_view.RPC("DecreaseHitPoint", PhotonTargets.AllBufferedViaServer, photon_view_id);
+        } else {
+          audio_source.PlayOneShot(bounce_other);
         }
       } else if (!PhotonNetwork.connected) {
         DecreaseHitPoint();
