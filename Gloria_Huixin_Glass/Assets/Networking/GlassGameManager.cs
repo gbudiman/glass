@@ -83,7 +83,7 @@ public class GlassGameManager : Photon.PunBehaviour {
 
     if (!is_tutorial_level) {
       InitializeConnectionLogger();
-      InitializePowerUpBlock();
+      //InitializePowerUpBlock();
       InitializePowerUpSpawner();
     }
     InitializePowerUpMeter();
