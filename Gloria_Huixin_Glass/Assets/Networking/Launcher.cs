@@ -28,6 +28,7 @@ public class Launcher : Photon.PunBehaviour {
     PhotonNetwork.autoJoinLobby = false;
     PhotonNetwork.automaticallySyncScene = true;
     progress_text = progress_label.GetComponent<Text>();
+    progress_text.enabled = false;
 
     if (version_info != null) {
       version_info.GetComponent<Text>().text = "Glass | " + game_version;
@@ -57,6 +58,7 @@ public class Launcher : Photon.PunBehaviour {
 	
   public void Connect() {
     audio_source.Play();
+    progress_text.enabled = true;
     is_hosting = false;
     is_connecting = true;
 
