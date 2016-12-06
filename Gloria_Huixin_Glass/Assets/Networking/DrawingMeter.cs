@@ -70,7 +70,7 @@ public class DrawingMeter : MonoBehaviour {
 
 			if ( initPositionX < -100f )
 				initPositionX = transform.position.x;
-			float target = -2.9f;
+			float target = (PhotonNetwork.connected && PhotonNetwork.isMasterClient) ? 2.9f : -2.9f;
 			float rate = (transform.position.x - initPositionX) / (target - initPositionX) ;
 			meterSprite.color = Color.Lerp(lerpingColor1, lerpingColor2, rate );
 

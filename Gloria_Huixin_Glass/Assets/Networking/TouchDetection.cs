@@ -28,6 +28,16 @@ public class TouchDetection: MonoBehaviour {
 
   Text paddle_status;
 
+  AudioSource audio_source;
+  public AudioClip rattle_clip;
+  public AudioClip error_clip;
+  public AudioClip plop_clip;
+  enum ClipState { ok, error, plop };
+  bool stop_queued = false;
+  const float STOP_DELAY = 2.25f;
+  float stop_delay;
+  ClipState clip_state;
+
 	// Use this for initialization
 	void Start () {
     photon_view = GetComponent<PhotonView>();
@@ -37,7 +47,57 @@ public class TouchDetection: MonoBehaviour {
     tutorial = GameObject.FindObjectOfType<TutorialController>();
     tutorial_powerup = GameObject.FindObjectOfType<TutorialPowerUp>();
     paddle_status = GameObject.Find("PaddleStatus").GetComponent<Text>();
+    audio_source = GetComponent<AudioSource>();
+    audio_source.clip = rattle_clip;
 	}
+
+  void TickAudioStop() {
+    if (!stop_queued) { return;  }
+
+    stop_delay -= Time.deltaTime;
+
+    print("waiting..");
+    print(audio_source.clip);
+    if (stop_delay < 0) {
+      stop_queued = false;
+      print("stopped");
+      audio_source.Stop();
+    }
+  }
+
+  void SetClipToPlay(bool do_play, ClipState input_state = ClipState.ok) {
+    if (do_play) {
+      stop_queued = false;
+      if (input_state == clip_state) {
+        if (!audio_source.isPlaying) {
+          audio_source.Play();
+          audio_source.loop = true;
+          //audio_source.volume = 0.5f;
+        }
+      } else {
+        switch (input_state) {
+          case ClipState.ok:
+            audio_source.clip = rattle_clip;
+            audio_source.volume = 0.5f;
+            break;
+          case ClipState.error:
+            audio_source.clip = error_clip;
+            audio_source.volume = 1.0f;
+            break;
+          case ClipState.plop:
+            audio_source.clip = rattle_clip;
+            audio_source.loop = false;
+            audio_source.volume = 1.0f;
+            break;
+        }
+        clip_state = input_state;
+      }
+    } else {
+      stop_queued = true;
+      stop_delay = STOP_DELAY;
+      print("stop queued");
+    }
+  }
 
   public void RegisterPowerupMeter(DrawingMeter _dwm) {
     dwm = _dwm;
@@ -57,6 +117,7 @@ public class TouchDetection: MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+    TickAudioStop();
     if (temporarily_disabled) { return; }
 		if(Input.GetMouseButtonDown(0))//click
 		{
@@ -101,6 +162,7 @@ public class TouchDetection: MonoBehaviour {
 
       //Debug.Log("distance: "+ distance);
       paddle_status.enabled = false;
+      SetClipToPlay(false);
 		}
 	
 	}
@@ -148,7 +210,9 @@ public class TouchDetection: MonoBehaviour {
         paddle_status.enabled = true;
         paddle_status.text = "OK";
         mSquareSet[mSquareSet.Count - 1].GetComponent<SpriteRenderer>().color = new Color(0xff, 0xff, 0xff, 1f);
+        SetClipToPlay(true, ClipState.ok);
       } else {
+        SetClipToPlay(true, ClipState.error);
         if (!HasSignificantDistance(distance)) {
           paddle_status.enabled = true;
           paddle_status.text = "Too short";
@@ -177,6 +241,16 @@ public class TouchDetection: MonoBehaviour {
         if (tutorial_powerup != null) {
           tutorial_powerup.ProceedPaddleDrawn();
         }
+
+        //audio_source.Stop();
+        //audio_source.clip = plop_clip;
+        ////audio_source.loop = false;
+
+        //audio_source.volume = 1f;
+        //print(audio_source.clip);
+        //audio_source.PlayDelayed(0.55f);
+        //print("Playing one shot");
+        SetClipToPlay(true, ClipState.plop);
       } else if (on_release && (!dwm.HasEnoughMeter(distance) || !IsInsideDrawingArea(firstReleasePosition) || !HasSignificantDistance(distance))) {
         if (PhotonNetwork.connected) {
           PhotonNetwork.Destroy(mSquareSet[mSquareSet.Count - 1]);
