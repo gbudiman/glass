@@ -37,6 +37,8 @@ public class GlassBall : Photon.PunBehaviour {
 
   bool normal_in_game_destruction = false;
 
+  AudioSource audio_source;
+  public AudioClip balls_bounce;
   /// <summary>
   /// Informs that ball is destroyed normally by collision trigger
   ///   or abnormally by unexpected disconnection/ragequit
@@ -53,6 +55,8 @@ public class GlassBall : Photon.PunBehaviour {
     wcl = GameObject.FindObjectOfType<WallController>();
     photon_view = GetComponent<PhotonView>();
     breakshot = GameObject.FindObjectOfType<Breakshot>();
+    audio_source = GetComponent<AudioSource>();
+    audio_source.clip = balls_bounce;
   }
 
   void Update() {
@@ -257,6 +261,10 @@ public class GlassBall : Photon.PunBehaviour {
 	//spawn collison effects
 	void OnCollisionEnter2D( Collision2D other ) 
 	{
+    if (other.gameObject.GetComponents<GlassBall>().Length > 0) {
+      audio_source.Play();
+    }
+
     bool sfx_rendered = false;
 
 		if(particleEffects != null && other.gameObject.tag == "paddle")

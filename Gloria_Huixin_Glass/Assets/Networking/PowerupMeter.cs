@@ -35,7 +35,6 @@ public class PowerupMeter : MonoBehaviour {
     UpdateDisplay();
 
     grid_highlighter = transform.parent.GetComponentInChildren<GridHighlighter>();
-    print(grid_highlighter);
     grid = grid_highlighter.GetComponent<SpriteRenderer>();
 
     shaker = GetComponent<Shaker>();
@@ -68,7 +67,7 @@ public class PowerupMeter : MonoBehaviour {
       positional_fraction = (transform.position.x + pos_max) / cardinal;
     } else {
       positional_fraction = (-transform.position.x + pos_max) / cardinal;
-      print(-transform.position.x + " + " + pos_max + " / " + cardinal + " => " + positional_fraction);
+      //print(-transform.position.x + " + " + pos_max + " / " + cardinal + " => " + positional_fraction);
     }
     
     

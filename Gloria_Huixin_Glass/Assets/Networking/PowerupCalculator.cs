@@ -4,8 +4,12 @@ using System.Collections;
 public class PowerupCalculator : MonoBehaviour {
   bool is_being_picked_up = false;
   TutorialPowerUp tutorial_power_up;
+  public AudioClip ball_inside_clip;
+  AudioSource audio_source;
 
 	void Start () {
+    audio_source = GetComponent<AudioSource>();
+    audio_source.clip = ball_inside_clip;
     tutorial_power_up = GameObject.FindObjectOfType<TutorialPowerUp>();
 	}
 
@@ -16,6 +20,7 @@ public class PowerupCalculator : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other) {
     GlassBall glass_ball = other.GetComponent<GlassBall>();
     if (glass_ball != null) {
+      audio_source.Play();
       glass_ball.EnablePowerPickup(true);
 
       if (tutorial_power_up != null) {

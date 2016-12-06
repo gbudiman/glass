@@ -22,9 +22,14 @@ public class Breakshot : MonoBehaviour {
 
   float practice_trigger;
 
+  AudioSource audio_source;
+  public AudioClip launch_clip;
+
   void Start() {
     allow_spawn = true;
     practice_trigger = practice_trigger_base_interval;
+    audio_source = GetComponent<AudioSource>();
+    audio_source.clip = launch_clip;
   }
 
   void Update() {
@@ -71,6 +76,8 @@ public class Breakshot : MonoBehaviour {
     GameObject g0 = null;
     GameObject g1 = null;
     int dice_roll = SelectDiceRoll();
+
+    audio_source.Play((ulong) 0.25f);
 
     if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
       //g0 = PhotonNetwork.Instantiate(glass_ball_prefab.name, new Vector3(1, 1, 0), Quaternion.identity, 0) as GameObject;

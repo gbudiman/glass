@@ -48,10 +48,8 @@ public class DrawingMeter : MonoBehaviour {
   }
 
   public void FillToFull() {
-    print("Filling to full");
     current_meter = cardinal;
     UpdateDisplay(0);
-    print(current_meter);
   }
 
   void TickFillMeter() {
