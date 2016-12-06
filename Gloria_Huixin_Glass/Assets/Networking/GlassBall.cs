@@ -39,6 +39,7 @@ public class GlassBall : Photon.PunBehaviour {
 
   AudioSource audio_source;
   public AudioClip balls_bounce;
+  public AudioClip triple_shot_clip;
   /// <summary>
   /// Informs that ball is destroyed normally by collision trigger
   ///   or abnormally by unexpected disconnection/ragequit
@@ -136,6 +137,7 @@ public class GlassBall : Photon.PunBehaviour {
     if (triple_shot_countdown_timer < 0) {
       if (triple_shot_counter == 3) {
         latched_position = transform.position;
+        audio_source.PlayOneShot(triple_shot_clip);
       } else {
         CreateAnotherBall();
       }

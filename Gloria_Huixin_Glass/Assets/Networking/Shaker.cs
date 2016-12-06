@@ -15,9 +15,11 @@ public class Shaker : MonoBehaviour {
     }
   }
 
+  AudioSource audio_source;
+  public AudioClip error_clip;
+
 	// Use this for initialization
 	void Start () {
-	
 	}
 	
 	// Update is called once per frame
@@ -45,6 +47,15 @@ public class Shaker : MonoBehaviour {
 
   public void EnableShake() {
     is_shaking = true;
+
+    if (audio_source == null) {
+      audio_source = GetComponent<AudioSource>();
+    }
+
+    if (audio_source != null) {
+      audio_source.PlayOneShot(error_clip);
+    }
+
     shake_timer = custom_shake_duration < 0 ? SHAKE_DURATION : custom_shake_duration;
   }
 }

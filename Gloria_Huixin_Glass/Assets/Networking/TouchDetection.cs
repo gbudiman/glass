@@ -55,12 +55,8 @@ public class TouchDetection: MonoBehaviour {
     if (!stop_queued) { return;  }
 
     stop_delay -= Time.deltaTime;
-
-    print("waiting..");
-    print(audio_source.clip);
     if (stop_delay < 0) {
       stop_queued = false;
-      print("stopped");
       audio_source.Stop();
     }
   }

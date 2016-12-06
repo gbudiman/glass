@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Use this to manage PowerUp check, trigger, and execution
+/// </summary>
 public class PowerUpManager : MonoBehaviour {
-  const bool ENABLE_CONSTRAINT = true;
+  const bool ENABLE_CONSTRAINT = false;
   const float SUPERCHARGE_BASE_TIME = 10.0f;
   PowerupMeter pm;
 
@@ -28,8 +31,15 @@ public class PowerUpManager : MonoBehaviour {
     allow_triple_shot = false;
   }
 
+  AudioSource audio_source;
+  public AudioClip clip_triple_shot_queued;
+  public AudioClip clip_wall_supercharged;
+  public AudioClip clip_safety_net;
+  public AudioClip clip_paddle_reinforced;
+
   // Use this for initialization
   void Start () {
+    audio_source = GetComponent<AudioSource>();
     InitializeBouncers();
     triple_shot_queued = false;
     tutorial_power_up = GameObject.FindObjectOfType<TutorialPowerUp>();
@@ -61,6 +71,7 @@ public class PowerUpManager : MonoBehaviour {
 
     if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost) && allow_supercharge) {
       pm.ExecuteSubtract(cost);
+      audio_source.PlayOneShot(clip_wall_supercharged);
       bool successful_swipe = false;
       switch (swipe) {
         case GestureDetector.SwipeDirection.swipe_right:
@@ -85,6 +96,7 @@ public class PowerUpManager : MonoBehaviour {
 
     if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost) && allow_safety) {
       pm.ExecuteSubtract(cost);
+      audio_source.PlayOneShot(clip_safety_net);
       foreach (SafetyNet sfn in GameObject.FindObjectsOfType<SafetyNet>()) {
         bool is_mine = sfn.GetComponent<PhotonView>().isMine;
         if (!PhotonNetwork.connected || is_mine) {
@@ -104,6 +116,7 @@ public class PowerUpManager : MonoBehaviour {
     int cost = 1;
 
     if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost) && allow_reinforced) {
+      audio_source.PlayOneShot(clip_paddle_reinforced);
       pm.ExecuteSubtract(cost);
       g.GetComponent<PaddleController>().Reinforce();
 
@@ -118,7 +131,7 @@ public class PowerUpManager : MonoBehaviour {
 
     print("here " + pm.TestSubtract(cost) + " && " + allow_triple_shot);
     if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost) && allow_triple_shot) {
-      print("Power up queued");
+      audio_source.PlayOneShot(clip_triple_shot_queued);
       pm.ExecuteSubtract(cost);
       triple_shot_queued = true;
 
