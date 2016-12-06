@@ -269,7 +269,7 @@ public class GlassGameManager : Photon.PunBehaviour {
   }
 
   void InitializeConnectionLogger() {
-    Instantiate(connection_logger_prefab, new Vector3(5.35f, -9.85f, 0), Quaternion.identity);
+    Instantiate(connection_logger_prefab, new Vector3(5.35f, -9.15f, 0), Quaternion.identity);
     connection_logger = GameObject.FindObjectOfType<ConnectionLogger>();
     if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
       UnInvertObject(connection_logger.gameObject);

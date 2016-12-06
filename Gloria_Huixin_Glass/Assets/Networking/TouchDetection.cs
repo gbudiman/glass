@@ -36,6 +36,7 @@ public class TouchDetection: MonoBehaviour {
   bool stop_queued = false;
   const float STOP_DELAY = 0.5f;
   float stop_delay;
+  float time_elapsed_clip_play;
   ClipState clip_state;
 
 	// Use this for initialization
@@ -49,6 +50,7 @@ public class TouchDetection: MonoBehaviour {
     paddle_status = GameObject.Find("PaddleStatus").GetComponent<Text>();
     audio_source = GetComponent<AudioSource>();
     audio_source.clip = rattle_clip;
+    time_elapsed_clip_play = 0f;
 	}
 
   void TickAudioStop() {
@@ -61,16 +63,29 @@ public class TouchDetection: MonoBehaviour {
     }
   }
 
+  void TickLoopElapsed() {
+    time_elapsed_clip_play += Time.deltaTime;
+  }
+
   void SetClipToPlay(bool do_play, ClipState input_state = ClipState.ok) {
     if (do_play) {
       stop_queued = false;
       if (input_state == clip_state) {
         if (!audio_source.isPlaying) {
-          audio_source.Play();
+
+          if (input_state == ClipState.error) {
+            if (time_elapsed_clip_play > 0.1f) {
+              audio_source.Play();
+            }
+          } else {
+            audio_source.Play();
+          }
           audio_source.loop = true;
         }
       } else {
-        audio_source.Stop();
+        if (input_state != ClipState.ok) {
+          audio_source.Stop();
+        }
         switch (input_state) {
           case ClipState.ok:
             audio_source.clip = rattle_clip;
@@ -78,7 +93,7 @@ public class TouchDetection: MonoBehaviour {
             break;
           case ClipState.error:
             audio_source.clip = error_clip;
-            audio_source.volume = 1.0f;
+            audio_source.volume = 0.5f;
             break;
           case ClipState.plop:
             audio_source.clip = rattle_clip;
@@ -87,6 +102,7 @@ public class TouchDetection: MonoBehaviour {
             break;
         }
         clip_state = input_state;
+        time_elapsed_clip_play = 0f;
       }
     } else {
       stop_queued = true;
@@ -113,6 +129,7 @@ public class TouchDetection: MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
     TickAudioStop();
+    TickLoopElapsed();
     if (temporarily_disabled) { return; }
 		if(Input.GetMouseButtonDown(0))//click
 		{
