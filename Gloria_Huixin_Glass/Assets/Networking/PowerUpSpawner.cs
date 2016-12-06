@@ -20,6 +20,7 @@ public class PowerUpSpawner : MonoBehaviour {
 	}
 
   void InstantiatePowerup() {
+    float existing_angular_velocity = 0;
     float rand_x = Random.Range(-3.0f, +3.0f);
     float rand_y = Random.Range(-1.0f, +1.0f);
     float rand_rotation = Random.Range(0f, 180f);
@@ -29,6 +30,12 @@ public class PowerUpSpawner : MonoBehaviour {
 
     GameObject g = null;
     GameObject existing_powerup_region = GameObject.FindGameObjectWithTag("powerup_region");
+
+    
+    if (existing_powerup_region) {
+      existing_angular_velocity = existing_powerup_region.GetComponent<PowerupCalculator>().AngularVelocity;
+    }
+
     if (PhotonNetwork.connected) {
       if (PhotonNetwork.isMasterClient) {
         if (existing_powerup_region != null) {
@@ -41,7 +48,9 @@ public class PowerUpSpawner : MonoBehaviour {
       g = Instantiate(powerup_prefab, rand_position, rand_quaternion) as GameObject;
     }
 
+    // Transfer angular velocity to the new spawned one
     powerup_calculator = g.GetComponent<PowerupCalculator>();
+    powerup_calculator.AngularVelocity = existing_angular_velocity;
   }
 
   void ReRollTimer() {

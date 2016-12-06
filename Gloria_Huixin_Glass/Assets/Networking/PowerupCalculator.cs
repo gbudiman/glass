@@ -2,12 +2,15 @@
 using System.Collections;
 
 public class PowerupCalculator : MonoBehaviour {
+  const float ANGULAR_VELOCITY_MULTIPLIER = 25f;
   bool is_being_picked_up = false;
   TutorialPowerUp tutorial_power_up;
   public AudioClip ball_inside_clip;
   AudioSource audio_source;
+  Rigidbody2D rb;
 
 	void Start () {
+    rb = GetComponent<Rigidbody2D>();
     audio_source = GetComponent<AudioSource>();
     audio_source.clip = ball_inside_clip;
     tutorial_power_up = GameObject.FindObjectOfType<TutorialPowerUp>();
@@ -35,7 +38,26 @@ public class PowerupCalculator : MonoBehaviour {
       if (tutorial_power_up != null) {
         tutorial_power_up.ProceedPowerUpCollected();
       }
+
+      if (!PhotonNetwork.connected || PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+        Rigidbody2D grb = glass_ball.GetComponent<Rigidbody2D>();
+        Vector3 r = glass_ball.transform.position - transform.position;
+        Vector3 f = new Vector3(grb.velocity.x, grb.velocity.y, 0);
+        //float angle = Mathf.Atan2(Vector3.Magnitude(f), Vector3.Magnitude(r));
+        float angle = Vector3.Angle(r, f);
+        print("Sphere = " + transform.position + " => Ball = " + glass_ball.transform.position);
+        print("R = " + r + " | F = " + f);
+        print(angle * Mathf.Rad2Deg + " => " + Mathf.Sin(angle));
+        print("=====");
+        //float direction_adjustment = grb.velocity.x > 0 ? -1 : 1;
+        rb.AddTorque(Vector3.Magnitude(r) * Vector3.Magnitude(f) * Mathf.Sin(angle) * ANGULAR_VELOCITY_MULTIPLIER);
+      }
     }
+  }
+
+  public float AngularVelocity {
+    get { return rb.angularVelocity; }
+    set { GetComponent<Rigidbody2D>().angularVelocity = value; }
   }
 
   // Note: it is possible there are multiple balls picking powerup
