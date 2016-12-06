@@ -43,13 +43,11 @@ public class PowerupCalculator : MonoBehaviour {
         Rigidbody2D grb = glass_ball.GetComponent<Rigidbody2D>();
         Vector3 r = glass_ball.transform.position - transform.position;
         Vector3 f = new Vector3(grb.velocity.x, grb.velocity.y, 0);
-        //float angle = Mathf.Atan2(Vector3.Magnitude(f), Vector3.Magnitude(r));
         float angle = Vector3.Angle(r, f);
-        print("Sphere = " + transform.position + " => Ball = " + glass_ball.transform.position);
-        print("R = " + r + " | F = " + f);
-        print(angle * Mathf.Rad2Deg + " => " + Mathf.Sin(angle));
-        print("=====");
-        //float direction_adjustment = grb.velocity.x > 0 ? -1 : 1;
+        //print("Sphere = " + transform.position + " => Ball = " + glass_ball.transform.position);
+        //print("R = " + r + " | F = " + f);
+        //print(angle * Mathf.Rad2Deg + " => " + Mathf.Sin(angle));
+        //print("=====");
         rb.AddTorque(Vector3.Magnitude(r) * Vector3.Magnitude(f) * Mathf.Sin(angle) * ANGULAR_VELOCITY_MULTIPLIER);
       }
     }

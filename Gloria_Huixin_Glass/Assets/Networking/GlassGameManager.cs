@@ -37,6 +37,8 @@ public class GlassGameManager : Photon.PunBehaviour {
 
   AudioSource audio_source;
   public AudioClip startup;
+  public AudioClip clip_win;
+  public AudioClip clip_lose;
 
   public int ScoreLimit {
     get { return limit; }
@@ -431,8 +433,14 @@ public class GlassGameManager : Photon.PunBehaviour {
 
     string winner = "";
     switch (owner) {
-      case ScoreTracker.Owner.this_team: winner = "You Win"; break;
-      case ScoreTracker.Owner.opposing_team: winner = "You Lose"; break;
+      case ScoreTracker.Owner.this_team:
+        winner = "You Win";
+        audio_source.PlayOneShot(clip_win);
+        break;
+      case ScoreTracker.Owner.opposing_team:
+        winner = "You Lose";
+        audio_source.PlayOneShot(clip_lose);
+        break;
     }
     game_over_text.enabled = true;
     game_over_text.text = "Game Over: " + winner;
