@@ -20,7 +20,16 @@ public class PowerupCalculator : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D other) {
     GlassBall glass_ball = other.GetComponent<GlassBall>();
     if (glass_ball != null) {
-      audio_source.Play();
+
+      if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+        if (glass_ball.GetComponent<Rigidbody2D>().velocity.y < 0) {
+          audio_source.Play();
+        }
+      } else {
+        if (glass_ball.GetComponent<Rigidbody2D>().velocity.y > 0) {
+          audio_source.Play();
+        }
+      }
       glass_ball.EnablePowerPickup(true);
 
       if (tutorial_power_up != null) {
