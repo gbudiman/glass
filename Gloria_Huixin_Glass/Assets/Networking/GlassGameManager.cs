@@ -170,9 +170,9 @@ public class GlassGameManager : Photon.PunBehaviour {
   void InitializeDrawingMeter() {
     GameObject g = null;
     if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      g = Instantiate(drawing_meter_prefab, new Vector3(0f, -9.65f, 0), Quaternion.Euler(0, 0, 180)) as GameObject;
+      g = Instantiate(drawing_meter_prefab, new Vector3(0f, 9.65f, 0), Quaternion.Euler(0, 0, 180)) as GameObject;
     } else {
-      g = Instantiate(drawing_meter_prefab, new Vector3(-5.6f, 9.65f, 0), Quaternion.identity) as GameObject;
+      g = Instantiate(drawing_meter_prefab, new Vector3(-5.6f, -9.65f, 0), Quaternion.identity) as GameObject;
     }
 
     TouchDetection tdt = GameObject.FindObjectOfType<TouchDetection>();
@@ -246,9 +246,9 @@ public class GlassGameManager : Photon.PunBehaviour {
 
   void InitializePowerUpMeter() {
     if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
-      Instantiate(powerup_meter_prefab, new Vector3(0, -9.65f, 0), Quaternion.Euler(0, 0, 180));
+      Instantiate(powerup_meter_prefab, new Vector3(0, 9.65f, 0), Quaternion.Euler(0, 0, 180));
     } else { 
-      Instantiate(powerup_meter_prefab, new Vector3(0, 9.65f, 0), Quaternion.identity);
+      Instantiate(powerup_meter_prefab, new Vector3(0, -9.65f, 0), Quaternion.identity);
     }
   }
 
