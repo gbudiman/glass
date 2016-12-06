@@ -26,6 +26,7 @@ public class DrawingMeter : MonoBehaviour {
     shaker = GetComponent<Shaker>();
     shaker.RegisterObject(transform.parent.position);
     shaker.CustomShakeDuration = 0.01f;
+
 	}
 	
   public void Shake() {
@@ -62,12 +63,18 @@ public class DrawingMeter : MonoBehaviour {
     }
   }
 
+	float initPositionX = -101f;
   void SmoothUpdate() {
     if (enable_lerp) {
       t_epsilon += 2 * Time.deltaTime;
       transform.position = new Vector3(Mathf.Lerp(current_position - cardinal, target_position - cardinal, t_epsilon), transform.position.y, transform.position.z);
       //transform.position = new Vector3(target_position - cardinal, transform.position.y, 0);
-			meterSprite.color = Color.Lerp(lerpingColor1, lerpingColor2, t_epsilon);
+
+			if ( initPositionX < -100f )
+				initPositionX = transform.position.x;
+			float target = -2.9f;
+			float rate = (transform.position.x - initPositionX) / (target - initPositionX) ;
+			meterSprite.color = Color.Lerp(lerpingColor1, lerpingColor2, rate );
 
       if (t_epsilon > 1) {
         enable_lerp = false;
