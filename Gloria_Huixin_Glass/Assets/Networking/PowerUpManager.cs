@@ -5,7 +5,7 @@ using System.Collections;
 /// Use this to manage PowerUp check, trigger, and execution
 /// </summary>
 public class PowerUpManager : MonoBehaviour {
-  const bool ENABLE_CONSTRAINT = false;
+  const bool ENABLE_CONSTRAINT = true;
   const float SUPERCHARGE_BASE_TIME = 10.0f;
   PowerupMeter pm;
 

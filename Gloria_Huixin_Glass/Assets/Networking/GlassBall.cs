@@ -40,6 +40,8 @@ public class GlassBall : Photon.PunBehaviour {
   AudioSource audio_source;
   public AudioClip balls_bounce;
   public AudioClip triple_shot_clip;
+  public AudioClip clip_bounce_other;
+  public AudioClip clip_supercharged_collision;
   /// <summary>
   /// Informs that ball is destroyed normally by collision trigger
   ///   or abnormally by unexpected disconnection/ragequit
@@ -275,11 +277,19 @@ public class GlassBall : Photon.PunBehaviour {
 			Instantiate(particleEffects, transform.position, Quaternion.identity);
 		}
 
-		if(particleEffects != null && other.gameObject.tag == "wall" && other.gameObject.GetComponent<WallPhysics>().is_supercharged)
+		if(particleEffects != null && other.gameObject.tag == "wall")
 		{
-			Debug.Log("collide" + other.gameObject.GetComponent<WallPhysics>().is_supercharged);
 
-			Instantiate(explosionEffects, transform.position, Quaternion.identity);
+      //Debug.Log("collide" + other.gameObject.GetComponent<WallPhysics>().is_supercharged);
+      bool wall_is_supercharged = other.gameObject.GetComponent<WallPhysics>().is_supercharged;
+
+      if (wall_is_supercharged) {
+        audio_source.PlayOneShot(clip_supercharged_collision);
+        Instantiate(explosionEffects, transform.position, Quaternion.identity);
+      } else {
+        audio_source.PlayOneShot(clip_bounce_other);
+      }
+			
 		}
 
     // Because of possible lag in network communication,

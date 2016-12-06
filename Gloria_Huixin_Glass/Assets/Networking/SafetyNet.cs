@@ -5,6 +5,8 @@ public class SafetyNet : MonoBehaviour {
   BoxCollider2D bcl;
   SpriteRenderer sr;
   PhotonView photon_view;
+  AudioSource audio_source;
+  public AudioClip clip_slow_down;
 
   const float base_duration = 5f;
   float timer;
@@ -15,6 +17,8 @@ public class SafetyNet : MonoBehaviour {
     bcl = GetComponent<BoxCollider2D>();
     sr = GetComponentInChildren<SpriteRenderer>();
     photon_view = GetComponent<PhotonView>();
+    audio_source = GetComponent<AudioSource>();
+    audio_source.clip = clip_slow_down;
 	}
 	
 	// Update is called once per frame
@@ -43,6 +47,7 @@ public class SafetyNet : MonoBehaviour {
 
   void OnTriggerEnter2D(Collider2D other) {
     if (other.GetComponent<GlassBall>() != null) {
+      audio_source.Play();
       Rigidbody2D other_rb = other.GetComponent<GlassBall>().GetComponent<Rigidbody2D>();
 
       if (PhotonNetwork.connected) {
@@ -70,7 +75,9 @@ public class SafetyNet : MonoBehaviour {
     is_enabled = true;
     if (enable) {
       timer = base_duration;
-      photon_view.RPC("UpdateSafetyNetOverNetwork", PhotonTargets.Others);
+      if (PhotonNetwork.connected) {
+        photon_view.RPC("UpdateSafetyNetOverNetwork", PhotonTargets.Others);
+      }
     }
   }
 }
