@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System;
 
 public class ScoreTracker : MonoBehaviour {
+  public AudioClip this_team_conceded;
+  public AudioClip opponent_conceded;
   public enum Owner { this_team, opposing_team };
   PhotonView photon_view;
   TextMesh text_mesh;
@@ -17,6 +19,7 @@ public class ScoreTracker : MonoBehaviour {
   bool is_practice_arena = false;
 
   GlassGameManager game_manager;
+  AudioSource audio_source;
 
   public bool IsPracticeArena {
     set { is_practice_arena = value; }
@@ -30,9 +33,16 @@ public class ScoreTracker : MonoBehaviour {
     owner = _owner;
     game_has_started = false;
 
+    audio_source = GetComponent<AudioSource>();
     switch (owner) {
-      case Owner.this_team: text_mesh.text = "T0"; break;
-      case Owner.opposing_team: text_mesh.text = "O0"; break;
+      case Owner.this_team:
+        text_mesh.text = "T0";
+        audio_source.clip = opponent_conceded;
+        break;
+      case Owner.opposing_team:
+        text_mesh.text = "O0";
+        audio_source.clip = this_team_conceded;
+        break;
     }
   }
 
@@ -46,11 +56,9 @@ public class ScoreTracker : MonoBehaviour {
   }
 
   public void AddScore() {
-    print("Adding score " + game_has_started);
     if (!game_has_started) { return; }
     score++;
 
-    
     UpdateScoreDisplay();
     CheckGameEnd();
     
@@ -92,5 +100,8 @@ public class ScoreTracker : MonoBehaviour {
     }
 
     text_mesh.text = prefix + score.ToString();
+    if (score > 0) {
+      audio_source.Play();
+    }
   }
 }
