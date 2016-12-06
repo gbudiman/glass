@@ -15,8 +15,8 @@ public class TouchDetection: MonoBehaviour {
 	[SerializeField] GameObject squarePrefab;
 	float leftBoundaryX = -7f;
 	float rightBoundaryX = 7f;
-	float topBoundaryY = -3.5f;
-	float bottomBoundaryY = -10.14f;
+	float topBoundaryY = -3.85f;
+	float bottomBoundaryY = -12f;
   DrawingMeter dwm;
 
   PowerUpManager pum;
