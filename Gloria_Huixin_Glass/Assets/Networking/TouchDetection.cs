@@ -262,10 +262,12 @@ public class TouchDetection: MonoBehaviour {
           g.transform.localScale = new Vector3(ap_distance, 0.2f, 0);
 
           //mSquareSet[mSquareSet.Count - 1].transform.localScale *= scale_back;
-          Destroy(mSquareSet[mSquareSet.Count - 1]);
+          
           dwm.SubtractMeter(ap_distance);
           g.GetComponent<PaddleController>().EnableCollider();
           g.GetComponent<PaddleController>().SetReflectivity(ap_reflectivity);
+          Destroy(mSquareSet[mSquareSet.Count - 1]);
+          paddle_status.enabled = false;
         }
 
         if (PhotonNetwork.connected) {
