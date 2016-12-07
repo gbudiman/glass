@@ -261,7 +261,7 @@ public class TutorialPowerUp : Photon.PunBehaviour {
         break;
       case Stage.watch_collected: latched_string = "Excellent!\nSee the bar on bottom right?"; break;
       case Stage.watch_collected_2: latched_string = "It fills as balls go through\nthe Power Up Area"; break;
-      case Stage.watch_collected_3: latched_string = "Now let's try using some Power Up"; break;
+      case Stage.watch_collected_3: latched_string = "Now let's try using them"; break;
       case Stage.watch_collected_4:
         latched_string = "Fill the Power Up until it\nexceeds the triangle marker";
         if (powerup_meter.CurrentAmount > 0.25f) {
