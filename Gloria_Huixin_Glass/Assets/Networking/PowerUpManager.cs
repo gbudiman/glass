@@ -36,7 +36,7 @@ public class PowerUpManager : MonoBehaviour {
   public AudioClip clip_wall_supercharged;
   public AudioClip clip_safety_net;
   public AudioClip clip_paddle_reinforced;
-
+  public AudioClip clip_failed;
   // Use this for initialization
   void Start () {
     audio_source = GetComponent<AudioSource>();
@@ -116,12 +116,16 @@ public class PowerUpManager : MonoBehaviour {
     int cost = 1;
 
     if (!ENABLE_CONSTRAINT || pm.TestSubtract(cost) && allow_reinforced) {
-      audio_source.PlayOneShot(clip_paddle_reinforced);
-      pm.ExecuteSubtract(cost);
-      g.GetComponent<PaddleController>().Reinforce();
+      if (g.GetComponent<PaddleController>().hit_point == 1) {
+        audio_source.PlayOneShot(clip_paddle_reinforced);
+        pm.ExecuteSubtract(cost);
+        g.GetComponent<PaddleController>().Reinforce();
 
-      if (tutorial_power_up != null) {
-        tutorial_power_up.ProceedReinforced();
+        if (tutorial_power_up != null) {
+          tutorial_power_up.ProceedReinforced();
+        }
+      } else {
+        audio_source.PlayOneShot(clip_failed);
       }
     }
   }
