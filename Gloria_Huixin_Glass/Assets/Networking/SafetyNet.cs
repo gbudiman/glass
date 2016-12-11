@@ -47,22 +47,25 @@ public class SafetyNet : MonoBehaviour {
 
   void OnTriggerEnter2D(Collider2D other) {
     if (other.GetComponent<GlassBall>() != null) {
-      audio_source.Play();
+      
       Rigidbody2D other_rb = other.GetComponent<GlassBall>().GetComponent<Rigidbody2D>();
 
       if (PhotonNetwork.connected) {
         if (PhotonNetwork.isMasterClient && photon_view.isMine ||
             !PhotonNetwork.isMasterClient && !photon_view.isMine) {
           if (other_rb.velocity.y > 0) {
+            audio_source.Play();
             other_rb.velocity *= 0.5f;
           }
         } else {
           if (other_rb.velocity.y < 0) {
+            audio_source.Play();
             other_rb.velocity *= 0.5f;
           }
         }
       } else {
         if (other_rb.velocity.y < 0) {
+          audio_source.Play();
           other_rb.velocity *= 0.5f;
         }
       }
