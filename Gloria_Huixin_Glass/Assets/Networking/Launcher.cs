@@ -187,6 +187,11 @@ public class Launcher : Photon.PunBehaviour {
 
   public void LaunchQuickRef() {
     audio_source.Play();
+    //SceneManager.LoadScene("QuickRef");
+    Invoke("ChangeLevel", 0.5f);
+  }
+
+  void ChangeLevel() {
     SceneManager.LoadScene("QuickRef");
   }
 }
