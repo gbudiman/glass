@@ -194,4 +194,9 @@ public class Launcher : Photon.PunBehaviour {
   void ChangeLevel() {
     SceneManager.LoadScene("QuickRef");
   }
+
+	public void ShowCredit()
+	{
+		SceneManager.LoadScene("Credits");
+	}
 }
