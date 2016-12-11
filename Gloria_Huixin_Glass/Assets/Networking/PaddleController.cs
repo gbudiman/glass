@@ -17,6 +17,7 @@ public class PaddleController : MonoBehaviour {
   const float TRIGGER_MIN_LAPSE = 0.25f;
   Dictionary<int, float> collision_tracker;
 
+
 	// Use this for initialization
 	void Start () {
     InvokeRepeating("CleanUpCollisionTracker", 0, 2.5f);
@@ -100,8 +101,8 @@ public class PaddleController : MonoBehaviour {
   void UpdateVisual() {
     Color paddle_color = new Color(0xFF, 0xFF, 0xFF);
     switch (hit_point) {
-      case 3: paddle_color = new Color(0, 0, 0xFF); break;
-      case 2: paddle_color = new Color(0, 0xFF, 0xFF);  break;
+      case 3: paddle_color = new Color(107/255f, 66/255f, 22/255f); break;
+      case 2: paddle_color = new Color(242/255f, 146/255f, 59/255f);  break;
     }
 
     sr.color = paddle_color;
