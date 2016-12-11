@@ -189,4 +189,9 @@ public class Launcher : Photon.PunBehaviour {
     audio_source.Play();
     SceneManager.LoadScene("QuickRef");
   }
+
+	public void ShowCredit()
+	{
+		SceneManager.LoadScene("Credits");
+	}
 }
