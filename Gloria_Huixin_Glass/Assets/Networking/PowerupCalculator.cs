@@ -66,7 +66,16 @@ public class PowerupCalculator : MonoBehaviour {
     GlassBall glass_ball = other.GetComponent<GlassBall>();
     if (glass_ball != null) {
       is_being_picked_up = true;
-			gameObject.GetComponentInChildren<SpriteRenderer>().sprite = pickedupSprite;
+
+      if (PhotonNetwork.connected && PhotonNetwork.isMasterClient) {
+        if (glass_ball.GetComponent<Rigidbody2D>().velocity.y < 0) {
+          gameObject.GetComponentInChildren<SpriteRenderer>().sprite = pickedupSprite;
+        }
+      } else {
+        if (glass_ball.GetComponent<Rigidbody2D>().velocity.y > 0) {
+          gameObject.GetComponentInChildren<SpriteRenderer>().sprite = pickedupSprite;
+        }
+      }
     }
   }
 

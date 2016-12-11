@@ -213,7 +213,6 @@ public class GlassBall : Photon.PunBehaviour {
 
   public void EnablePowerPickup(bool enabled) {
     is_picking_powerup = enabled;
-		ChangeBallColor();
 
     if (enabled) { 
       rb = GetComponent<Rigidbody2D>();
@@ -308,13 +307,6 @@ public class GlassBall : Photon.PunBehaviour {
         }
       }
     }
-	}
-
-
-
-	void ChangeBallColor()
-	{
-		gameObject.GetComponent<Renderer> ().material.color = new Color(251/225f, 224/255f, 111/255f);
 	}
 
   [PunRPC]

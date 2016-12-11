@@ -212,6 +212,7 @@ public class TutorialPowerUp : Photon.PunBehaviour {
           
           break;
         case Stage.safe_activated:
+
           stage = Stage.safe_activated_1;
           state = State.fading_out;
           break;
@@ -358,6 +359,9 @@ public class TutorialPowerUp : Photon.PunBehaviour {
         break;
       case Stage.safe_activated_2:
       case Stage.safe_activated_3:
+        Vector3 gt = guide_text.transform.position;
+        guide_text.transform.position = new Vector3(gt.x, -gt.y, gt.z);
+
         powerup_meter.FillToFull();
         sprite_renderer.transform.position = new Vector3(1.37f, sprite_renderer.transform.position.y, 0);
         sprite_renderer.enabled = true;
@@ -430,6 +434,9 @@ public class TutorialPowerUp : Photon.PunBehaviour {
 
   public void ProceedSafetyNetActivated() {
     if (stage == Stage.defensive_intro_3 || stage == Stage.defensive_intro_2) {
+      Vector3 gt = guide_text.transform.position;
+      guide_text.transform.position = new Vector3(gt.x, -gt.y, gt.z);
+
       stage = Stage.safe_activated;
       state = State.fading_out;
       stage_elapsed = stage_interval;
