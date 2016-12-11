@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class scrolling : MonoBehaviour {
@@ -21,6 +22,9 @@ public class scrolling : MonoBehaviour {
 		{
 			isScrolling = false;
 		}
-	
-	}
+
+    if (Input.GetKeyDown(KeyCode.Escape)) {
+      SceneManager.LoadScene("Launcher");
+    }
+  }
 }

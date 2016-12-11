@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class Launcher : Photon.PunBehaviour {
+  const float SCENE_DELAY = 0.67f;
   public string game_version = "Alpha Build 0.61";
 
   public PhotonLogLevel log_level = PhotonLogLevel.ErrorsOnly;
@@ -182,21 +183,32 @@ public class Launcher : Photon.PunBehaviour {
     GameObject tutorial_button = GameObject.Find("Tutorial");
     tutorial_button.GetComponentInChildren<Text>().text = "Loading...";
     tutorial_button.GetComponent<Button>().interactable = false;
-    SceneManager.LoadScene("Tutorial 1 - Paddles");
+    //SceneManager.LoadScene("Tutorial 1 - Paddles");
+    Invoke("ChangeLevelTutorial", SCENE_DELAY);
   }
 
   public void LaunchQuickRef() {
     audio_source.Play();
     //SceneManager.LoadScene("QuickRef");
-    Invoke("ChangeLevel", 0.5f);
+    Invoke("ChangeLevelQuickRef", SCENE_DELAY);
   }
 
-  void ChangeLevel() {
+  void ChangeLevelQuickRef() {
     SceneManager.LoadScene("QuickRef");
+  }
+
+  void ChangeLevelCredit() {
+    SceneManager.LoadScene("Credits");
+  }
+
+  void ChangeLevelTutorial() {
+    SceneManager.LoadScene("Tutorial 1 - Paddles");
   }
 
 	public void ShowCredit()
 	{
-		SceneManager.LoadScene("Credits");
+    audio_source.Play();
+    Invoke("ChangeLevelCredit", SCENE_DELAY);
+		//SceneManager.LoadScene("Credits");
 	}
 }
