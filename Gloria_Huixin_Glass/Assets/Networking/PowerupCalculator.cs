@@ -8,6 +8,8 @@ public class PowerupCalculator : MonoBehaviour {
   public AudioClip ball_inside_clip;
   AudioSource audio_source;
   Rigidbody2D rb;
+	[SerializeField] Sprite pickedupSprite;
+	[SerializeField] Sprite normalSprite;
 
 	void Start () {
     rb = GetComponent<Rigidbody2D>();
@@ -64,6 +66,7 @@ public class PowerupCalculator : MonoBehaviour {
     GlassBall glass_ball = other.GetComponent<GlassBall>();
     if (glass_ball != null) {
       is_being_picked_up = true;
+			gameObject.GetComponentInChildren<SpriteRenderer>().sprite = pickedupSprite;
     }
   }
 
@@ -72,6 +75,7 @@ public class PowerupCalculator : MonoBehaviour {
     if (glass_ball != null) {
       glass_ball.EnablePowerPickup(false);
       is_being_picked_up = false;
+			gameObject.GetComponentInChildren<SpriteRenderer>().sprite = normalSprite;
     }
   }
 }

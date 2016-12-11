@@ -18,6 +18,7 @@ public class PaddleController : MonoBehaviour {
   Dictionary<int, float> collision_tracker;
 
 
+
 	// Use this for initialization
 	void Start () {
     InvokeRepeating("CleanUpCollisionTracker", 0, 2.5f);
